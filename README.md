@@ -1,277 +1,295 @@
-# HealthSim - 虚拟人生健康模拟器
+# Oystraz - Life Orchestration Through Health
 
-> **"Work hard, play hard, but don't forget to live hard."**
-> 一个结合健康追踪与办公室生活模拟的游戏化应用，让你的虚拟小人和现实生活同步成长。
-
----
-
-## 🎮 项目愿景
-
-HealthSim 不只是一个健康追踪应用，而是一个**情绪宣泄与生活模拟的结合体**。在这里，你的真实生活选择（饮食、睡眠、运动）会直接影响虚拟角色的状态，而虚拟角色在工作场景中的表现则反映了你的身心健康水平。
-
-### 核心理念
-- 🍎 **真实数据驱动** - 基于USDA数据库的营养分析
-- 🏃 **科学运动追踪** - 准确的卡路里消耗计算
-- 😊 **情绪化交互** - 根据健康状态触发不同的工作场景
-- 💼 **压力释放** - 在虚拟世界安全地"怼领导"、"摸鱼"、"睡觉"
-- 🤖 **AI助手** - Gemini AI 提供个性化建议和情感共鸣
+> **"The world is your oyster; Orchestrate your life through wellness."**
+>
+> A gamified health tracking and life simulation app where your real-world choices (diet, sleep, exercise) directly influence your virtual character's performance at work and in life.
 
 ---
 
-## 🌟 核心功能
+## 🎮 Project Vision
 
-### 1. 健康数据追踪
+**Oystraz** merges two powerful metaphors:
+- **Oyster** - "The world is your oyster" - life is full of opportunities waiting to be seized
+- **Orchestra** - The art of coordinating complex elements into harmonious performance
+
+The core philosophy: **By orchestrating your physical wellness, you gain control over your work and life.**
+
+Oystraz is not just another health tracker - it's a **stress-relief simulator** that gamifies wellness while providing a safe space to express workplace frustrations. Your virtual character mirrors your real health data, and its workplace behavior reflects your physical and mental state.
+
+### Core Principles
+- 🍎 **Data-Driven Wellness** - Powered by USDA nutritional database
+- 🏃 **Scientific Activity Tracking** - Accurate calorie expenditure calculations
+- 😊 **Emotional Intelligence** - Dynamic workplace scenarios based on health metrics
+- 💼 **Stress Liberation** - Safely "confront your boss", "slack off", or "nap at work" in virtual world
+- 🤖 **AI Companion** - Gemini AI provides empathetic coaching and personalized advice
+
+---
+
+## 🌟 Core Features
+
+### 1. Health Data Tracking
 ```
-📊 三大维度：
-├─ 🍽️ 饮食记录
-│   ├─ 快速搜索食物（USDA数据库）
-│   ├─ 拍照识别（Gemini Vision）
-│   └─ 营养成分自动分析
-│
-├─ 😴 睡眠追踪
-│   ├─ 睡眠时长
-│   ├─ 就寝/起床时间
-│   └─ 睡眠质量评分
-│
-└─ 🏃 运动记录
-    ├─ 运动类型和时长
-    ├─ 卡路里消耗计算
-    └─ 强度分级
+📊 Three Pillars of Wellness:
+
+🍽️ Nutrition Logging
+   ├─ Quick food search (USDA database)
+   ├─ Photo recognition (Gemini Vision)
+   └─ Automatic nutritional analysis
+
+😴 Sleep Tracking
+   ├─ Duration monitoring
+   ├─ Bedtime/wake time logging
+   └─ Quality scoring
+
+🏃 Exercise Recording
+   ├─ Activity type and duration
+   ├─ Calorie burn calculation
+   └─ Intensity classification
 ```
 
-### 2. 虚拟角色系统
+### 2. Virtual Character System
 ```
-👤 角色属性（0-100）：
-├─ 💪 体力值 - 基于运动量和睡眠质量
-├─ ⚡ 能量值 - 基于热量摄入vs消耗
-├─ 🍎 营养值 - 基于饮食均衡度
-├─ 😊 心情值 - 基于整体健康趋势
-└─ 😰 压力值 - 基于工作时长和休息情况
+👤 Character Attributes (0-100 scale):
+├─ 💪 Stamina - Based on exercise and sleep quality
+├─ ⚡ Energy - Based on caloric intake vs expenditure
+├─ 🍎 Nutrition - Based on dietary balance
+├─ 😊 Mood - Based on overall wellness trends
+└─ 😰 Stress - Based on work hours and rest quality
 
-🎭 角色状态：
-├─ 体型变化（BMI影响）
-├─ 精神状态（疲惫 ↔ 活力）
-├─ 表情动作（开心、沮丧、愤怒、疲倦）
-└─ 等级系统（通过健康行为升级）
+🎭 Character States:
+├─ Body type changes (BMI-influenced)
+├─ Mental states (exhausted ↔ energized)
+├─ Emotional expressions (happy, frustrated, angry, tired)
+└─ Level progression system (earn XP through healthy behaviors)
 ```
 
-### 3. 办公室生活模拟器 ⭐核心创新⭐
+### 3. Office Life Simulator ⭐ Core Innovation ⭐
 ```
-💼 工作场景系统：
-当用户点击"开始工作"时，虚拟小人进入办公室场景，
-根据当前健康属性触发不同的互动事件和选择。
+💼 Workplace Scenario Engine:
 
-场景示例：
+When users click "Start Work", their virtual character enters
+an office environment where different interactive events trigger
+based on current health attributes.
+
+Example Scenario:
 ┌─────────────────────────────────────┐
-│  [小人坐在办公桌前]                    │
+│  [Character sitting at desk]        │
 │                                     │
-│  当前状态：                          │
-│  💪 体力: 85  ⚡ 能量: 90           │
-│  😊 心情: 75  😰 压力: 30           │
+│  Current Status:                    │
+│  💪 Stamina: 85  ⚡ Energy: 90     │
+│  😊 Mood: 75     😰 Stress: 30     │
 │                                     │
-│  事件触发：                          │
-│  "领导突然叫你去开会..."             │
+│  Event Triggered:                   │
+│  "Your boss suddenly calls you      │
+│   for an urgent meeting..."         │
 │                                     │
-│  可选行动：                          │
-│  [💥 直接怼回去] (心情>80)           │
-│  [😴 假装没听到] (体力<40)           │
-│  [📝 乖乖去开会] (默认)              │
-│  [🏃 装上厕所摸鱼] (压力>70)         │
+│  Available Actions:                 │
+│  [💥 Tell them off] (mood > 80)    │
+│  [😴 Pretend not to hear] (stamina < 40) │
+│  [📝 Comply quietly] (default)     │
+│  [🏃 Hide in bathroom] (stress > 70) │
 └─────────────────────────────────────┘
 ```
 
-#### 工作事件类型（基于健康参数）
+#### Workplace Event Types (Health-Based Triggers)
 ```
-高体力值 (>80):
-├─ ✨ "加班也精神抖擞，获得老板赏识" (+心情)
-├─ 💪 "完成高难度项目" (+经验值)
-└─ 🏆 "主动承担额外工作" (+成就感)
+High Stamina (>80):
+├─ ✨ "Work overtime energetically, gain boss approval" (+mood)
+├─ 💪 "Complete challenging project" (+XP)
+└─ 🏆 "Volunteer for extra responsibilities" (+achievement)
 
-低体力值 (<40):
-├─ 😴 "工作时打瞌睡被同事发现" (-心情)
-├─ 💤 "趴桌上睡着了" (恢复体力但-职场声誉)
-└─ 🥱 "效率低下，任务延期" (-压力上升)
+Low Stamina (<40):
+├─ 😴 "Doze off during work, caught by colleagues" (-mood)
+├─ 💤 "Fall asleep at desk" (restore stamina but -reputation)
+└─ 🥱 "Low productivity, tasks delayed" (+stress)
 
-高心情值 (>80):
-├─ 💥 "怼领导不合理要求" (爽！+压力释放)
-├─ 💰 "主动提加薪要求" (有概率成功)
-└─ 🎉 "工作效率爆棚" (+生产力)
+High Mood (>80):
+├─ 💥 "Confront boss about unreasonable demands" (cathartic! -stress)
+├─ 💰 "Ask for a raise" (chance of success)
+└─ 🎉 "Peak productivity mode" (+work output)
 
-低心情值 (<30):
-├─ 😢 "在厕所偷偷哭" (情绪宣泄)
-├─ 💼 "递交辞职信" (重启人生)
-└─ 🏃 "下午直接溜了" (-工作进度)
+Low Mood (<30):
+├─ 😢 "Cry in bathroom stall" (emotional release)
+├─ 💼 "Submit resignation letter" (life reset)
+└─ 🏃 "Leave early without notice" (-work progress)
 
-高压力值 (>80):
-├─ 🤯 "当场爆发情绪" (减压但影响关系)
-├─ 🏖️ "强制休假" (恢复心情)
-└─ 🧘 "需要进行冥想/运动" (触发任务)
+High Stress (>80):
+├─ 🤯 "Emotional outburst" (reduce stress but damage relationships)
+├─ 🏖️ "Forced vacation mode" (restore mood)
+└─ 🧘 "Meditation/exercise prompt triggered"
 
-均衡状态 (各项60-80):
-├─ 📊 "稳定发挥，正常工作"
-├─ 🤝 "团队协作顺畅"
-└─ ⬆️ "职场等级提升"
-```
-
-### 4. AI 健康教练 (Gemini)
-```
-🤖 智能助手功能：
-├─ 💬 情感共鸣
-│   "看来你昨晚没睡好，今天体力值只有45...
-│    要不要听听我的建议？"
-│
-├─ 🎯 个性化建议
-│   "你已经连续3天没运动了，营养值下降到60，
-│    推荐你今天做30分钟快走，配合高蛋白早餐！"
-│
-├─ 🎉 鼓励和庆祝
-│   "太棒了！连续7天健康饮食，你的小人升到3级了！
-│    解锁成就：健康战士 🏆"
-│
-├─ 📈 趋势分析
-│   "最近两周你的睡眠质量在下降，
-│    这可能是工作压力导致的，建议调整作息..."
-│
-└─ 🎭 工作场景解说
-   "哈哈，你的小人刚刚怼了领导！
-    压力值-30，心情值+20，不过要小心职场关系哦😄"
+Balanced State (all metrics 60-80):
+├─ 📊 "Steady performance, normal workday"
+├─ 🤝 "Smooth team collaboration"
+└─ ⬆️ "Career level up"
 ```
 
-### 5. 数据可视化与报告
+### 4. AI Health Coach (Gemini)
 ```
-📊 健康仪表盘：
-├─ 四维雷达图（体力/能量/营养/心情）
-├─ 历史趋势曲线
-├─ 每周/每月健康报告
-└─ 工作场景回放日志
+🤖 Intelligent Assistant Features:
 
-📅 每日总结：
-"2026年1月13日 - 你的一天"
-├─ 早餐: 燕麦+香蕉 (350卡路里, 营养+15)
-├─ 运动: 慢跑30分钟 (体力+20, 能量-250)
-├─ 工作: 怼了领导一次 (心情+25, 压力-30)
-└─ 综合: 健康等级 5 → 6 ⬆️
+💬 Emotional Resonance
+   "Looks like you didn't sleep well last night.
+    Your stamina is only at 45 today...
+    Want to hear my suggestions?"
+
+🎯 Personalized Recommendations
+   "You haven't exercised for 3 days, and your nutrition
+    score dropped to 60. I recommend a 30-minute brisk walk
+    today with a high-protein breakfast!"
+
+🎉 Encouragement & Celebration
+   "Amazing! 7-day healthy eating streak! Your character
+    just leveled up to Level 3! Achievement unlocked:
+    Wellness Warrior 🏆"
+
+📈 Trend Analysis
+   "Your sleep quality has been declining over the past
+    two weeks. This might be work-stress related.
+    Consider adjusting your schedule..."
+
+🎭 Workplace Scenario Commentary
+   "Haha! Your character just confronted the boss!
+    Stress -30, Mood +20, but watch those workplace
+    relationships 😄"
+```
+
+### 5. Data Visualization & Reporting
+```
+📊 Health Dashboard:
+├─ Four-dimensional radar chart (stamina/energy/nutrition/mood)
+├─ Historical trend curves
+├─ Weekly/monthly wellness reports
+└─ Workplace scenario replay logs
+
+📅 Daily Summary:
+"January 13, 2026 - Your Day"
+├─ Breakfast: Oatmeal + Banana (350 cal, nutrition +15)
+├─ Exercise: 30min jog (stamina +20, energy -250)
+├─ Work: Confronted boss once (mood +25, stress -30)
+└─ Overall: Health Level 5 → 6 ⬆️
 ```
 
 ---
 
-## 🏗️ 技术架构
+## 🏗️ Technical Architecture
 
-### 技术栈选型
+### Technology Stack
 ```
-前端:
+Frontend:
 ├─ React 18 + TypeScript
-├─ UI库: Material-UI (移动端友好)
-├─ 状态管理: Zustand
-├─ 路由: React Router v6
-├─ 图表: Recharts
-├─ 动画: Framer Motion
-└─ PWA: 支持安装到手机
+├─ UI Library: Material-UI (mobile-responsive)
+├─ State Management: Zustand
+├─ Routing: React Router v6
+├─ Charts: Recharts
+├─ Animation: Framer Motion
+└─ PWA: Installable on mobile devices
 
-后端:
+Backend:
 ├─ FastAPI (Python 3.11+)
-├─ 数据库: PostgreSQL
+├─ Database: PostgreSQL
 ├─ ORM: SQLAlchemy
-├─ 认证: JWT
-└─ API文档: 自动生成 (FastAPI)
+├─ Authentication: JWT
+└─ API Docs: Auto-generated (FastAPI)
 
-AI & 数据:
-├─ Google Gemini API (对话+图像识别)
-├─ USDA FoodData Central API (营养数据)
-├─ Exercise DB / MET Database (运动数据)
-└─ Redis (缓存层)
+AI & Data Sources:
+├─ Google Gemini API (chat + image recognition)
+├─ USDA FoodData Central API (nutritional data)
+├─ Exercise DB / MET Database (activity data)
+└─ Redis (caching layer)
 
-部署:
-├─ 前端: Vercel / Netlify
-├─ 后端: Railway / Render
-├─ 数据库: Supabase (PostgreSQL托管)
-└─ 容器化: Docker + Docker Compose
+Deployment:
+├─ Frontend: Vercel / Netlify
+├─ Backend: Railway / Render
+├─ Database: Supabase (PostgreSQL hosting)
+└─ Containerization: Docker + Docker Compose
 ```
 
-### 系统架构图
+### System Architecture Diagram
 ```
 ┌─────────────────────────────────────────────────┐
-│                  用户界面层                       │
+│              User Interface Layer                │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
-│  │ 数据输入  │  │ 角色展示  │  │ 工作模拟  │      │
+│  │Data Input│  │Character │  │Work Sim  │      │
 │  └──────────┘  └──────────┘  └──────────┘      │
 │         │              │              │         │
 └─────────┼──────────────┼──────────────┼─────────┘
           │              │              │
           ▼              ▼              ▼
 ┌─────────────────────────────────────────────────┐
-│                  API 网关层                       │
+│               API Gateway Layer                  │
 │              FastAPI REST API                    │
 └─────────────────────────────────────────────────┘
           │              │              │
     ┌─────┴─────┐  ┌────┴────┐  ┌─────┴─────┐
     ▼           ▼  ▼         ▼  ▼           ▼
 ┌────────┐ ┌────────┐ ┌─────────┐ ┌──────────┐
-│健康计算│ │场景引擎│ │AI服务   │ │外部API   │
-│Engine  │ │Engine  │ │(Gemini) │ │(USDA等)  │
+│Health  │ │Scenario│ │AI       │ │External  │
+│Calc    │ │Engine  │ │Service  │ │APIs      │
+│Engine  │ │        │ │(Gemini) │ │(USDA etc)│
 └────────┘ └────────┘ └─────────┘ └──────────┘
     │           │          │           │
     └───────────┴──────────┴───────────┘
                     ▼
           ┌──────────────────┐
-          │   数据持久化层     │
-          │  PostgreSQL DB   │
+          │Data Persistence  │
+          │PostgreSQL DB     │
           └──────────────────┘
 ```
 
-### 核心算法
+### Core Algorithms
 
-#### 1. 健康评分计算引擎
+#### 1. Health Metrics Calculation Engine
 ```python
 def calculate_health_metrics(user_data):
     """
-    基于多维度计算健康参数
+    Calculate multi-dimensional health parameters
 
-    输入:
-    - 饮食记录 (calories, protein, carbs, fat, vitamins)
-    - 睡眠记录 (duration, quality, bedtime)
-    - 运动记录 (type, duration, intensity)
-    - 用户基础数据 (height, weight, age, gender)
+    Inputs:
+    - Dietary records (calories, protein, carbs, fat, vitamins)
+    - Sleep records (duration, quality, bedtime)
+    - Exercise records (type, duration, intensity)
+    - User baseline data (height, weight, age, gender)
 
-    输出:
-    - 体力值 (0-100)
-    - 能量值 (0-100)
-    - 营养值 (0-100)
-    - 心情值 (0-100)
-    - 压力值 (0-100)
+    Outputs:
+    - Stamina (0-100)
+    - Energy (0-100)
+    - Nutrition (0-100)
+    - Mood (0-100)
+    - Stress (0-100)
     """
 
-    # 1. 体力值 = f(运动量, 睡眠质量)
-    fitness = (
+    # 1. Stamina = f(exercise volume, sleep quality)
+    stamina = (
         exercise_score * 0.6 +
         sleep_quality * 0.4
     )
 
-    # 2. 能量值 = f(热量平衡, 睡眠时长)
+    # 2. Energy = f(caloric balance, sleep duration)
     energy = (
         calorie_balance_score * 0.7 +
         sleep_duration_score * 0.3
     )
 
-    # 3. 营养值 = f(饮食均衡度, 微量元素)
+    # 3. Nutrition = f(dietary balance, micronutrients)
     nutrition = (
         macro_balance * 0.6 +
         vitamin_minerals * 0.4
     )
 
-    # 4. 心情值 = f(整体健康趋势, 压力水平)
+    # 4. Mood = f(overall health trend, stress level)
     mood = (
         overall_health_trend * 0.6 +
         (100 - stress) * 0.4
     )
 
-    # 5. 压力值 = f(工作时长, 休息质量, 心情波动)
+    # 5. Stress = f(work hours, rest quality, mood variance)
     stress = calculate_stress_level(
         work_hours, rest_quality, mood_variance
     )
 
     return {
-        'fitness': fitness,
+        'stamina': stamina,
         'energy': energy,
         'nutrition': nutrition,
         'mood': mood,
@@ -279,68 +297,75 @@ def calculate_health_metrics(user_data):
     }
 ```
 
-#### 2. 工作场景触发引擎
+#### 2. Workplace Scenario Trigger Engine
 ```python
 def trigger_work_event(character_state):
     """
-    根据角色健康状态触发工作场景
+    Trigger workplace scenarios based on character health state
 
-    优先级:
-    1. 极端状态 (任意属性 < 20 或 > 90)
-    2. 组合状态 (高压力+低心情)
-    3. 随机事件 (基于概率)
+    Priority System:
+    1. Extreme states (any attribute < 20 or > 90)
+    2. Combined states (high stress + low mood)
+    3. Random events (probability-based)
     """
 
-    # 极端状态检查
-    if character_state['fitness'] < 20:
+    # Check extreme states
+    if character_state['stamina'] < 20:
         return random.choice([
-            Event('SLEEP_AT_DESK', consequence={'fitness': +10, 'reputation': -5}),
-            Event('CALL_IN_SICK', consequence={'fitness': +30, 'work_progress': -10})
+            Event('SLEEP_AT_DESK',
+                  consequence={'stamina': +10, 'reputation': -5}),
+            Event('CALL_IN_SICK',
+                  consequence={'stamina': +30, 'work_progress': -10})
         ])
 
     if character_state['mood'] > 90:
         return random.choice([
-            Event('CONFRONT_BOSS', consequence={'stress': -30, 'mood': +10}),
-            Event('ASK_FOR_RAISE', consequence={'money': +100, 'confidence': +15})
+            Event('CONFRONT_BOSS',
+                  consequence={'stress': -30, 'mood': +10}),
+            Event('ASK_FOR_RAISE',
+                  consequence={'money': +100, 'confidence': +15})
         ])
 
-    # 组合状态
+    # Combined state triggers
     if character_state['stress'] > 80 and character_state['mood'] < 30:
-        return Event('MELTDOWN', consequence={'stress': -50, 'relationships': -20})
+        return Event('MELTDOWN',
+                     consequence={'stress': -50, 'relationships': -20})
 
-    # 正常随机事件
+    # Normal random events
     return get_random_event(character_state)
 ```
 
-#### 3. AI 对话生成
+#### 3. AI Conversation Generation
 ```python
 def generate_ai_response(user_data, context, conversation_history):
     """
-    使用Gemini生成个性化AI助手回复
+    Generate personalized AI coach responses using Gemini
     """
 
     prompt = f"""
-    你是HealthSim的AI健康教练，用轻松、幽默、共鸣的语气和用户交流。
-    你可以看到用户的虚拟角色状态，并像朋友一样给出建议。
+    You are Oystraz's AI health coach. Communicate in a relaxed,
+    humorous, and empathetic tone. You can see the user's virtual
+    character state and offer advice like a supportive friend.
 
-    用户角色当前状态：
-    - 等级: {user_data['level']}
-    - 💪 体力: {user_data['fitness']}/100
-    - ⚡ 能量: {user_data['energy']}/100
-    - 🍎 营养: {user_data['nutrition']}/100
-    - 😊 心情: {user_data['mood']}/100
-    - 😰 压力: {user_data['stress']}/100
+    User's Character Current State:
+    - Level: {user_data['level']}
+    - 💪 Stamina: {user_data['stamina']}/100
+    - ⚡ Energy: {user_data['energy']}/100
+    - 🍎 Nutrition: {user_data['nutrition']}/100
+    - 😊 Mood: {user_data['mood']}/100
+    - 😰 Stress: {user_data['stress']}/100
 
-    最近活动:
-    - 昨日饮食: {user_data['yesterday_meals']}
-    - 昨日运动: {user_data['yesterday_exercise']}
-    - 最近工作场景: {user_data['recent_work_events']}
+    Recent Activities:
+    - Yesterday's meals: {user_data['yesterday_meals']}
+    - Yesterday's exercise: {user_data['yesterday_exercise']}
+    - Recent workplace events: {user_data['recent_work_events']}
 
-    当前情况: {context}
+    Current Context: {context}
 
-    请用鼓励、有趣、游戏化的语气回复，可以使用emoji。
-    如果用户状态不好，给予共鸣和实用建议。
-    如果用户表现好，热情庆祝并鼓励继续。
+    Respond with encouraging, fun, and gamified language.
+    Use emojis appropriately. If the user's state is poor,
+    show empathy and provide actionable advice. If they're
+    doing well, celebrate enthusiastically and encourage continuation.
     """
 
     response = gemini_client.generate_content(
@@ -353,145 +378,145 @@ def generate_ai_response(user_data, context, conversation_history):
 
 ---
 
-## 📂 项目结构
+## 📂 Project Structure
 
 ```
-HealthSim/
+Oystraz/
 ├── README.md
 ├── .gitignore
 ├── docker-compose.yml
 │
-├── frontend/                      # React 前端
+├── frontend/                      # React Frontend
 │   ├── public/
-│   │   ├── manifest.json          # PWA配置
-│   │   ├── icons/                 # 应用图标
+│   │   ├── manifest.json          # PWA config
+│   │   ├── icons/                 # App icons
 │   │   └── index.html
 │   ├── src/
-│   │   ├── components/            # UI组件
-│   │   │   ├── Avatar/            # 虚拟角色显示
-│   │   │   ├── HealthBars/        # 健康属性条
-│   │   │   ├── FoodInput/         # 食物输入
-│   │   │   ├── ExerciseLog/       # 运动记录
-│   │   │   ├── WorkSimulator/     # 工作场景模拟器 ⭐
-│   │   │   ├── AIChat/            # AI对话界面
-│   │   │   └── Dashboard/         # 数据仪表盘
+│   │   ├── components/            # UI Components
+│   │   │   ├── Avatar/            # Virtual character display
+│   │   │   ├── HealthBars/        # Health attribute bars
+│   │   │   ├── FoodInput/         # Food logging interface
+│   │   │   ├── ExerciseLog/       # Exercise recording
+│   │   │   ├── WorkSimulator/     # Workplace scenario simulator ⭐
+│   │   │   ├── AIChat/            # AI conversation interface
+│   │   │   └── Dashboard/         # Data dashboard
 │   │   ├── pages/
-│   │   │   ├── Home.tsx           # 主页（角色状态）
-│   │   │   ├── Track.tsx          # 数据追踪
-│   │   │   ├── Work.tsx           # 工作模拟 ⭐
-│   │   │   ├── Stats.tsx          # 数据统计
-│   │   │   └── Profile.tsx        # 用户设置
-│   │   ├── hooks/                 # 自定义hooks
-│   │   ├── services/              # API调用
-│   │   │   ├── api.ts             # API客户端
+│   │   │   ├── Home.tsx           # Main page (character status)
+│   │   │   ├── Track.tsx          # Data tracking
+│   │   │   ├── Work.tsx           # Work simulation ⭐
+│   │   │   ├── Stats.tsx          # Statistics
+│   │   │   └── Profile.tsx        # User settings
+│   │   ├── hooks/                 # Custom hooks
+│   │   ├── services/              # API calls
+│   │   │   ├── api.ts             # API client
 │   │   │   ├── foodService.ts
 │   │   │   ├── exerciseService.ts
 │   │   │   └── geminiService.ts
-│   │   ├── store/                 # Zustand状态管理
+│   │   ├── store/                 # Zustand state management
 │   │   │   ├── userStore.ts
 │   │   │   ├── characterStore.ts
 │   │   │   └── workStore.ts
 │   │   ├── utils/
-│   │   │   ├── calculations.ts    # 前端计算工具
+│   │   │   ├── calculations.ts    # Frontend calculation utilities
 │   │   │   └── formatters.ts
-│   │   ├── types/                 # TypeScript类型定义
+│   │   ├── types/                 # TypeScript type definitions
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── vite.config.ts
 │
-├── backend/                       # FastAPI 后端
+├── backend/                       # FastAPI Backend
 │   ├── app/
-│   │   ├── main.py                # 应用入口
-│   │   ├── config.py              # 配置管理
-│   │   ├── database.py            # 数据库连接
-│   │   ├── models/                # SQLAlchemy模型
+│   │   ├── main.py                # Application entry point
+│   │   ├── config.py              # Configuration management
+│   │   ├── database.py            # Database connection
+│   │   ├── models/                # SQLAlchemy models
 │   │   │   ├── user.py
 │   │   │   ├── meal.py
 │   │   │   ├── exercise.py
 │   │   │   ├── sleep.py
 │   │   │   ├── character.py
-│   │   │   ├── work_event.py      # 工作事件记录
+│   │   │   ├── work_event.py      # Workplace event records
 │   │   │   └── achievement.py
 │   │   ├── schemas/               # Pydantic schemas
 │   │   │   ├── user.py
 │   │   │   ├── health.py
 │   │   │   └── work.py
-│   │   ├── api/                   # API路由
-│   │   │   ├── auth.py            # 认证
-│   │   │   ├── user.py            # 用户管理
-│   │   │   ├── food.py            # 食物相关
-│   │   │   ├── exercise.py        # 运动相关
-│   │   │   ├── sleep.py           # 睡眠相关
-│   │   │   ├── character.py       # 角色状态
-│   │   │   ├── work.py            # 工作场景 ⭐
-│   │   │   └── ai.py              # AI对话
-│   │   ├── services/              # 业务逻辑
-│   │   │   ├── health_calculator.py  # 健康计算引擎 ⭐
-│   │   │   ├── work_engine.py        # 工作场景引擎 ⭐
-│   │   │   ├── usda_client.py        # USDA API客户端
-│   │   │   ├── exercise_client.py    # 运动数据API
-│   │   │   ├── gemini_client.py      # Gemini API
-│   │   │   └── character_service.py  # 角色状态管理
+│   │   ├── api/                   # API routes
+│   │   │   ├── auth.py            # Authentication
+│   │   │   ├── user.py            # User management
+│   │   │   ├── food.py            # Food-related endpoints
+│   │   │   ├── exercise.py        # Exercise-related endpoints
+│   │   │   ├── sleep.py           # Sleep-related endpoints
+│   │   │   ├── character.py       # Character state endpoints
+│   │   │   ├── work.py            # Workplace scenarios ⭐
+│   │   │   └── ai.py              # AI conversation endpoints
+│   │   ├── services/              # Business logic
+│   │   │   ├── health_calculator.py  # Health calculation engine ⭐
+│   │   │   ├── work_engine.py        # Workplace scenario engine ⭐
+│   │   │   ├── usda_client.py        # USDA API client
+│   │   │   ├── exercise_client.py    # Exercise data API client
+│   │   │   ├── gemini_client.py      # Gemini API client
+│   │   │   └── character_service.py  # Character state management
 │   │   └── core/
-│   │       ├── security.py        # JWT等
+│   │       ├── security.py        # JWT and security
 │   │       └── dependencies.py
 │   ├── tests/
 │   ├── requirements.txt
 │   ├── Dockerfile
-│   └── alembic/                   # 数据库迁移
+│   └── alembic/                   # Database migrations
 │
-├── data/                          # 数据文件
-│   ├── raw/                       # USDA原始数据
-│   ├── processed/                 # 处理后数据
-│   └── work_events.json           # 工作场景事件库 ⭐
+├── data/                          # Data files
+│   ├── raw/                       # Raw USDA data
+│   ├── processed/                 # Processed data
+│   └── work_events.json           # Workplace scenario library ⭐
 │
-└── docs/                          # 文档
-    ├── API.md                     # API文档
-    ├── DATABASE.md                # 数据库设计
-    ├── ALGORITHMS.md              # 算法说明
-    └── DEPLOYMENT.md              # 部署指南
+└── docs/                          # Documentation
+    ├── API.md                     # API documentation
+    ├── DATABASE.md                # Database design
+    ├── ALGORITHMS.md              # Algorithm explanations
+    └── DEPLOYMENT.md              # Deployment guide
 ```
 
 ---
 
-## 🗄️ 数据库设计
+## 🗄️ Database Design
 
 ```sql
--- 用户表
+-- Users table
 users:
   id, username, email, password_hash,
   height, weight, age, gender, goal,
   created_at, updated_at
 
--- 角色状态表（每日快照）
+-- Character states table (daily snapshots)
 character_states:
   id, user_id, date,
-  fitness, energy, nutrition, mood, stress,
+  stamina, energy, nutrition, mood, stress,
   level, experience,
   body_type, emotional_state
 
--- 饮食记录
+-- Meal records
 meals:
   id, user_id, datetime, meal_type,
   food_items (JSON),
   total_calories, protein, carbs, fat,
   vitamins_minerals (JSON)
 
--- 运动记录
+-- Exercise records
 exercises:
   id, user_id, datetime,
   exercise_type, duration, intensity,
   calories_burned, met_value
 
--- 睡眠记录
+-- Sleep logs
 sleep_logs:
   id, user_id, date,
   bedtime, wake_time, duration,
   quality_score
 
--- 工作事件记录 ⭐核心表
+-- Workplace event records ⭐ Core table
 work_events:
   id, user_id, datetime,
   event_type, event_description,
@@ -500,13 +525,13 @@ work_events:
   character_state_before (JSON),
   character_state_after (JSON)
 
--- 成就系统
+-- Achievement system
 achievements:
   id, user_id, achievement_type,
   title, description, icon,
   unlocked_at
 
--- AI对话历史
+-- AI conversation history
 ai_conversations:
   id, user_id,
   user_message, ai_response,
@@ -515,197 +540,197 @@ ai_conversations:
 
 ---
 
-## 🎯 MVP 开发计划 (3周)
+## 🎯 MVP Development Plan (3 Weeks)
 
-### Week 1: 基础架构 + 数据追踪
+### Week 1: Foundation + Data Tracking
 ```
-Day 1-2: 项目初始化
-├─ 前后端项目搭建
-├─ 数据库设计和迁移
-├─ 基础认证系统
-└─ 开发环境配置
+Day 1-2: Project Initialization
+├─ Frontend and backend project setup
+├─ Database design and migrations
+├─ Basic authentication system
+└─ Development environment configuration
 
-Day 3-4: 数据输入功能
-├─ 食物搜索和记录（USDA API）
-├─ 运动记录表单
-├─ 睡眠记录表单
-└─ 基础API端点
+Day 3-4: Data Input Features
+├─ Food search and logging (USDA API)
+├─ Exercise recording forms
+├─ Sleep logging forms
+└─ Basic API endpoints
 
-Day 5-7: 健康计算引擎
-├─ 实现健康评分算法
-├─ 角色状态计算
-├─ 数据持久化
-└─ 单元测试
-```
-
-### Week 2: 虚拟角色 + 工作场景
-```
-Day 8-10: 角色系统
-├─ 角色状态展示UI
-├─ 健康属性可视化（进度条）
-├─ 简单的角色形象（emoji/图标）
-├─ 状态实时更新
-
-Day 11-14: 工作场景引擎 ⭐
-├─ 场景触发逻辑
-├─ 事件库设计（10个核心场景）
-├─ 用户选择和后果系统
-├─ 工作场景UI界面
-└─ 场景历史记录
+Day 5-7: Health Calculation Engine
+├─ Implement health scoring algorithms
+├─ Character state calculations
+├─ Data persistence
+└─ Unit testing
 ```
 
-### Week 3: AI集成 + 优化部署
+### Week 2: Virtual Character + Workplace Scenarios
 ```
-Day 15-17: AI助手
-├─ Gemini API集成
-├─ 对话界面
-├─ 上下文管理
-└─ 个性化响应
+Day 8-10: Character System
+├─ Character state display UI
+├─ Health attribute visualization (progress bars)
+├─ Simple character avatar (emoji/icons)
+├─ Real-time state updates
 
-Day 18-19: 数据可视化
-├─ 健康仪表盘
-├─ 图表展示（Recharts）
-├─ 每日/周报告
-└─ 趋势分析
-
-Day 20-21: 部署和测试
-├─ Docker配置
-├─ PWA设置
-├─ 部署到云平台
-├─ 用户测试和bug修复
-└─ 文档完善
+Day 11-14: Workplace Scenario Engine ⭐
+├─ Scenario trigger logic
+├─ Event library design (10 core scenarios)
+├─ User choice and consequence system
+├─ Workplace scenario UI interface
+└─ Scenario history tracking
 ```
 
----
-
-## 🎨 设计风格指南
-
-### 视觉风格
+### Week 3: AI Integration + Optimization & Deployment
 ```
-主题: 现代、清新、游戏化
-色彩方案:
-  ├─ 主色: #4CAF50 (健康绿)
-  ├─ 副色: #2196F3 (活力蓝)
-  ├─ 警告: #FF9800 (注意橙)
-  ├─ 危险: #F44336 (压力红)
-  └─ 背景: #FAFAFA (浅灰)
+Day 15-17: AI Assistant
+├─ Gemini API integration
+├─ Conversation interface
+├─ Context management
+└─ Personalized responses
 
-角色形象:
-  ├─ MVP: Emoji组合 (😊💪🏃等)
-  ├─ V2: 简化卡通形象
-  └─ V3: 动态SVG角色
-```
+Day 18-19: Data Visualization
+├─ Health dashboard
+├─ Chart displays (Recharts)
+├─ Daily/weekly reports
+└─ Trend analysis
 
-### 交互设计原则
-```
-1. 即时反馈 - 每个操作都有视觉/声音反馈
-2. 游戏化 - 使用等级、成就、动画
-3. 情感连接 - AI用共鸣语言，而非冰冷数据
-4. 简化输入 - 最少步骤完成记录
-5. 移动优先 - 响应式设计
+Day 20-21: Deployment and Testing
+├─ Docker configuration
+├─ PWA setup
+├─ Cloud platform deployment
+├─ User testing and bug fixes
+└─ Documentation refinement
 ```
 
 ---
 
-## 🚀 部署方案
+## 🎨 Design Style Guide
 
-### 开发环境
+### Visual Style
+```
+Theme: Modern, Fresh, Gamified
+Color Scheme:
+  ├─ Primary: #4CAF50 (Health Green)
+  ├─ Secondary: #2196F3 (Energy Blue)
+  ├─ Warning: #FF9800 (Caution Orange)
+  ├─ Danger: #F44336 (Stress Red)
+  └─ Background: #FAFAFA (Light Gray)
+
+Character Avatar:
+  ├─ MVP: Emoji combinations (😊💪🏃 etc.)
+  ├─ V2: Simplified cartoon illustrations
+  └─ V3: Dynamic SVG characters
+```
+
+### Interaction Design Principles
+```
+1. Instant Feedback - Every action has visual/audio response
+2. Gamification - Use levels, achievements, animations
+3. Emotional Connection - AI uses empathetic language, not cold data
+4. Simplified Input - Minimize steps to complete logging
+5. Mobile-First - Responsive design
+```
+
+---
+
+## 🚀 Deployment Strategy
+
+### Development Environment
 ```bash
-# 克隆仓库
-git clone https://github.com/yourusername/healthsim.git
-cd healthsim
+# Clone repository
+git clone https://github.com/yourusername/oystraz.git
+cd oystraz
 
-# 使用Docker Compose一键启动
+# One-click startup with Docker Compose
 docker-compose up -d
 
-# 或分别启动前后端
+# Or start frontend and backend separately
 cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload
 cd frontend && npm install && npm run dev
 ```
 
-### 生产环境
+### Production Environment
 ```
-前端: Vercel
-  - 自动部署
-  - 全球CDN
-  - PWA支持
+Frontend: Vercel
+  - Automatic deployment
+  - Global CDN
+  - PWA support
 
-后端: Railway / Render
-  - Docker部署
-  - 自动扩展
-  - 环境变量管理
+Backend: Railway / Render
+  - Docker deployment
+  - Auto-scaling
+  - Environment variable management
 
-数据库: Supabase
-  - PostgreSQL托管
-  - 自动备份
-  - 免费层10GB
-```
-
----
-
-## 📊 成功指标
-
-### 产品指标
-```
-用户参与度:
-├─ DAU (日活跃用户)
-├─ 平均每日记录次数
-├─ 工作场景触发频率
-└─ AI对话互动率
-
-用户留存:
-├─ 次日留存率 > 40%
-├─ 7日留存率 > 25%
-└─ 30日留存率 > 15%
-
-功能使用:
-├─ 最受欢迎的工作场景
-├─ 平均角色等级
-└─ 成就解锁率
-```
-
-### 技术指标
-```
-性能:
-├─ API响应时间 < 200ms
-├─ 首屏加载 < 2s
-└─ PWA评分 > 90
-
-可靠性:
-├─ 系统可用性 > 99%
-├─ 错误率 < 0.1%
-└─ 数据准确性 100%
+Database: Supabase
+  - PostgreSQL hosting
+  - Automatic backups
+  - 10GB free tier
 ```
 
 ---
 
-## 🤝 贡献指南
+## 📊 Success Metrics
 
-欢迎贡献新的工作场景、优化算法或改进UI！
+### Product Metrics
+```
+User Engagement:
+├─ DAU (Daily Active Users)
+├─ Average daily logging frequency
+├─ Workplace scenario trigger rate
+└─ AI conversation interaction rate
 
-### 添加新的工作场景
+User Retention:
+├─ Day-1 retention > 40%
+├─ Day-7 retention > 25%
+└─ Day-30 retention > 15%
+
+Feature Usage:
+├─ Most popular workplace scenarios
+├─ Average character level
+└─ Achievement unlock rate
+```
+
+### Technical Metrics
+```
+Performance:
+├─ API response time < 200ms
+├─ First contentful paint < 2s
+└─ PWA score > 90
+
+Reliability:
+├─ System uptime > 99%
+├─ Error rate < 0.1%
+└─ Data accuracy 100%
+```
+
+---
+
+## 🤝 Contributing
+
+Welcome contributions for new workplace scenarios, algorithm optimizations, or UI improvements!
+
+### Adding New Workplace Scenarios
 ```json
 // data/work_events.json
 {
   "event_id": "boss_unreasonable_demand",
-  "title": "领导提出不合理要求",
-  "description": "领导突然要求你今晚加班完成明天的报告...",
+  "title": "Boss Makes Unreasonable Demand",
+  "description": "Your boss suddenly demands you work overtime tonight to finish tomorrow's report...",
   "triggers": {
     "stress": [60, 100],
     "time_of_day": "evening"
   },
   "choices": [
     {
-      "text": "💥 直接拒绝并说明理由",
+      "text": "💥 Refuse directly with explanation",
       "requires": {"mood": 70},
       "consequences": {"stress": -20, "mood": +10, "reputation": -5}
     },
     {
-      "text": "😤 勉强答应但很不爽",
+      "text": "😤 Reluctantly agree but feel upset",
       "consequences": {"stress": +15, "mood": -10, "overtime": +3}
     },
     {
-      "text": "📱 假装手机没电看不到消息",
+      "text": "📱 Pretend phone died, didn't see message",
       "consequences": {"stress": -10, "mood": +5, "reputation": -10}
     }
   ]
@@ -714,41 +739,43 @@ cd frontend && npm install && npm run dev
 
 ---
 
-## 📝 许可证
+## 📝 License
 
-MIT License - 自由使用和修改
-
----
-
-## 🌈 未来规划
-
-### V2.0 功能
-```
-├─ 多角色系统（不同职业：程序员、设计师、销售等）
-├─ 社交功能（好友、挑战、排行榜）
-├─ 更丰富的动画效果
-├─ 语音输入
-├─ 智能手环/手表数据同步
-└─ 多语言支持
-```
-
-### V3.0 愿景
-```
-├─ 原生移动应用（React Native）
-├─ AR虚拟角色（ARKit/ARCore）
-├─ 社区场景库（用户自创场景）
-├─ AI生成个性化故事线
-└─ 企业健康管理版本
-```
+MIT License - Free to use and modify
 
 ---
 
-## 📞 联系方式
+## 🌈 Future Roadmap
 
-- 项目主页: [GitHub Repository]
-- 问题反馈: [Issues]
-- 讨论交流: [Discussions]
+### V2.0 Features
+```
+├─ Multi-character system (different careers: programmer, designer, salesperson)
+├─ Social features (friends, challenges, leaderboards)
+├─ Richer animation effects
+├─ Voice input
+├─ Smart band/watch data sync
+└─ Multi-language support
+```
+
+### V3.0 Vision
+```
+├─ Native mobile app (React Native)
+├─ AR virtual character (ARKit/ARCore)
+├─ Community scenario library (user-created scenarios)
+├─ AI-generated personalized storylines
+└─ Enterprise wellness management edition
+```
 
 ---
 
-**让健康管理变得有趣，让工作压力有处宣泄！** 🎮💪😊
+## 📞 Contact
+
+- Project Homepage: [GitHub Repository]
+- Issue Reporting: [Issues]
+- Discussion Forum: [Discussions]
+
+---
+
+**Make wellness fun, give workplace stress a safe outlet!** 🎮💪😊
+
+**Orchestrate your health. Control your life. The world is your oyster.**
