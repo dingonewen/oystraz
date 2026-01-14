@@ -4,7 +4,7 @@
  */
 
 import api from './api';
-import { ChatMessage, CharacterState, ApiResponse } from '../types';
+import type { ChatMessage, CharacterState, ApiResponse } from '../types';
 
 export const geminiService = {
   /**

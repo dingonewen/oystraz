@@ -4,7 +4,7 @@
  */
 
 import api from './api';
-import { FoodItem, Meal, ApiResponse } from '../types';
+import type { FoodItem, Meal, ApiResponse } from '../types';
 
 export const foodService = {
   /**

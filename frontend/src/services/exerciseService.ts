@@ -4,7 +4,7 @@
  */
 
 import api from './api';
-import { Exercise, ApiResponse } from '../types';
+import type { Exercise, ApiResponse } from '../types';
 
 export const exerciseService = {
   /**

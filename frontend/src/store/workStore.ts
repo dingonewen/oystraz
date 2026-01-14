@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { WorkEvent, WorkEventResult } from '../types';
+import type { WorkEvent, WorkEventResult } from '../types';
 
 interface WorkStore {
   // State

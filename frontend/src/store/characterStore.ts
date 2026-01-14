@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { CharacterState } from '../types';
+import type { CharacterState } from '../types';
 
 interface CharacterStore {
   // State

@@ -3,7 +3,7 @@
  * Centralized HTTP client with authentication and error handling
  */
 
-import axios, { AxiosInstance, AxiosError } from 'axios';
+import axios, { type AxiosInstance, type AxiosError } from 'axios';
 import { useUserStore } from '../store/userStore';
 
 // Create axios instance
