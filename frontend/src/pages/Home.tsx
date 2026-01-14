@@ -26,7 +26,7 @@ export default function Home() {
         {/* Character Status Grid */}
         <Grid container spacing={3} sx={{ mt: 3 }}>
           {/* Stamina */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{xs:12, sm:6, md:4}}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 💪 Stamina
@@ -41,7 +41,7 @@ export default function Home() {
           </Grid>
 
           {/* Energy */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{xs:12, sm:6, md:4}}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 ⚡ Energy
@@ -56,7 +56,7 @@ export default function Home() {
           </Grid>
 
           {/* Nutrition */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{xs:12, sm:6, md:4}}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 🍎 Nutrition
@@ -71,7 +71,7 @@ export default function Home() {
           </Grid>
 
           {/* Mood */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{xs:12, sm:6, md:4}}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 😊 Mood
@@ -86,7 +86,7 @@ export default function Home() {
           </Grid>
 
           {/* Stress */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{xs:12, sm:6, md:4}}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 😰 Stress
@@ -101,7 +101,7 @@ export default function Home() {
           </Grid>
 
           {/* Level */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{xs:12, sm:6, md:4}}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 🏆 Level
