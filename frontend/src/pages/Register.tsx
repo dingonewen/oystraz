@@ -140,3 +140,5 @@ export default function Register() {
     </Container>
   );
 }
+
+export default Register;
