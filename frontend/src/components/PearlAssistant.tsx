@@ -16,7 +16,6 @@ import {
   Fade,
   Avatar,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 
