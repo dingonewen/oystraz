@@ -25,6 +25,9 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
+// Components
+import PearlAssistant from './components/PearlAssistant';
+
 // Store
 import { useUserStore } from './store/userStore';
 
@@ -96,6 +99,9 @@ function App() {
               <Route path="/profile" element={<Profile />} />
             </Routes>
           </Box>
+
+          {/* Pearl AI Assistant - Global floating widget */}
+          {isAuthenticated && <PearlAssistant />}
 
           {/* Footer */}
           <Box
