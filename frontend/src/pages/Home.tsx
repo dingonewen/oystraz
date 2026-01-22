@@ -3,13 +3,52 @@
  * Main page showing character status and quick actions
  */
 
-import { Box, Container, Typography, Grid, Paper } from '@mui/material';
+import { useEffect } from 'react';
+import { Box, Container, Typography, Grid, Paper, CircularProgress } from '@mui/material';
 import { useCharacterStore } from '../store/characterStore';
 import { useUserStore } from '../store/userStore';
+import { getCharacter } from '../services/characterService';
 
 export default function Home() {
-  const { character } = useCharacterStore();
+  const { character, setCharacter, isLoading, setLoading, setError } = useCharacterStore();
   const { user } = useUserStore();
+
+  // Load character data from backend
+  useEffect(() => {
+    const loadCharacter = async () => {
+      try {
+        setLoading(true);
+        const data = await getCharacter();
+        setCharacter({
+          stamina: data.stamina,
+          energy: data.energy,
+          nutrition: data.nutrition,
+          mood: data.mood,
+          stress: data.stress,
+          level: data.level,
+          experience: data.experience,
+          bodyType: data.body_type as 'thin' | 'normal' | 'overweight' | 'obese',
+          emotionalState: data.emotional_state as 'happy' | 'normal' | 'tired' | 'stressed' | 'angry',
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load character');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCharacter();
+  }, [setCharacter, setLoading, setError]);
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg">
