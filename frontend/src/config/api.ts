@@ -6,23 +6,23 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:80
 
 export const API_ENDPOINTS = {
   // Authentication
-  register: '/api/auth/register',
-  login: '/api/auth/login',
+  register: '/auth/register',
+  login: '/auth/login',
 
   // User
-  userMe: '/api/users/me',
+  userMe: '/users/me',
 
   // Character
-  character: '/api/character',
+  character: '/character',
 
   // Health Tracking
-  diet: '/api/diet',
-  exercise: '/api/exercise',
-  sleep: '/api/sleep',
+  diet: '/diet',
+  exercise: '/exercise',
+  sleep: '/sleep',
 
   // AI Assistant
-  aiAdvice: '/api/assistant/advice',
-  workplaceScenario: '/api/assistant/workplace-scenario',
-  foodSearch: '/api/assistant/food-search',
-  foodDetails: (fdcId: number) => `/api/assistant/food/${fdcId}`,
+  aiAdvice: '/assistant/advice',
+  workplaceScenario: '/assistant/workplace-scenario',
+  foodSearch: '/assistant/food-search',
+  foodDetails: (fdcId: number) => `/assistant/food/${fdcId}`,
 } as const;
