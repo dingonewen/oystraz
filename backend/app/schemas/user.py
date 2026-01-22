@@ -14,6 +14,7 @@ class UserBase(BaseModel):
     gender: str | None = None
     height: float | None = None
     weight: float | None = None
+    goal: str | None = None
 
 
 class UserCreate(UserBase):
@@ -28,6 +29,7 @@ class UserUpdate(BaseModel):
     gender: str | None = None
     height: float | None = None
     weight: float | None = None
+    goal: str | None = None
 
 
 class UserResponse(UserBase):

@@ -4,15 +4,17 @@
 
 // User types
 export interface User {
-  id: string;
-  username: string;
+  id: number;
   email: string;
-  height: number; // in cm
-  weight: number; // in kg
-  age: number;
-  gender: 'male' | 'female' | 'other';
-  goal: 'lose_weight' | 'maintain' | 'gain_muscle' | 'improve_health';
-  createdAt: string;
+  username: string;
+  full_name?: string;
+  age?: number;
+  gender?: string;
+  height?: number; // in cm
+  weight?: number; // in kg
+  goal?: string; // lose_weight, maintain, gain_muscle, improve_health
+  created_at: string;
+  updated_at: string;
 }
 
 // Character health metrics
@@ -51,6 +53,24 @@ export interface Meal {
   totalFat: number;
 }
 
+// Diet Log (from backend API)
+export interface DietLog {
+  id: number;
+  user_id: number;
+  food_name: string;
+  meal_type?: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  serving_size: number;
+  serving_unit: string;
+  notes?: string;
+  logged_at: string;
+  created_at: string;
+}
+
 // Exercise types
 export interface Exercise {
   id: string;
@@ -62,6 +82,24 @@ export interface Exercise {
   caloriesBurned: number;
 }
 
+// Exercise Log (from backend API)
+export interface ExerciseLog {
+  id: number;
+  user_id: number;
+  activity_name: string;
+  activity_type?: string;
+  duration_minutes: number;
+  intensity: string;
+  calories_burned: number;
+  distance?: number;
+  distance_unit: string;
+  heart_rate_avg?: number;
+  steps?: number;
+  notes?: string;
+  logged_at: string;
+  created_at: string;
+}
+
 // Sleep types
 export interface Sleep {
   id: string;
@@ -71,6 +109,25 @@ export interface Sleep {
   wakeTime: string;
   duration: number; // in hours
   qualityScore: number; // 0-100
+}
+
+// Sleep Log (from backend API)
+export interface SleepLog {
+  id: number;
+  user_id: number;
+  sleep_start: string;
+  sleep_end: string;
+  duration_hours: number;
+  quality: string;
+  quality_score?: number;
+  deep_sleep_minutes?: number;
+  light_sleep_minutes?: number;
+  rem_sleep_minutes?: number;
+  awake_minutes?: number;
+  interruptions: number;
+  notes?: string;
+  logged_at: string;
+  created_at: string;
 }
 
 // Workplace event types
