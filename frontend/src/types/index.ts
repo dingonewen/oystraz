@@ -4,15 +4,16 @@
 
 // User types
 export interface User {
-  id: string;
-  username: string;
+  id: number;
   email: string;
-  height: number; // in cm
-  weight: number; // in kg
-  age: number;
-  gender: 'male' | 'female' | 'other';
-  goal: 'lose_weight' | 'maintain' | 'gain_muscle' | 'improve_health';
-  createdAt: string;
+  username: string;
+  full_name?: string;
+  age?: number;
+  gender?: string;
+  height?: number; // in cm
+  weight?: number; // in kg
+  created_at: string;
+  updated_at: string;
 }
 
 // Character health metrics
