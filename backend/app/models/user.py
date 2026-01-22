@@ -22,6 +22,7 @@ class User(Base):
     gender = Column(String)
     height = Column(Float)  # in cm
     weight = Column(Float)  # in kg
+    goal = Column(String)  # Health goal: lose_weight, maintain, gain_muscle, improve_health
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)

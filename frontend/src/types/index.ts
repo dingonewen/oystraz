@@ -12,6 +12,7 @@ export interface User {
   gender?: string;
   height?: number; // in cm
   weight?: number; // in kg
+  goal?: string; // lose_weight, maintain, gain_muscle, improve_health
   created_at: string;
   updated_at: string;
 }
