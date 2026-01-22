@@ -27,6 +27,68 @@ class FoodSearchRequest(BaseModel):
     page_size: int = 10
 
 
+class PearlChatRequest(BaseModel):
+    """Request schema for Pearl chat"""
+    message: str
+    conversation_history: list | None = None
+
+
+@router.post("/pearl/chat")
+async def chat_with_pearl(
+    request: PearlChatRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Chat with Pearl AI assistant"""
+    # Get character state for context
+    character = db.query(Character).filter(Character.user_id == current_user.id).first()
+    character_state = None
+    if character:
+        character_state = {
+            "stamina": character.stamina,
+            "energy": character.energy,
+            "nutrition": character.nutrition,
+            "mood": character.mood,
+            "stress": character.stress
+        }
+
+    # Get recent logs (last 7 days)
+    start_date = datetime.utcnow() - timedelta(days=7)
+    recent_logs = None
+
+    if character:
+        diet_logs = db.query(DietLog).filter(
+            DietLog.user_id == current_user.id,
+            DietLog.logged_at >= start_date
+        ).all()
+
+        exercise_logs = db.query(ExerciseLog).filter(
+            ExerciseLog.user_id == current_user.id,
+            ExerciseLog.logged_at >= start_date
+        ).all()
+
+        sleep_logs = db.query(SleepLog).filter(
+            SleepLog.user_id == current_user.id,
+            SleepLog.logged_at >= start_date
+        ).all()
+
+        recent_logs = {
+            "diet": [{"calories": log.calories} for log in diet_logs],
+            "exercise": [{"duration_minutes": log.duration_minutes} for log in exercise_logs],
+            "sleep": [{"duration_hours": log.duration_hours} for log in sleep_logs]
+        }
+
+    # Chat with Pearl
+    response = gemini_service.pearl_chat(
+        user_message=request.message,
+        character_state=character_state,
+        recent_logs=recent_logs,
+        conversation_history=request.conversation_history
+    )
+
+    return {"response": response}
+
+
 @router.post("/advice")
 async def get_health_advice(
     request: HealthAdviceRequest,

@@ -12,8 +12,39 @@ class GeminiService:
         if settings.GEMINI_API_KEY:
             genai.configure(api_key=settings.GEMINI_API_KEY)
             self.model = genai.GenerativeModel('gemini-2.5-flash')
+
+            # Pearl AI Assistant with personality
+            pearl_system_instruction = """You are Pearl (珍珠), a laid-back, chill health buddy who lives inside the Oystraz app.
+
+Your Personality:
+- You're super relaxed and anti-corporate. You hate hustle culture and toxic bosses.
+- You're all about work-life balance (WLB). You encourage users to take breaks, slack off when needed, and prioritize their wellbeing over productivity.
+- You enjoy life, love to "摸鱼" (slack off at work), and think grinding 24/7 is a scam.
+- BUT - you genuinely care about the user's physical and mental health. You want them to eat well, sleep well, exercise, and reduce stress.
+- Your goal is to reduce their psychological pressure, not add to it with guilt trips or corporate wellness BS.
+
+Your Communication Style:
+- Casual, friendly, like talking to a cool friend - not a coach or therapist
+- Use phrases like "hey", "no pressure", "you do you", "corporate BS"
+- Be supportive but never preachy or judgmental
+- Make jokes about work culture and toxic productivity
+- When giving health advice, frame it as "taking care of yourself" not "being more productive"
+- Keep responses conversational, 2-4 sentences max unless user asks for more detail
+
+Examples:
+- User stressed about work: "Ugh, sounds like your boss needs to chill. Look, your health > their deadlines. How about we figure out some ways to decompress? Your stress level's looking rough."
+- User skipping meals: "Hey, I get it - work sucks and sometimes you forget to eat. But your body needs fuel to fight the corporate machine, ya know? Let's find some easy meals you can grab."
+- User exercising: "Nice! Not for productivity gains or whatever - just because moving around feels good and tells your body it's not a desk robot."
+
+Remember: You're the pearl in their oyster - precious, supportive, and definitely not another source of stress."""
+
+            self.pearl_model = genai.GenerativeModel(
+                'gemini-2.5-flash',
+                system_instruction=pearl_system_instruction
+            )
         else:
             self.model = None
+            self.pearl_model = None
 
     def generate_health_advice(
         self,
@@ -93,6 +124,56 @@ Provide personalized, actionable advice based on this data. Focus on:
             formatted.append(f"- Sleep: {len(logs['sleep'])} nights logged, avg {avg_sleep:.1f} hours")
 
         return "\n".join(formatted) if formatted else "No recent activity logged"
+
+    def pearl_chat(
+        self,
+        user_message: str,
+        character_state: dict = None,
+        recent_logs: dict = None,
+        conversation_history: list = None
+    ) -> str:
+        """
+        Chat with Pearl AI assistant with personality
+
+        Args:
+            user_message: User's message to Pearl
+            character_state: Optional current character health metrics
+            recent_logs: Optional recent activity logs
+            conversation_history: Optional list of previous messages for context
+
+        Returns:
+            Pearl's response
+        """
+        if not self.pearl_model:
+            return "Hey, I'm not configured right now. Ask the dev to add GEMINI_API_KEY!"
+
+        # Build context with health data if available
+        context = ""
+        if character_state:
+            context += f"\n[User's current health metrics - use this to give relevant advice:\n"
+            context += f"Stamina: {character_state.get('stamina', 0)}/100, "
+            context += f"Energy: {character_state.get('energy', 0)}/100, "
+            context += f"Nutrition: {character_state.get('nutrition', 0)}/100, "
+            context += f"Mood: {character_state.get('mood', 0)}/100, "
+            context += f"Stress: {character_state.get('stress', 0)}/100]\n"
+
+        if recent_logs:
+            context += f"\n[Recent activity:\n{self._format_recent_logs(recent_logs)}]\n"
+
+        # Build full prompt with context
+        full_message = context + "\nUser: " + user_message if context else user_message
+
+        try:
+            # Start chat with history if provided
+            if conversation_history:
+                chat = self.pearl_model.start_chat(history=conversation_history)
+                response = chat.send_message(full_message)
+            else:
+                response = self.pearl_model.generate_content(full_message)
+
+            return response.text
+        except Exception as e:
+            return f"Oof, something broke on my end. Error: {str(e)}"
 
     def generate_workplace_scenario(self, character_state: dict) -> dict:
         """

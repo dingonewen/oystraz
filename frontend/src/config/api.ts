@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   sleep: '/sleep',
 
   // AI Assistant
+  pearlChat: '/assistant/pearl/chat',
   aiAdvice: '/assistant/advice',
   workplaceScenario: '/assistant/workplace-scenario',
   foodSearch: '/assistant/food-search',
