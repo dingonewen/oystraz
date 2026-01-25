@@ -95,3 +95,36 @@ export const getSleepLogs = async (days: number = 7): Promise<SleepLog[]> => {
 export const deleteSleepLog = async (logId: number): Promise<void> => {
   await api.delete(`${API_ENDPOINTS.sleep}/${logId}`);
 };
+
+// Convenience functions for components
+
+export const logDiet = createDietLog;
+export const logExercise = createExerciseLog;
+export const logSleep = createSleepLog;
+
+export const getTodayDietLogs = async (): Promise<DietLog[]> => {
+  return getDietLogs(1);
+};
+
+export const getTodayExerciseLogs = async (): Promise<ExerciseLog[]> => {
+  return getExerciseLogs(1);
+};
+
+export const getRecentSleepLogs = async (days: number = 7): Promise<SleepLog[]> => {
+  return getSleepLogs(days);
+};
+
+// Food search
+export interface FoodSearchResult {
+  fdcId: number;
+  description: string;
+  calories?: number;
+}
+
+export const searchFoods = async (query: string): Promise<FoodSearchResult[]> => {
+  const response = await api.post<{ foods: FoodSearchResult[] }>(
+    API_ENDPOINTS.foodSearch,
+    { query, page_size: 10 }
+  );
+  return response.data.foods;
+};

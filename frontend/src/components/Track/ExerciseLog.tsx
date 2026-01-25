@@ -162,7 +162,7 @@ export default function ExerciseLog() {
       {/* Exercise Form */}
       <Paper sx={{ p: 3, mt: 3 }}>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Exercise Type</InputLabel>
               <Select
@@ -179,7 +179,7 @@ export default function ExerciseLog() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               type="number"
@@ -190,7 +190,7 @@ export default function ExerciseLog() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Intensity</InputLabel>
               <Select
@@ -207,7 +207,7 @@ export default function ExerciseLog() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box sx={{ pt: 2 }}>
               <Typography variant="body2" color="text.secondary">
                 Estimated calories burned:
@@ -218,7 +218,7 @@ export default function ExerciseLog() {
             </Box>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Button
               fullWidth
               variant="contained"

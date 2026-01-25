@@ -155,7 +155,7 @@ export default function DietLog() {
       {/* Food Search */}
       <Paper sx={{ p: 2, mt: 3 }}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={9}>
+          <Grid size={{ xs: 12, sm: 9 }}>
             <TextField
               fullWidth
               placeholder="Search for food (e.g., chicken breast, apple, rice)"
@@ -165,7 +165,7 @@ export default function DietLog() {
               disabled={isSearching}
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid size={{ xs: 12, sm: 3 }}>
             <Button
               fullWidth
               variant="contained"
@@ -208,7 +208,7 @@ export default function DietLog() {
               Selected: {selectedFood.description}
             </Typography>
             <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   type="number"
@@ -218,12 +218,12 @@ export default function DietLog() {
                   inputProps={{ min: 1 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">
                   Estimated: {Math.round((selectedFood.calories || 0) * servingSize / 100)} calories
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Button
                   fullWidth
                   variant="contained"
