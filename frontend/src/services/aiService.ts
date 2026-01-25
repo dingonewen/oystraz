@@ -88,3 +88,8 @@ export const getFoodDetails = async (fdcId: number): Promise<FoodDetailsResponse
   );
   return response.data;
 };
+
+/**
+ * Alias for generateWorkplaceScenario for Work page
+ */
+export const generateWorkScenario = generateWorkplaceScenario;
