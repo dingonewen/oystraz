@@ -301,7 +301,7 @@ export default function Work() {
         {/* Character Status */}
         <Paper sx={{ p: 3, mt: 3, mb: 3 }}>
           <Grid container spacing={2}>
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">💪 Stamina</Typography>
@@ -341,7 +341,7 @@ export default function Work() {
               </Box>
             </Grid>
 
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😰 Stress</Typography>
@@ -423,7 +423,7 @@ export default function Work() {
 
             <Grid container spacing={2} sx={{ mt: 2 }}>
               {scenario.choices.map((choice) => (
-                <Grid xs={12} sm={6} key={choice.id}>
+                <Grid size={{ xs: 12, sm: 6 }} key={choice.id}>
                   <Card
                     variant="outlined"
                     sx={{
