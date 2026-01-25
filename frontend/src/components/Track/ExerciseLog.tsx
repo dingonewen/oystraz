@@ -13,6 +13,7 @@ import {
   ListItemText,
   Typography,
   Paper,
+  Grid,
   IconButton,
   Divider,
   CircularProgress,
@@ -23,7 +24,6 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { logExercise, getTodayExerciseLogs, deleteExerciseLog } from '../../services/healthService';

@@ -14,13 +14,13 @@ import {
   ListItemText,
   Typography,
   Paper,
+  Grid,
   IconButton,
   Divider,
   CircularProgress,
   Alert,
   Chip,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
