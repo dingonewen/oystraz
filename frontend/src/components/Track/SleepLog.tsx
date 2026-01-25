@@ -13,7 +13,6 @@ import {
   ListItemText,
   Typography,
   Paper,
-  Grid,
   IconButton,
   Divider,
   CircularProgress,
@@ -25,6 +24,7 @@ import {
   MenuItem,
   Rating,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BedtimeIcon from '@mui/icons-material/Bedtime';
@@ -150,7 +150,7 @@ export default function SleepLog() {
       {/* Sleep Form */}
       <Paper sx={{ p: 3, mt: 3 }}>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               type="number"
@@ -162,7 +162,7 @@ export default function SleepLog() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Sleep Quality</InputLabel>
               <Select
@@ -182,7 +182,7 @@ export default function SleepLog() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
               multiline
@@ -194,7 +194,7 @@ export default function SleepLog() {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Button
               fullWidth
               variant="contained"
