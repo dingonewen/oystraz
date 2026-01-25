@@ -37,7 +37,8 @@ class USDAService:
             "api_key": self.api_key,
             "query": query,
             "pageSize": page_size,
-            "dataType": ["Foundation", "SR Legacy"]  # Most reliable data types
+            # Include more data types for better coverage
+            # Removed dataType filter to get all available foods
         }
 
         try:
@@ -45,7 +46,23 @@ class USDAService:
                 response = await client.get(url, params=params, timeout=10.0)
                 response.raise_for_status()
                 data = response.json()
-                return data.get("foods", [])
+
+                # Process foods to include calorie information
+                foods = data.get("foods", [])
+                processed_foods = []
+
+                for food in foods:
+                    calories = self._extract_calories(food)
+                    food_item = {
+                        "fdcId": food.get("fdcId"),
+                        "description": food.get("description"),
+                        "dataType": food.get("dataType"),
+                        "brandOwner": food.get("brandOwner"),  # For branded foods
+                        "calories": calories
+                    }
+                    processed_foods.append(food_item)
+
+                return processed_foods
         except Exception as e:
             return [{
                 "description": f"Error: {str(e)}",
@@ -76,6 +93,28 @@ class USDAService:
                 return response.json()
         except Exception as e:
             return {"error": str(e)}
+
+    def _extract_calories(self, food_item: dict) -> Optional[float]:
+        """
+        Extract calories from a food search result
+
+        Args:
+            food_item: Food item from search results
+
+        Returns:
+            Calories per 100g or None
+        """
+        nutrients = food_item.get("foodNutrients", [])
+        for nutrient in nutrients:
+            # Look for Energy/Calories
+            name = nutrient.get("nutrientName", "").lower()
+            if "energy" in name or "calorie" in name:
+                # Prefer kcal over kJ
+                unit = nutrient.get("unitName", "").lower()
+                if "kcal" in unit or "calorie" in unit:
+                    return nutrient.get("value", 0.0)
+
+        return None
 
     def parse_nutrition(self, food_data: dict) -> dict:
         """
