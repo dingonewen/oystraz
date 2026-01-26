@@ -144,21 +144,22 @@ export default function Stats() {
       const totalCalories = formattedStats.reduce((sum, day) => sum + day.calories, 0);
       const totalExercise = formattedStats.reduce((sum, day) => sum + day.exercise, 0);
       const totalSleep = formattedStats.reduce((sum, day) => sum + day.sleep, 0);
+      // Use actual days with recorded data for more accurate averages
       const daysWithData = formattedStats.filter((day) => day.calories > 0 || day.exercise > 0 || day.sleep > 0).length || 1;
 
       setTotalStats({
-        avgCalories: Math.round(totalCalories / days),
-        avgExercise: Math.round(totalExercise / days),
-        avgSleep: parseFloat((totalSleep / days).toFixed(1)),
+        avgCalories: Math.round(totalCalories / daysWithData),
+        avgExercise: Math.round(totalExercise / daysWithData),
+        avgSleep: parseFloat((totalSleep / daysWithData).toFixed(1)),
         totalWorkouts: exerciseLogs.length,
       });
 
-      // Calculate time allocation for pie chart
-      const avgSleepHours = totalSleep / days;
+      // Calculate time allocation for pie chart (use daysWithData for accurate averages)
+      const avgSleepHours = totalSleep / daysWithData;
 
       // Calculate average exercise time in hours
       const totalExerciseMinutes = exerciseLogs.reduce((sum, log) => sum + (log.duration_minutes || 0), 0);
-      const avgExerciseHours = totalExerciseMinutes / days / 60;
+      const avgExerciseHours = totalExerciseMinutes / daysWithData / 60;
 
       // Assume 8 hours of work per day (can be made configurable later)
       const avgWorkHours = 8;
