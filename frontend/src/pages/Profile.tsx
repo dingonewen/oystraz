@@ -29,10 +29,10 @@ export default function Profile() {
   // Form state
   const [formData, setFormData] = useState({
     full_name: user?.full_name || '',
-    age: user?.age || 0,
+    age: user?.age?.toString() || '',
     gender: user?.gender || '',
-    height: user?.height || 0,
-    weight: user?.weight || 0,
+    height: user?.height?.toString() || '',
+    weight: user?.weight?.toString() || '',
     goal: user?.goal || '',
   });
 
@@ -43,10 +43,10 @@ export default function Profile() {
     // Reset form data to current user data
     setFormData({
       full_name: user?.full_name || '',
-      age: user?.age || 0,
+      age: user?.age?.toString() || '',
       gender: user?.gender || '',
-      height: user?.height || 0,
-      weight: user?.weight || 0,
+      height: user?.height?.toString() || '',
+      weight: user?.weight?.toString() || '',
       goal: user?.goal || '',
     });
   };
@@ -60,9 +60,7 @@ export default function Profile() {
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [field]: field === 'age' || field === 'height' || field === 'weight'
-        ? parseFloat(event.target.value) || 0
-        : event.target.value,
+      [field]: event.target.value,
     });
   };
 
@@ -72,8 +70,18 @@ export default function Profile() {
       setError(null);
       setSuccess(false);
 
+      // Convert string values to numbers for API
+      const dataToSave = {
+        full_name: formData.full_name,
+        age: formData.age ? parseFloat(formData.age) : undefined,
+        gender: formData.gender,
+        height: formData.height ? parseFloat(formData.height) : undefined,
+        weight: formData.weight ? parseFloat(formData.weight) : undefined,
+        goal: formData.goal,
+      };
+
       // Update user via API
-      const updatedUser = await updateUser(formData);
+      const updatedUser = await updateUser(dataToSave);
 
       // Update local user store
       setUser({
