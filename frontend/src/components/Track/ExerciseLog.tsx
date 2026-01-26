@@ -141,11 +141,20 @@ export default function ExerciseLog() {
   const totalCalories = todayLogs.reduce((sum, log) => sum + log.calories_burned, 0);
 
   return (
-    <Box sx={{ px: 3 }}>
-      <Typography variant="h5" gutterBottom>
+    <Box sx={{ px: { xs: 0, sm: 1, md: 3 } }}>
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+      >
         Log Your Exercise
       </Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        gutterBottom
+        sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
+      >
         Track your physical activities to boost your character's stamina and energy
       </Typography>
 
@@ -162,8 +171,8 @@ export default function ExerciseLog() {
       )}
 
       {/* Exercise Form */}
-      <Paper sx={{ p: 3, mt: 3 }}>
-        <Grid container spacing={3}>
+      <Paper sx={{ p: { xs: 2, sm: 2.5, md: 3 }, mt: { xs: 2, sm: 3 } }}>
+        <Grid container spacing={{ xs: 2, sm: 2.5, md: 3 }}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Exercise Type</InputLabel>
@@ -236,19 +245,23 @@ export default function ExerciseLog() {
       </Paper>
 
       {/* Today's Logs */}
-      <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: { xs: 3, sm: 4 } }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-          <Typography variant="h6">Today's Activities</Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Typography variant="h6" sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}>
+            Today's Activities
+          </Typography>
+          <Box sx={{ display: 'flex', gap: { xs: 0.75, sm: 1 }, flexWrap: 'wrap' }}>
             <Chip
               label={`${totalMinutes} min`}
               color="primary"
               variant="outlined"
+              size="small"
             />
             <Chip
               label={`${totalCalories} cal burned`}
               color="secondary"
               variant="outlined"
+              size="small"
             />
           </Box>
         </Box>
@@ -258,8 +271,8 @@ export default function ExerciseLog() {
             <CircularProgress />
           </Box>
         ) : todayLogs.length === 0 ? (
-          <Paper sx={{ p: 3, textAlign: 'center' }}>
-            <Typography color="text.secondary">
+          <Paper sx={{ p: { xs: 2, sm: 3 }, textAlign: 'center' }}>
+            <Typography color="text.secondary" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
               No exercise logged today. Get moving and boost your character's stamina!
             </Typography>
           </Paper>

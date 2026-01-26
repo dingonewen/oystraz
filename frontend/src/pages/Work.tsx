@@ -23,7 +23,8 @@ import WorkIcon from '@mui/icons-material/Work';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useCharacterStore } from '../store/characterStore';
 import { getCharacter, updateCharacter } from '../services/characterService';
-import { generateWorkScenario } from '../services/aiService';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { generateWorkScenario } from '../services/aiService'; // TODO: Use for AI-generated scenarios
 
 interface ScenarioChoice {
   id: number;
@@ -137,6 +138,8 @@ export default function Work() {
     }
   };
 
+  // TODO: Use this function when implementing AI-generated scenarios with dynamic titles
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getScenarioTitle = (char: any): string => {
     if (char.energy < 30) return "😴 Low Energy Alert";
     if (char.stress > 70) return "😰 High Pressure Situation";
@@ -234,16 +237,26 @@ export default function Work() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
+      <Box sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2 } }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+        >
           Work Simulator
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          gutterBottom
+          sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+        >
           Navigate workplace challenges - your health affects your performance
         </Typography>
 
         {/* Character Status */}
-        <Paper sx={{ p: 3, mt: 3, mb: 3 }}>
+        <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 } }}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ mb: 2 }}>
@@ -334,12 +347,20 @@ export default function Work() {
 
         {/* Scenario or Generate Button */}
         {!scenario ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <WorkIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h5" gutterBottom>
+          <Box sx={{ textAlign: 'center', py: { xs: 4, sm: 5, md: 6 }, px: { xs: 2, sm: 0 } }}>
+            <WorkIcon sx={{ fontSize: { xs: 60, sm: 70, md: 80 }, color: 'text.secondary', mb: 2 }} />
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+            >
               Ready for a workplace challenge?
             </Typography>
-            <Typography color="text.secondary" paragraph>
+            <Typography
+              color="text.secondary"
+              paragraph
+              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+            >
               Your health state will influence the scenarios you face
             </Typography>
             <Button
@@ -348,24 +369,50 @@ export default function Work() {
               startIcon={<AutoAwesomeIcon />}
               onClick={generateNewScenario}
               disabled={isLoading}
-              sx={{ mt: 2, fontSize: '1.1rem', py: 1.5, px: 4 }}
+              sx={{
+                mt: 2,
+                fontSize: { xs: '1rem', sm: '1.1rem' },
+                py: { xs: 1.25, sm: 1.5 },
+                px: { xs: 3, sm: 4 }
+              }}
             >
               {isLoading ? 'Generating...' : 'Generate Scenario'}
             </Button>
           </Box>
         ) : (
-          <Paper sx={{ p: 4 }}>
-            <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Paper sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+              }}
+            >
               {scenario.title}
             </Typography>
-            <Typography variant="body1" color="text.secondary" paragraph>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              paragraph
+              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+            >
               {scenario.description}
             </Typography>
-            <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mt: { xs: 2, sm: 3 },
+                mb: 2,
+                fontSize: { xs: '1.125rem', sm: '1.25rem' }
+              }}
+            >
               {scenario.situation}
             </Typography>
 
-            <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid container spacing={{ xs: 1.5, sm: 2 }} sx={{ mt: { xs: 1, sm: 2 } }}>
               {scenario.choices.map((choice) => (
                 <Grid size={{ xs: 12, sm: 6 }} key={choice.id}>
                   <Card
@@ -379,14 +426,22 @@ export default function Work() {
                       },
                     }}
                   >
-                    <CardContent>
-                      <Typography variant="h5" gutterBottom>
+                    <CardContent sx={{ pb: 1 }}>
+                      <Typography
+                        variant="h5"
+                        gutterBottom
+                        sx={{ fontSize: { xs: '1.75rem', sm: '2rem' } }}
+                      >
                         {choice.emoji}
                       </Typography>
-                      <Typography variant="subtitle1" gutterBottom>
+                      <Typography
+                        variant="subtitle1"
+                        gutterBottom
+                        sx={{ fontSize: { xs: '0.9375rem', sm: '1rem' } }}
+                      >
                         {choice.text}
                       </Typography>
-                      <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                      <Box sx={{ mt: { xs: 1.5, sm: 2 }, display: 'flex', gap: 0.75, flexWrap: 'wrap' }}>
                         {Object.entries(choice.effects).map(([key, value]) => {
                           if (key === 'experience') {
                             return (

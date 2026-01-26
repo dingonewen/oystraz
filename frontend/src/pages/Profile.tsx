@@ -116,9 +116,22 @@ export default function Profile() {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h3" component="h1">
+      <Box sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            mb: { xs: 2, sm: 3 },
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="h1"
+            sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+          >
             Profile Settings
           </Typography>
           {!isEditing && (
@@ -126,6 +139,7 @@ export default function Profile() {
               variant="contained"
               startIcon={<EditIcon />}
               onClick={handleEdit}
+              sx={{ alignSelf: { xs: 'stretch', sm: 'auto' } }}
             >
               Edit Profile
             </Button>
@@ -144,11 +158,15 @@ export default function Profile() {
           </Alert>
         )}
 
-        <Paper elevation={2} sx={{ p: 4 }}>
-          <Grid container spacing={3}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+          <Grid container spacing={{ xs: 2, sm: 2.5, md: 3 }}>
             {/* Read-only fields */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}
+              >
                 Account Information
               </Typography>
             </Grid>
@@ -172,8 +190,12 @@ export default function Profile() {
             </Grid>
 
             {/* Editable fields */}
-            <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
+            <Grid size={{ xs: 12 }} sx={{ mt: { xs: 1, sm: 2 } }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}
+              >
                 Personal Information
               </Typography>
             </Grid>
@@ -320,22 +342,32 @@ export default function Profile() {
 
             {/* Action buttons */}
             {isEditing && (
-              <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+              <Grid size={{ xs: 12 }} sx={{ mt: { xs: 1, sm: 2 } }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: { xs: 1.5, sm: 2 },
+                  }}
+                >
                   <Button
+                    fullWidth={true}
                     variant="contained"
                     color="primary"
                     startIcon={<SaveIcon />}
                     onClick={handleSave}
                     disabled={loading}
+                    sx={{ flex: { sm: 1 } }}
                   >
                     {loading ? 'Saving...' : 'Save Changes'}
                   </Button>
                   <Button
+                    fullWidth={true}
                     variant="outlined"
                     startIcon={<CancelIcon />}
                     onClick={handleCancel}
                     disabled={loading}
+                    sx={{ flex: { sm: 1 } }}
                   >
                     Cancel
                   </Button>

@@ -52,20 +52,30 @@ export default function Home() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, px: { xs: 2, sm: 0 } }}>
         {/* Welcome Section */}
-        <Typography variant="h3" component="h1" gutterBottom>
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+        >
           Welcome back, {user?.username || 'Guest'}!
         </Typography>
 
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          gutterBottom
+          sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+        >
           Your virtual character is ready to orchestrate your wellness journey
         </Typography>
 
         {/* Character Status Grid */}
-        <Grid container spacing={3} sx={{ mt: 3 }}>
+        <Grid container spacing={{ xs: 2, sm: 2, md: 3 }} sx={{ mt: { xs: 2, sm: 3 } }}>
           {/* Stamina */}
-          <Grid size={{xs:12, sm:6, md:4}}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 💪 Stamina
@@ -80,7 +90,7 @@ export default function Home() {
           </Grid>
 
           {/* Energy */}
-          <Grid size={{xs:12, sm:6, md:4}}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 ⚡ Energy
@@ -95,7 +105,7 @@ export default function Home() {
           </Grid>
 
           {/* Nutrition */}
-          <Grid size={{xs:12, sm:6, md:4}}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 🍎 Nutrition
@@ -110,7 +120,7 @@ export default function Home() {
           </Grid>
 
           {/* Mood */}
-          <Grid size={{xs:12, sm:6, md:4}}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 😊 Mood
@@ -125,7 +135,7 @@ export default function Home() {
           </Grid>
 
           {/* Stress */}
-          <Grid size={{xs:12, sm:6, md:4}}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 😰 Stress
@@ -140,7 +150,7 @@ export default function Home() {
           </Grid>
 
           {/* Level */}
-          <Grid size={{xs:12, sm:6, md:4}}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 🏆 Level
@@ -156,21 +166,40 @@ export default function Home() {
         </Grid>
 
         {/* Character State Display */}
-        <Paper elevation={3} sx={{ p: 4, mt: 4, textAlign: 'center' }}>
-          <Typography variant="h4" gutterBottom>
+        <Paper
+          elevation={3}
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            mt: { xs: 3, sm: 4 },
+            textAlign: 'center',
+          }}
+        >
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' } }}
+          >
             Your Character
           </Typography>
-          <Box sx={{ fontSize: '5rem', my: 2 }}>
+          <Box sx={{ fontSize: { xs: '3rem', sm: '4rem', md: '5rem' }, my: 2 }}>
             {character?.emotionalState === 'happy' && '😊'}
             {character?.emotionalState === 'normal' && '🙂'}
             {character?.emotionalState === 'tired' && '😴'}
             {character?.emotionalState === 'stressed' && '😰'}
             {character?.emotionalState === 'angry' && '😠'}
           </Box>
-          <Typography variant="h6" color="text.secondary">
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{ fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' } }}
+          >
             Body Type: {character?.bodyType || 'Normal'}
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+          >
             Emotional State: {character?.emotionalState || 'Normal'}
           </Typography>
         </Paper>
