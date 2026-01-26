@@ -63,20 +63,11 @@ class USDAService:
                     data_type = food.get("dataType", "")
                     brand = food.get("brandOwner", "")
 
-                    # Create detailed description with context
+                    # Create detailed description
+                    # Only add brand name for branded foods, no labels for USDA data
                     detailed_desc = description
                     if brand:
                         detailed_desc = f"{description} ({brand})"
-                    elif data_type:
-                        # Add data type context for non-branded items
-                        type_labels = {
-                            "SR Legacy": "USDA Standard",
-                            "Foundation": "USDA Foundation",
-                            "Survey (FNDDS)": "Survey Data",
-                            "Branded": "Branded Product"
-                        }
-                        type_label = type_labels.get(data_type, data_type)
-                        detailed_desc = f"{description} [{type_label}]"
 
                     # Simple deduplication: skip very similar descriptions
                     # Create a normalized key for comparison
