@@ -83,65 +83,9 @@ export default function Work() {
     setResult(null);
 
     try {
-      // Generate AI scenario based on character health
-      const aiScenario = await generateWorkScenario();
-
-      // Parse the AI response and create choices with effects
-      const newScenario: WorkScenario = {
-        title: getScenarioTitle(character),
-        description: aiScenario.description || "A typical day at the office...",
-        situation: aiScenario.situation || "You face a new challenge at work.",
-        choices: [
-          {
-            id: 1,
-            text: "Take it head-on with full effort",
-            emoji: "💪",
-            effects: {
-              stamina: -15,
-              energy: -20,
-              stress: 10,
-              mood: 5,
-              experience: 30,
-            },
-          },
-          {
-            id: 2,
-            text: "Work smart, not hard - find an efficient solution",
-            emoji: "🧠",
-            effects: {
-              stamina: -5,
-              energy: -10,
-              stress: 5,
-              mood: 10,
-              experience: 40,
-            },
-          },
-          {
-            id: 3,
-            text: "Take a break first, then tackle it refreshed",
-            emoji: "☕",
-            effects: {
-              stamina: 5,
-              energy: 10,
-              stress: -15,
-              mood: 15,
-              experience: 20,
-            },
-          },
-          {
-            id: 4,
-            text: "Delegate or ask for help",
-            emoji: "🤝",
-            effects: {
-              stamina: 0,
-              energy: -5,
-              stress: -10,
-              mood: 5,
-              experience: 25,
-            },
-          },
-        ],
-      };
+      // For now, use fallback scenarios based on character health state
+      // TODO: Enhance Gemini API to return structured scenario data
+      const newScenario: WorkScenario = getFallbackScenario(character);
 
       setScenario(newScenario);
     } catch (error) {
