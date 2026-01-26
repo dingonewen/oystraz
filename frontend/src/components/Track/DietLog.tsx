@@ -48,7 +48,7 @@ export default function DietLog() {
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
-  const [servingSize, setServingSize] = useState(100);
+  const [servingSize, setServingSize] = useState('100');
   const [todayLogs, setTodayLogs] = useState<DietLogItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -98,17 +98,18 @@ export default function DietLog() {
     try {
       setIsLoading(true);
       setError(null);
+      const servingSizeNum = parseFloat(servingSize) || 100;
       await logDiet({
         food_name: selectedFood.description,
-        calories: Math.round((selectedFood.calories || 0) * servingSize / 100),
+        calories: Math.round((selectedFood.calories || 0) * servingSizeNum / 100),
         protein: 0, // Will be enhanced with actual nutrition data
         carbs: 0,
         fat: 0,
-        serving_size: servingSize,
+        serving_size: servingSizeNum,
       });
       setSuccess('Meal logged successfully!');
       setSelectedFood(null);
-      setServingSize(100);
+      setServingSize('100');
       await loadTodayLogs();
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
@@ -214,13 +215,13 @@ export default function DietLog() {
                   type="number"
                   label="Serving Size (grams)"
                   value={servingSize}
-                  onChange={(e) => setServingSize(Number(e.target.value))}
+                  onChange={(e) => setServingSize(e.target.value)}
                   inputProps={{ min: 1 }}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Estimated: {Math.round((selectedFood.calories || 0) * servingSize / 100)} calories
+                  Estimated: {Math.round((selectedFood.calories || 0) * (parseFloat(servingSize) || 100) / 100)} calories
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>

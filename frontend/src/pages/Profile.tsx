@@ -3,65 +3,346 @@
  * User settings and profile management
  */
 
-import { Container, Typography, Box, Paper, Grid } from '@mui/material';
+import { useState } from 'react';
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Grid,
+  TextField,
+  Button,
+  MenuItem,
+  Alert,
+} from '@mui/material';
+import { Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material';
 import { useUserStore } from '../store/userStore';
+import { updateUser } from '../services/authService';
 
 export default function Profile() {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    full_name: user?.full_name || '',
+    age: user?.age?.toString() || '',
+    gender: user?.gender || '',
+    height: user?.height?.toString() || '',
+    weight: user?.weight?.toString() || '',
+    goal: user?.goal || '',
+  });
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setError(null);
+    setSuccess(false);
+    // Reset form data to current user data
+    setFormData({
+      full_name: user?.full_name || '',
+      age: user?.age?.toString() || '',
+      gender: user?.gender || '',
+      height: user?.height?.toString() || '',
+      weight: user?.weight?.toString() || '',
+      goal: user?.goal || '',
+    });
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setError(null);
+    setSuccess(false);
+  };
+
+  const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [field]: event.target.value,
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(false);
+
+      // Convert string values to numbers for API
+      const dataToSave = {
+        full_name: formData.full_name,
+        age: formData.age ? parseFloat(formData.age) : undefined,
+        gender: formData.gender,
+        height: formData.height ? parseFloat(formData.height) : undefined,
+        weight: formData.weight ? parseFloat(formData.weight) : undefined,
+        goal: formData.goal,
+      };
+
+      // Update user via API
+      const updatedUser = await updateUser(dataToSave);
+
+      // Update local user store
+      setUser({
+        ...user!,
+        ...updatedUser,
+      });
+
+      setSuccess(true);
+      setIsEditing(false);
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const goalOptions = [
+    { value: 'lose_weight', label: 'Lose Weight' },
+    { value: 'gain_muscle', label: 'Gain Muscle' },
+    { value: 'maintain', label: 'Maintain Health' },
+    { value: 'improve_fitness', label: 'Improve Fitness' },
+  ];
+
+  const genderOptions = [
+    { value: 'male', label: 'Male' },
+    { value: 'female', label: 'Female' },
+    { value: 'other', label: 'Other' },
+  ];
 
   return (
     <Container maxWidth="md">
       <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Profile Settings
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h3" component="h1">
+            Profile Settings
+          </Typography>
+          {!isEditing && (
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              onClick={handleEdit}
+            >
+              Edit Profile
+            </Button>
+          )}
+        </Box>
 
-        <Paper elevation={2} sx={{ p: 4, mt: 3 }}>
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        {success && (
+          <Alert severity="success" sx={{ mb: 3 }}>
+            Profile updated successfully!
+          </Alert>
+        )}
+
+        <Paper elevation={2} sx={{ p: 4 }}>
           <Grid container spacing={3}>
-            <Grid size={{xs:12}}>
-              <Typography variant="h6">Username</Typography>
-              <Typography color="text.secondary">
+            {/* Read-only fields */}
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="h6" gutterBottom>
+                Account Information
+              </Typography>
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Username
+              </Typography>
+              <Typography variant="body1">
                 {user?.username || 'Not set'}
               </Typography>
             </Grid>
 
-            <Grid size={{xs:12}}>
-              <Typography variant="h6">Email</Typography>
-              <Typography color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Email
+              </Typography>
+              <Typography variant="body1">
                 {user?.email || 'Not set'}
               </Typography>
             </Grid>
 
-            <Grid size={{xs:6}}>
-              <Typography variant="h6">Height</Typography>
-              <Typography color="text.secondary">
-                {user?.height || 0} cm
+            {/* Editable fields */}
+            <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Personal Information
               </Typography>
             </Grid>
 
-            <Grid size={{xs:6}}>
-              <Typography variant="h6">Weight</Typography>
-              <Typography color="text.secondary">
-                {user?.weight || 0} kg
-              </Typography>
+            <Grid size={{ xs: 12 }}>
+              {isEditing ? (
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  value={formData.full_name}
+                  onChange={handleChange('full_name')}
+                />
+              ) : (
+                <>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Full Name
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.full_name || 'Not set'}
+                  </Typography>
+                </>
+              )}
             </Grid>
 
-            <Grid size={{xs:6}}>
-              <Typography variant="h6">Age</Typography>
-              <Typography color="text.secondary">
-                {user?.age || 0}
-              </Typography>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              {isEditing ? (
+                <TextField
+                  fullWidth
+                  label="Age"
+                  type="number"
+                  value={formData.age}
+                  onChange={handleChange('age')}
+                  inputProps={{ min: 1, max: 120 }}
+                />
+              ) : (
+                <>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Age
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.age || 'Not set'}
+                  </Typography>
+                </>
+              )}
             </Grid>
 
-            <Grid size={{xs:6}}>
-              <Typography variant="h6">Goal</Typography>
-              <Typography color="text.secondary">
-                {user?.goal?.replace('_', ' ') || 'Not set'}
-              </Typography>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              {isEditing ? (
+                <TextField
+                  fullWidth
+                  select
+                  label="Gender"
+                  value={formData.gender}
+                  onChange={handleChange('gender')}
+                >
+                  {genderOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              ) : (
+                <>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Gender
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.gender ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1) : 'Not set'}
+                  </Typography>
+                </>
+              )}
             </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              {isEditing ? (
+                <TextField
+                  fullWidth
+                  label="Height (cm)"
+                  type="number"
+                  value={formData.height}
+                  onChange={handleChange('height')}
+                  inputProps={{ min: 0, step: 0.1 }}
+                />
+              ) : (
+                <>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Height
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.height || 0} cm
+                  </Typography>
+                </>
+              )}
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              {isEditing ? (
+                <TextField
+                  fullWidth
+                  label="Weight (kg)"
+                  type="number"
+                  value={formData.weight}
+                  onChange={handleChange('weight')}
+                  inputProps={{ min: 0, step: 0.1 }}
+                />
+              ) : (
+                <>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Weight
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.weight || 0} kg
+                  </Typography>
+                </>
+              )}
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              {isEditing ? (
+                <TextField
+                  fullWidth
+                  select
+                  label="Health Goal"
+                  value={formData.goal}
+                  onChange={handleChange('goal')}
+                >
+                  {goalOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              ) : (
+                <>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Health Goal
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.goal?.replace('_', ' ') || 'Not set'}
+                  </Typography>
+                </>
+              )}
+            </Grid>
+
+            {/* Action buttons */}
+            {isEditing && (
+              <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<SaveIcon />}
+                    onClick={handleSave}
+                    disabled={loading}
+                  >
+                    {loading ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<CancelIcon />}
+                    onClick={handleCancel}
+                    disabled={loading}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Grid>
+            )}
           </Grid>
-
-          {/* TODO: Add edit functionality */}
         </Paper>
       </Box>
     </Container>

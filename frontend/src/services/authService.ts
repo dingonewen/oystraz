@@ -30,6 +30,7 @@ export interface User {
   gender?: string;
   height?: number;
   weight?: number;
+  goal?: string;
   created_at: string;
   updated_at: string;
 }

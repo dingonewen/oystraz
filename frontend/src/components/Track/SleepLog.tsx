@@ -47,7 +47,7 @@ const QUALITY_LEVELS = [
 ];
 
 export default function SleepLog() {
-  const [duration, setDuration] = useState(8);
+  const [duration, setDuration] = useState('8');
   const [quality, setQuality] = useState('good');
   const [notes, setNotes] = useState('');
   const [recentLogs, setRecentLogs] = useState<SleepLogItem[]>([]);
@@ -72,7 +72,8 @@ export default function SleepLog() {
   };
 
   const handleLogSleep = async () => {
-    if (duration <= 0 || duration > 24) {
+    const durationNum = parseFloat(duration) || 0;
+    if (durationNum <= 0 || durationNum > 24) {
       setError('Please enter a valid sleep duration (0-24 hours)');
       return;
     }
@@ -84,17 +85,17 @@ export default function SleepLog() {
       // Calculate sleep_start and sleep_end based on duration
       const now = new Date();
       const sleep_end = now.toISOString();
-      const sleep_start = new Date(now.getTime() - duration * 60 * 60 * 1000).toISOString();
+      const sleep_start = new Date(now.getTime() - durationNum * 60 * 60 * 1000).toISOString();
 
       await logSleep({
         sleep_start,
         sleep_end,
-        duration_hours: duration,
+        duration_hours: durationNum,
         quality: quality,
         notes: notes.trim() || undefined,
       });
       setSuccess('Sleep logged successfully!');
-      setDuration(8);
+      setDuration('8');
       setQuality('good');
       setNotes('');
       await loadRecentLogs();
@@ -156,7 +157,7 @@ export default function SleepLog() {
               type="number"
               label="Sleep Duration (hours)"
               value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
+              onChange={(e) => setDuration(e.target.value)}
               inputProps={{ min: 0, max: 24, step: 0.5 }}
               helperText="Recommended: 7-9 hours"
             />
