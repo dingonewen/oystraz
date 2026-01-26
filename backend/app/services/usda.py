@@ -62,6 +62,8 @@ class USDAService:
                     # Build contextual information
                     data_type = food.get("dataType", "")
                     brand = food.get("brandOwner", "")
+                    if brand:
+                        brand = self._clean_brand_name(brand)
 
                     # Create detailed description
                     # Only add brand name for branded foods, no labels for USDA data
@@ -116,6 +118,37 @@ class USDAService:
                 return response.json()
         except Exception as e:
             return {"error": str(e)}
+
+    def _clean_brand_name(self, brand: str) -> str:
+        """
+        Clean brand name by removing corporate suffixes
+
+        Args:
+            brand: Raw brand name
+
+        Returns:
+            Cleaned brand name
+        """
+        if not brand:
+            return ""
+
+        # Remove common corporate suffixes
+        suffixes_to_remove = [
+            ', Inc.', ' Inc.', ', Inc', ' Inc',
+            ', LLC', ' LLC',
+            ', Ltd.', ' Ltd.', ', Ltd', ' Ltd',
+            ', Co.', ' Co.',
+            ', Corp.', ' Corp.',
+            ', Corporation', ' Corporation',
+            ', L.L.C.', ' L.L.C.',
+        ]
+
+        cleaned = brand
+        for suffix in suffixes_to_remove:
+            if cleaned.endswith(suffix):
+                cleaned = cleaned[:-len(suffix)]
+
+        return cleaned.strip()
 
     def _format_description(self, description: str) -> str:
         """
