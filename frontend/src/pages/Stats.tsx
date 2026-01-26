@@ -23,6 +23,9 @@ import {
   Bar,
   AreaChart,
   Area,
+  PieChart,
+  Pie,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -41,6 +44,12 @@ interface DailyStats {
   sleepQuality: number;
 }
 
+interface TimeAllocation {
+  name: string;
+  value: number;
+  color: string;
+}
+
 export default function Stats() {
   const [timeRange, setTimeRange] = useState<'7' | '30'>('7');
   const [loading, setLoading] = useState(true);
@@ -51,6 +60,7 @@ export default function Stats() {
     avgSleep: 0,
     totalWorkouts: 0,
   });
+  const [timeAllocation, setTimeAllocation] = useState<TimeAllocation[]>([]);
 
   useEffect(() => {
     loadStats();
@@ -141,6 +151,26 @@ export default function Stats() {
         avgSleep: parseFloat((totalSleep / days).toFixed(1)),
         totalWorkouts: exerciseLogs.length,
       });
+
+      // Calculate time allocation for pie chart
+      const avgSleepHours = totalSleep / days;
+
+      // Calculate average exercise time in hours
+      const totalExerciseMinutes = exerciseLogs.reduce((sum, log) => sum + (log.duration_minutes || 0), 0);
+      const avgExerciseHours = totalExerciseMinutes / days / 60;
+
+      // Assume 8 hours of work per day (can be made configurable later)
+      const avgWorkHours = 8;
+
+      // Calculate leisure time
+      const avgLeisureHours = Math.max(0, 24 - avgSleepHours - avgExerciseHours - avgWorkHours);
+
+      setTimeAllocation([
+        { name: 'Sleep', value: parseFloat(avgSleepHours.toFixed(1)), color: '#8884d8' },
+        { name: 'Work', value: parseFloat(avgWorkHours.toFixed(1)), color: '#82ca9d' },
+        { name: 'Exercise', value: parseFloat(avgExerciseHours.toFixed(1)), color: '#ffc658' },
+        { name: 'Leisure', value: parseFloat(avgLeisureHours.toFixed(1)), color: '#ff7c7c' },
+      ]);
     } catch (error) {
       console.error('Failed to load stats:', error);
     } finally {
@@ -231,6 +261,35 @@ export default function Stats() {
             </Card>
           </Grid>
         </Grid>
+
+        {/* Time Allocation Pie Chart */}
+        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Daily Time Allocation (24 Hours)
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <ResponsiveContainer width="100%" height={400}>
+              <PieChart>
+                <Pie
+                  data={timeAllocation}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={true}
+                  label={({ name, value }) => `${name}: ${value}h`}
+                  outerRadius={120}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {timeAllocation.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => `${value} hours`} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </Box>
+        </Paper>
 
         {/* Calories Chart */}
         <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
