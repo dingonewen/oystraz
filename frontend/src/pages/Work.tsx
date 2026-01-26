@@ -23,6 +23,8 @@ import WorkIcon from '@mui/icons-material/Work';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useCharacterStore } from '../store/characterStore';
 import { getCharacter, updateCharacter } from '../services/characterService';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { generateWorkScenario } from '../services/aiService'; // TODO: Use for AI-generated scenarios
 
 interface ScenarioChoice {
   id: number;
@@ -134,6 +136,16 @@ export default function Work() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // TODO: Use this function when implementing AI-generated scenarios with dynamic titles
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getScenarioTitle = (char: any): string => {
+    if (char.energy < 30) return "😴 Low Energy Alert";
+    if (char.stress > 70) return "😰 High Pressure Situation";
+    if (char.mood < 40) return "😔 Challenging Moment";
+    if (char.stamina < 40) return "💤 Fatigue Setting In";
+    return "🏢 Another Day at Work";
   };
 
   const getFallbackScenario = (char: any): WorkScenario => {
