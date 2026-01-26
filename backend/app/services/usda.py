@@ -37,7 +37,8 @@ class USDAService:
             "api_key": self.api_key,
             "query": query,
             "pageSize": page_size,
-            "dataType": ["Foundation", "SR Legacy"]  # Most reliable data types
+            # Include more data types for better coverage
+            # Removed dataType filter to get all available foods
         }
 
         try:
@@ -45,7 +46,48 @@ class USDAService:
                 response = await client.get(url, params=params, timeout=10.0)
                 response.raise_for_status()
                 data = response.json()
-                return data.get("foods", [])
+
+                # Process foods to include calorie information
+                foods = data.get("foods", [])
+                processed_foods = []
+                seen_descriptions = set()  # For simple deduplication
+
+                for food in foods:
+                    calories = self._extract_calories(food)
+
+                    # Format description with proper capitalization
+                    description = food.get("description", "Unknown Food")
+                    description = self._format_description(description)
+
+                    # Build contextual information
+                    data_type = food.get("dataType", "")
+                    brand = food.get("brandOwner", "")
+                    if brand:
+                        brand = self._clean_brand_name(brand)
+
+                    # Create detailed description
+                    # Only add brand name for branded foods, no labels for USDA data
+                    detailed_desc = description
+                    if brand:
+                        detailed_desc = f"{description} ({brand})"
+
+                    # Simple deduplication: skip very similar descriptions
+                    # Create a normalized key for comparison
+                    normalized_key = detailed_desc.lower().replace(" ", "")
+                    if normalized_key in seen_descriptions:
+                        continue
+                    seen_descriptions.add(normalized_key)
+
+                    food_item = {
+                        "fdcId": food.get("fdcId"),
+                        "description": detailed_desc,
+                        "dataType": data_type,
+                        "brandOwner": brand,
+                        "calories": calories
+                    }
+                    processed_foods.append(food_item)
+
+                return processed_foods
         except Exception as e:
             return [{
                 "description": f"Error: {str(e)}",
@@ -76,6 +118,92 @@ class USDAService:
                 return response.json()
         except Exception as e:
             return {"error": str(e)}
+
+    def _clean_brand_name(self, brand: str) -> str:
+        """
+        Clean brand name by removing corporate suffixes
+
+        Args:
+            brand: Raw brand name
+
+        Returns:
+            Cleaned brand name
+        """
+        if not brand:
+            return ""
+
+        # Remove common corporate suffixes
+        suffixes_to_remove = [
+            ', Inc.', ' Inc.', ', Inc', ' Inc',
+            ', LLC', ' LLC',
+            ', Ltd.', ' Ltd.', ', Ltd', ' Ltd',
+            ', Co.', ' Co.',
+            ', Corp.', ' Corp.',
+            ', Corporation', ' Corporation',
+            ', L.L.C.', ' L.L.C.',
+        ]
+
+        cleaned = brand
+        for suffix in suffixes_to_remove:
+            if cleaned.endswith(suffix):
+                cleaned = cleaned[:-len(suffix)]
+
+        return cleaned.strip()
+
+    def _format_description(self, description: str) -> str:
+        """
+        Format food description with proper capitalization
+
+        Args:
+            description: Raw food description
+
+        Returns:
+            Formatted description with title case
+        """
+        if not description:
+            return "Unknown Food"
+
+        # Convert to title case, but handle special cases
+        # First, convert to lowercase
+        desc = description.lower()
+
+        # Split into words and capitalize appropriately
+        words = desc.split()
+        formatted_words = []
+
+        # Words that should stay lowercase (unless at start)
+        lowercase_words = {'with', 'and', 'or', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'by'}
+
+        for i, word in enumerate(words):
+            # First word or not in lowercase set: capitalize
+            if i == 0 or word not in lowercase_words:
+                formatted_words.append(word.capitalize())
+            else:
+                formatted_words.append(word)
+
+        return ' '.join(formatted_words)
+
+    def _extract_calories(self, food_item: dict) -> Optional[float]:
+        """
+        Extract calories from a food search result
+
+        Args:
+            food_item: Food item from search results
+
+        Returns:
+            Calories per 100g or None
+        """
+        nutrients = food_item.get("foodNutrients", [])
+        for nutrient in nutrients:
+            # Look for Energy/Calories
+            name = nutrient.get("nutrientName", "").lower()
+            if "energy" in name or "calorie" in name:
+                # Prefer kcal over kJ
+                unit = nutrient.get("unitName", "").lower()
+                if "kcal" in unit or "calorie" in unit:
+                    return nutrient.get("value", 0.0)
+
+        return None
 
     def parse_nutrition(self, food_data: dict) -> dict:
         """
