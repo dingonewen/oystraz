@@ -4,6 +4,8 @@
 >
 > A gamified health tracking and life simulation app where your real-world choices (diet, sleep, exercise) directly influence your virtual character's performance at work and in life.
 
+**Google Gemini 3 Hackathon Project**
+
 ---
 
 ## 🎮 Project Vision
@@ -17,157 +19,87 @@ The core philosophy: **By orchestrating your physical wellness, you gain control
 Oystraz is not just another health tracker - it's a **stress-relief simulator** that gamifies wellness while providing a safe space to express workplace frustrations. Your virtual character mirrors your real health data, and its workplace behavior reflects your physical and mental state.
 
 ### Core Principles
-- 🍎 **Data-Driven Wellness** - Powered by USDA nutritional database
+- 🍎 **Data-Driven Wellness** - Powered by USDA FoodData Central (600,000+ foods)
 - 🏃 **Scientific Activity Tracking** - Accurate calorie expenditure calculations
 - 😊 **Emotional Intelligence** - Dynamic workplace scenarios based on health metrics
-- 💼 **Stress Liberation** - Safely "confront your boss", "slack off", or "nap at work" in virtual world
-- 🤖 **AI Companion** - Gemini AI provides empathetic coaching and personalized advice
+- 💼 **Work-Life Balance** - Anti-hustle culture, pro-taking-breaks philosophy
+- 🤖 **AI Companion (Pearl)** - Gemini-powered assistant with personality and food science expertise
 
 ---
 
-## 🌟 Core Features
+## ✅ Current Implementation Status
 
-### 1. Health Data Tracking
+### Completed Features (MVP Ready)
+
+#### 1. **Health Tracking System** ✅
+- ✅ **Diet Logging** - USDA food search (600k+ items), serving size customization, calorie tracking
+- ✅ **Exercise Recording** - 13 activity types, 4 intensity levels, automatic calorie burn calculation
+- ✅ **Sleep Tracking** - Duration logging, 5-star quality rating, 7-day history
+
+#### 2. **Character System** ✅
+- ✅ Character state management (stamina, energy, nutrition, mood, stress)
+- ✅ Real-time attribute updates based on health logs
+- ✅ Level and experience progression system
+- ✅ Body type and emotional state tracking
+
+#### 3. **Work Simulator** ✅
+- ✅ Interactive workplace scenario engine
+- ✅ Health-based event triggering
+- ✅ 4-choice decision system with stat impacts
+- ✅ Fallback scenarios for varied gameplay
+
+#### 4. **Data Visualization** ✅
+- ✅ Interactive statistics dashboard
+- ✅ 7-day and 30-day trend analysis
+- ✅ Multiple chart types (area, bar, line, pie)
+- ✅ Summary cards (avg calories, exercise, sleep, workouts)
+- ✅ Time allocation pie chart (sleep/work/exercise/leisure)
+
+#### 5. **Profile Management** ✅
+- ✅ User information editing (height, weight, age, gender, health goals)
+- ✅ Form validation and error handling
+- ✅ Real-time updates to user store
+
+#### 6. **AI Assistant (Pearl)** ✅
+- ✅ Gemini 2.5 Flash integration
+- ✅ Contextual health advice
+- ✅ Personality-driven responses (humorous, reliable, food-passionate)
+- ✅ Conversation history support
+
+#### 7. **Authentication & Security** ✅
+- ✅ JWT-based authentication
+- ✅ User registration and login
+- ✅ Password hashing with bcrypt
+- ✅ Protected API routes
+
+---
+
+## 🤖 Meet Pearl - Your AI Health Companion
+
+**Pearl (珍珠)** is not your typical wellness coach. She's a Food Science major who genuinely loves food and has a dry sense of humor.
+
+### Pearl's Personality:
+- **Reliable but Chill** - Gives solid, researched advice without the corporate wellness BS
+- **Food Enthusiast** - Lights up when discussing nutrition, gets excited about ingredients and food chemistry
+- **Witty & Deadpan** - Drops dad jokes and puns naturally, sometimes you're not sure if she's joking
+- **Anti-Hustle Culture** - Believes in work-life balance, taking real breaks, and logging off at 5pm
+- **Direct Communicator** - No filler words, gets straight to the point in 2-3 sentences
+
+### Example Interactions:
 ```
-📊 Three Pillars of Wellness:
+User: "I'm so stressed from work"
+Pearl: "Your stress is at 80/100. That's not sustainable - unless you're
+trying to speedrun burnout. Take a real break, not just scrolling Twitter
+for 5 minutes."
 
-🍽️ Nutrition Logging
-   ├─ Quick food search (USDA database)
-   ├─ Photo recognition (Gemini Vision)
-   └─ Automatic nutritional analysis
+User: "Just had some rice for lunch"
+Pearl: "Rice! Great choice. White or brown? Fun fact: cooling cooked rice
+creates resistant starch - feeds your gut bacteria. Meal prep enthusiasts
+figured that out by accident."
 
-😴 Sleep Tracking
-   ├─ Duration monitoring
-   ├─ Bedtime/wake time logging
-   └─ Quality scoring
-
-🏃 Exercise Recording
-   ├─ Activity type and duration
-   ├─ Calorie burn calculation
-   └─ Intensity classification
-```
-
-### 2. Virtual Character System
-```
-👤 Character Attributes (0-100 scale):
-├─ 💪 Stamina - Based on exercise and sleep quality
-├─ ⚡ Energy - Based on caloric intake vs expenditure
-├─ 🍎 Nutrition - Based on dietary balance
-├─ 😊 Mood - Based on overall wellness trends
-└─ 😰 Stress - Based on work hours and rest quality
-
-🎭 Character States:
-├─ Body type changes (BMI-influenced)
-├─ Mental states (exhausted ↔ energized)
-├─ Emotional expressions (happy, frustrated, angry, tired)
-└─ Level progression system (earn XP through healthy behaviors)
-```
-
-### 3. Office Life Simulator ⭐ Core Innovation ⭐
-```
-💼 Workplace Scenario Engine:
-
-When users click "Start Work", their virtual character enters
-an office environment where different interactive events trigger
-based on current health attributes.
-
-Example Scenario:
-┌─────────────────────────────────────┐
-│  [Character sitting at desk]        │
-│                                     │
-│  Current Status:                    │
-│  💪 Stamina: 85  ⚡ Energy: 90     │
-│  😊 Mood: 75     😰 Stress: 30     │
-│                                     │
-│  Event Triggered:                   │
-│  "Your boss suddenly calls you      │
-│   for an urgent meeting..."         │
-│                                     │
-│  Available Actions:                 │
-│  [💥 Tell them off] (mood > 80)    │
-│  [😴 Pretend not to hear] (stamina < 40) │
-│  [📝 Comply quietly] (default)     │
-│  [🏃 Hide in bathroom] (stress > 70) │
-└─────────────────────────────────────┘
-```
-
-#### Workplace Event Types (Health-Based Triggers)
-```
-High Stamina (>80):
-├─ ✨ "Work overtime energetically, gain boss approval" (+mood)
-├─ 💪 "Complete challenging project" (+XP)
-└─ 🏆 "Volunteer for extra responsibilities" (+achievement)
-
-Low Stamina (<40):
-├─ 😴 "Doze off during work, caught by colleagues" (-mood)
-├─ 💤 "Fall asleep at desk" (restore stamina but -reputation)
-└─ 🥱 "Low productivity, tasks delayed" (+stress)
-
-High Mood (>80):
-├─ 💥 "Confront boss about unreasonable demands" (cathartic! -stress)
-├─ 💰 "Ask for a raise" (chance of success)
-└─ 🎉 "Peak productivity mode" (+work output)
-
-Low Mood (<30):
-├─ 😢 "Cry in bathroom stall" (emotional release)
-├─ 💼 "Submit resignation letter" (life reset)
-└─ 🏃 "Leave early without notice" (-work progress)
-
-High Stress (>80):
-├─ 🤯 "Emotional outburst" (reduce stress but damage relationships)
-├─ 🏖️ "Forced vacation mode" (restore mood)
-└─ 🧘 "Meditation/exercise prompt triggered"
-
-Balanced State (all metrics 60-80):
-├─ 📊 "Steady performance, normal workday"
-├─ 🤝 "Smooth team collaboration"
-└─ ⬆️ "Career level up"
-```
-
-### 4. AI Health Coach (Gemini)
-```
-🤖 Intelligent Assistant Features:
-
-💬 Emotional Resonance
-   "Looks like you didn't sleep well last night.
-    Your stamina is only at 45 today...
-    Want to hear my suggestions?"
-
-🎯 Personalized Recommendations
-   "You haven't exercised for 3 days, and your nutrition
-    score dropped to 60. I recommend a 30-minute brisk walk
-    today with a high-protein breakfast!"
-
-🎉 Encouragement & Celebration
-   "Amazing! 7-day healthy eating streak! Your character
-    just leveled up to Level 3! Achievement unlocked:
-    Wellness Warrior 🏆"
-
-📈 Trend Analysis
-   "Your sleep quality has been declining over the past
-    two weeks. This might be work-stress related.
-    Consider adjusting your schedule..."
-
-🎭 Workplace Scenario Commentary
-   "Haha! Your character just confronted the boss!
-    Stress -30, Mood +20, but watch those workplace
-    relationships 😄"
-```
-
-### 5. Data Visualization & Reporting
-```
-📊 Health Dashboard:
-├─ Four-dimensional radar chart (stamina/energy/nutrition/mood)
-├─ Historical trend curves
-├─ Weekly/monthly wellness reports
-└─ Workplace scenario replay logs
-
-📅 Daily Summary:
-"January 13, 2026 - Your Day"
-├─ Breakfast: Oatmeal + Banana (350 cal, nutrition +15)
-├─ Exercise: 30min jog (stamina +20, energy -250)
-├─ Work: Confronted boss once (mood +25, stress -30)
-└─ Overall: Health Level 5 → 6 ⬆️
+User: "Haven't eaten all day"
+Pearl: "Can't run on empty. Your body's not a startup that runs on vibes
+and cold brew. What's the fastest thing you can grab right now?"
 ```
 
 ---
@@ -175,567 +107,418 @@ Balanced State (all metrics 60-80):
 ## 🏗️ Technical Architecture
 
 ### Technology Stack
-```
-Frontend:
-├─ React 18 + TypeScript
-├─ UI Library: Material-UI (mobile-responsive)
-├─ State Management: Zustand
-├─ Routing: React Router v6
-├─ Charts: Recharts
-├─ Animation: Framer Motion
-└─ PWA: Installable on mobile devices
 
-Backend:
+#### Frontend
+```
+├─ React 19 + TypeScript
+├─ Material-UI v6 (MUI)
+├─ State Management: Zustand
+├─ Routing: React Router v7
+├─ Charts: Recharts
+├─ Build Tool: Vite
+└─ Icons: @mui/icons-material
+```
+
+#### Backend
+```
 ├─ FastAPI (Python 3.11+)
 ├─ Database: PostgreSQL
-├─ ORM: SQLAlchemy
-├─ Authentication: JWT
-└─ API Docs: Auto-generated (FastAPI)
-
-AI & Data Sources:
-├─ Google Gemini API (chat + image recognition)
-├─ USDA FoodData Central API (nutritional data)
-├─ Exercise DB / MET Database (activity data)
-└─ Redis (caching layer)
-
-Deployment:
-├─ Frontend: Vercel / Netlify
-├─ Backend: Railway / Render
-├─ Database: Supabase (PostgreSQL hosting)
-└─ Containerization: Docker + Docker Compose
+├─ ORM: SQLAlchemy 2.0
+├─ Authentication: JWT (python-jose)
+├─ Password Hashing: passlib with bcrypt
+└─ API Docs: Auto-generated (FastAPI/Swagger)
 ```
 
-### System Architecture Diagram
+#### AI & Data Sources
 ```
-┌─────────────────────────────────────────────────┐
-│              User Interface Layer                │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
-│  │Data Input│  │Character │  │Work Sim  │      │
-│  └──────────┘  └──────────┘  └──────────┘      │
-│         │              │              │         │
-└─────────┼──────────────┼──────────────┼─────────┘
-          │              │              │
-          ▼              ▼              ▼
-┌─────────────────────────────────────────────────┐
-│               API Gateway Layer                  │
-│              FastAPI REST API                    │
-└─────────────────────────────────────────────────┘
-          │              │              │
-    ┌─────┴─────┐  ┌────┴────┐  ┌─────┴─────┐
-    ▼           ▼  ▼         ▼  ▼           ▼
-┌────────┐ ┌────────┐ ┌─────────┐ ┌──────────┐
-│Health  │ │Scenario│ │AI       │ │External  │
-│Calc    │ │Engine  │ │Service  │ │APIs      │
-│Engine  │ │        │ │(Gemini) │ │(USDA etc)│
-└────────┘ └────────┘ └─────────┘ └──────────┘
-    │           │          │           │
-    └───────────┴──────────┴───────────┘
-                    ▼
-          ┌──────────────────┐
-          │Data Persistence  │
-          │PostgreSQL DB     │
-          └──────────────────┘
+├─ Google Gemini 2.5 Flash (chat & advice)
+├─ USDA FoodData Central API (nutritional database)
+├─ Custom calorie calculation algorithms
+└─ Food science-based nutrition parsing
 ```
 
-### Core Algorithms
-
-#### 1. Health Metrics Calculation Engine
-```python
-def calculate_health_metrics(user_data):
-    """
-    Calculate multi-dimensional health parameters
-
-    Inputs:
-    - Dietary records (calories, protein, carbs, fat, vitamins)
-    - Sleep records (duration, quality, bedtime)
-    - Exercise records (type, duration, intensity)
-    - User baseline data (height, weight, age, gender)
-
-    Outputs:
-    - Stamina (0-100)
-    - Energy (0-100)
-    - Nutrition (0-100)
-    - Mood (0-100)
-    - Stress (0-100)
-    """
-
-    # 1. Stamina = f(exercise volume, sleep quality)
-    stamina = (
-        exercise_score * 0.6 +
-        sleep_quality * 0.4
-    )
-
-    # 2. Energy = f(caloric balance, sleep duration)
-    energy = (
-        calorie_balance_score * 0.7 +
-        sleep_duration_score * 0.3
-    )
-
-    # 3. Nutrition = f(dietary balance, micronutrients)
-    nutrition = (
-        macro_balance * 0.6 +
-        vitamin_minerals * 0.4
-    )
-
-    # 4. Mood = f(overall health trend, stress level)
-    mood = (
-        overall_health_trend * 0.6 +
-        (100 - stress) * 0.4
-    )
-
-    # 5. Stress = f(work hours, rest quality, mood variance)
-    stress = calculate_stress_level(
-        work_hours, rest_quality, mood_variance
-    )
-
-    return {
-        'stamina': stamina,
-        'energy': energy,
-        'nutrition': nutrition,
-        'mood': mood,
-        'stress': stress
-    }
-```
-
-#### 2. Workplace Scenario Trigger Engine
-```python
-def trigger_work_event(character_state):
-    """
-    Trigger workplace scenarios based on character health state
-
-    Priority System:
-    1. Extreme states (any attribute < 20 or > 90)
-    2. Combined states (high stress + low mood)
-    3. Random events (probability-based)
-    """
-
-    # Check extreme states
-    if character_state['stamina'] < 20:
-        return random.choice([
-            Event('SLEEP_AT_DESK',
-                  consequence={'stamina': +10, 'reputation': -5}),
-            Event('CALL_IN_SICK',
-                  consequence={'stamina': +30, 'work_progress': -10})
-        ])
-
-    if character_state['mood'] > 90:
-        return random.choice([
-            Event('CONFRONT_BOSS',
-                  consequence={'stress': -30, 'mood': +10}),
-            Event('ASK_FOR_RAISE',
-                  consequence={'money': +100, 'confidence': +15})
-        ])
-
-    # Combined state triggers
-    if character_state['stress'] > 80 and character_state['mood'] < 30:
-        return Event('MELTDOWN',
-                     consequence={'stress': -50, 'relationships': -20})
-
-    # Normal random events
-    return get_random_event(character_state)
-```
-
-#### 3. AI Conversation Generation
-```python
-def generate_ai_response(user_data, context, conversation_history):
-    """
-    Generate personalized AI coach responses using Gemini
-    """
-
-    prompt = f"""
-    You are Oystraz's AI health coach. Communicate in a relaxed,
-    humorous, and empathetic tone. You can see the user's virtual
-    character state and offer advice like a supportive friend.
-
-    User's Character Current State:
-    - Level: {user_data['level']}
-    - 💪 Stamina: {user_data['stamina']}/100
-    - ⚡ Energy: {user_data['energy']}/100
-    - 🍎 Nutrition: {user_data['nutrition']}/100
-    - 😊 Mood: {user_data['mood']}/100
-    - 😰 Stress: {user_data['stress']}/100
-
-    Recent Activities:
-    - Yesterday's meals: {user_data['yesterday_meals']}
-    - Yesterday's exercise: {user_data['yesterday_exercise']}
-    - Recent workplace events: {user_data['recent_work_events']}
-
-    Current Context: {context}
-
-    Respond with encouraging, fun, and gamified language.
-    Use emojis appropriately. If the user's state is poor,
-    show empathy and provide actionable advice. If they're
-    doing well, celebrate enthusiastically and encourage continuation.
-    """
-
-    response = gemini_client.generate_content(
-        prompt,
-        history=conversation_history
-    )
-
-    return response.text
-```
-
----
-
-## 📂 Project Structure
+### Project Structure (Actual)
 
 ```
-Oystraz/
-├── README.md
-├── .gitignore
-├── docker-compose.yml
-│
-├── frontend/                      # React Frontend
-│   ├── public/
-│   │   ├── manifest.json          # PWA config
-│   │   ├── icons/                 # App icons
-│   │   └── index.html
+oystraz/
+├── frontend/
 │   ├── src/
-│   │   ├── components/            # UI Components
-│   │   │   ├── Avatar/            # Virtual character display
-│   │   │   ├── HealthBars/        # Health attribute bars
-│   │   │   ├── FoodInput/         # Food logging interface
-│   │   │   ├── ExerciseLog/       # Exercise recording
-│   │   │   ├── WorkSimulator/     # Workplace scenario simulator ⭐
-│   │   │   ├── AIChat/            # AI conversation interface
-│   │   │   └── Dashboard/         # Data dashboard
+│   │   ├── components/
+│   │   │   ├── Track/
+│   │   │   │   ├── DietLog.tsx       # USDA food search & logging
+│   │   │   │   ├── ExerciseLog.tsx   # Exercise tracking
+│   │   │   │   └── SleepLog.tsx      # Sleep tracking
+│   │   │   └── Work/
+│   │   │       └── WorkScenario.tsx  # Workplace simulator
 │   │   ├── pages/
-│   │   │   ├── Home.tsx           # Main page (character status)
-│   │   │   ├── Track.tsx          # Data tracking
-│   │   │   ├── Work.tsx           # Work simulation ⭐
-│   │   │   ├── Stats.tsx          # Statistics
-│   │   │   └── Profile.tsx        # User settings
-│   │   ├── hooks/                 # Custom hooks
-│   │   ├── services/              # API calls
-│   │   │   ├── api.ts             # API client
-│   │   │   ├── foodService.ts
-│   │   │   ├── exerciseService.ts
-│   │   │   └── geminiService.ts
-│   │   ├── store/                 # Zustand state management
-│   │   │   ├── userStore.ts
-│   │   │   ├── characterStore.ts
-│   │   │   └── workStore.ts
-│   │   ├── utils/
-│   │   │   ├── calculations.ts    # Frontend calculation utilities
-│   │   │   └── formatters.ts
-│   │   ├── types/                 # TypeScript type definitions
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
+│   │   │   ├── Home.tsx              # Character dashboard
+│   │   │   ├── Track.tsx             # Health tracking hub
+│   │   │   ├── Work.tsx              # Work simulation
+│   │   │   ├── Stats.tsx             # Data visualization ⭐
+│   │   │   └── Profile.tsx           # User settings
+│   │   ├── services/
+│   │   │   ├── api.ts                # Axios client
+│   │   │   ├── authService.ts        # Auth APIs
+│   │   │   ├── characterService.ts   # Character APIs
+│   │   │   ├── healthService.ts      # Health tracking APIs
+│   │   │   ├── aiService.ts          # Pearl chat API
+│   │   │   └── pearlService.ts       # Pearl helpers
+│   │   ├── store/
+│   │   │   ├── userStore.ts          # User state
+│   │   │   └── characterStore.ts     # Character state
+│   │   └── types/
+│   │       └── index.ts              # TypeScript definitions
+│   └── package.json
 │
-├── backend/                       # FastAPI Backend
+├── backend/
 │   ├── app/
-│   │   ├── main.py                # Application entry point
-│   │   ├── config.py              # Configuration management
-│   │   ├── database.py            # Database connection
-│   │   ├── models/                # SQLAlchemy models
+│   │   ├── main.py                   # FastAPI app entry
+│   │   ├── config.py                 # Environment config
+│   │   ├── database.py               # DB connection
+│   │   ├── models/                   # SQLAlchemy models
+│   │   │   ├── __init__.py
 │   │   │   ├── user.py
-│   │   │   ├── meal.py
-│   │   │   ├── exercise.py
-│   │   │   ├── sleep.py
 │   │   │   ├── character.py
-│   │   │   ├── work_event.py      # Workplace event records
-│   │   │   └── achievement.py
-│   │   ├── schemas/               # Pydantic schemas
+│   │   │   ├── diet_log.py
+│   │   │   ├── exercise_log.py
+│   │   │   └── sleep_log.py
+│   │   ├── schemas/                  # Pydantic schemas
+│   │   │   ├── __init__.py
+│   │   │   ├── auth.py
 │   │   │   ├── user.py
-│   │   │   ├── health.py
-│   │   │   └── work.py
-│   │   ├── api/                   # API routes
-│   │   │   ├── auth.py            # Authentication
-│   │   │   ├── user.py            # User management
-│   │   │   ├── food.py            # Food-related endpoints
-│   │   │   ├── exercise.py        # Exercise-related endpoints
-│   │   │   ├── sleep.py           # Sleep-related endpoints
-│   │   │   ├── character.py       # Character state endpoints
-│   │   │   ├── work.py            # Workplace scenarios ⭐
-│   │   │   └── ai.py              # AI conversation endpoints
-│   │   ├── services/              # Business logic
-│   │   │   ├── health_calculator.py  # Health calculation engine ⭐
-│   │   │   ├── work_engine.py        # Workplace scenario engine ⭐
-│   │   │   ├── usda_client.py        # USDA API client
-│   │   │   ├── exercise_client.py    # Exercise data API client
-│   │   │   ├── gemini_client.py      # Gemini API client
-│   │   │   └── character_service.py  # Character state management
-│   │   └── core/
-│   │       ├── security.py        # JWT and security
-│   │       └── dependencies.py
-│   ├── tests/
-│   ├── requirements.txt
-│   ├── Dockerfile
-│   └── alembic/                   # Database migrations
+│   │   │   ├── character.py
+│   │   │   ├── diet.py
+│   │   │   ├── exercise.py
+│   │   │   └── sleep.py
+│   │   ├── routers/                  # API routes
+│   │   │   ├── auth.py               # Register/login
+│   │   │   ├── user.py               # User management
+│   │   │   ├── character.py          # Character endpoints
+│   │   │   ├── diet.py               # Diet logging
+│   │   │   ├── exercise.py           # Exercise logging
+│   │   │   ├── sleep.py              # Sleep logging
+│   │   │   └── assistant.py          # Pearl chat & USDA search ⭐
+│   │   └── services/
+│   │       ├── auth.py               # JWT logic
+│   │       ├── gemini.py             # Gemini API client ⭐
+│   │       └── usda.py               # USDA API client ⭐
+│   └── requirements.txt
 │
-├── data/                          # Data files
-│   ├── raw/                       # Raw USDA data
-│   ├── processed/                 # Processed data
-│   └── work_events.json           # Workplace scenario library ⭐
-│
-└── docs/                          # Documentation
-    ├── API.md                     # API documentation
-    ├── DATABASE.md                # Database design
-    ├── ALGORITHMS.md              # Algorithm explanations
-    └── DEPLOYMENT.md              # Deployment guide
+└── README.md
+```
+
+### System Flow
+
+```
+┌─────────────────────────────────────────────────┐
+│              User Interface (React)              │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
+│  │  Track   │  │   Work   │  │  Stats   │      │
+│  │ (Health) │  │ (Simulate│  │(Visualize│      │
+│  └──────────┘  └──────────┘  └──────────┘      │
+└───────────────────┬─────────────────────────────┘
+                    │ HTTP/REST
+                    ▼
+┌─────────────────────────────────────────────────┐
+│           FastAPI Backend (Python)               │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
+│  │   Auth   │  │ Character│  │   AI     │      │
+│  │  Routes  │  │  Routes  │  │ Assistant│      │
+│  └──────────┘  └──────────┘  └──────────┘      │
+└───────┬─────────────┬───────────────┬───────────┘
+        │             │               │
+        ▼             ▼               ▼
+┌──────────┐  ┌──────────┐  ┌──────────────────┐
+│PostgreSQL│  │  Gemini  │  │  USDA FoodData   │
+│ Database │  │   API    │  │  Central API     │
+└──────────┘  └──────────┘  └──────────────────┘
 ```
 
 ---
 
-## 🗄️ Database Design
+## 📊 Database Schema
 
 ```sql
--- Users table
+-- Users
 users:
-  id, username, email, password_hash,
-  height, weight, age, gender, goal,
+  id, username, email, hashed_password,
+  full_name, age, gender, height, weight, goal,
   created_at, updated_at
 
--- Character states table (daily snapshots)
-character_states:
-  id, user_id, date,
+-- Characters (one per user)
+characters:
+  id, user_id,
   stamina, energy, nutrition, mood, stress,
   level, experience,
-  body_type, emotional_state
+  body_type, emotional_state,
+  created_at, updated_at
 
--- Meal records
-meals:
-  id, user_id, datetime, meal_type,
-  food_items (JSON),
-  total_calories, protein, carbs, fat,
-  vitamins_minerals (JSON)
-
--- Exercise records
-exercises:
-  id, user_id, datetime,
-  exercise_type, duration, intensity,
-  calories_burned, met_value
-
--- Sleep logs
-sleep_logs:
-  id, user_id, date,
-  bedtime, wake_time, duration,
-  quality_score
-
--- Workplace event records ⭐ Core table
-work_events:
-  id, user_id, datetime,
-  event_type, event_description,
-  user_choice,
-  consequences (JSON),
-  character_state_before (JSON),
-  character_state_after (JSON)
-
--- Achievement system
-achievements:
-  id, user_id, achievement_type,
-  title, description, icon,
-  unlocked_at
-
--- AI conversation history
-ai_conversations:
+-- Diet Logs
+diet_logs:
   id, user_id,
-  user_message, ai_response,
-  context (JSON), timestamp
+  food_name, meal_type,
+  calories, protein, carbs, fat, fiber,
+  serving_size, serving_unit,
+  notes, logged_at
+
+-- Exercise Logs
+exercise_logs:
+  id, user_id,
+  activity_name, activity_type,
+  duration_minutes, intensity,
+  calories_burned, distance, distance_unit,
+  heart_rate_avg, steps,
+  notes, logged_at
+
+-- Sleep Logs
+sleep_logs:
+  id, user_id,
+  sleep_start, sleep_end, duration_hours,
+  quality, quality_score,
+  deep_sleep_minutes, light_sleep_minutes,
+  rem_sleep_minutes, awake_minutes,
+  interruptions, notes, logged_at
 ```
 
 ---
 
-## 🎯 MVP Development Plan (3 Weeks)
+## 🚀 Quick Start
 
-### Week 1: Foundation + Data Tracking
-```
-Day 1-2: Project Initialization
-├─ Frontend and backend project setup
-├─ Database design and migrations
-├─ Basic authentication system
-└─ Development environment configuration
+### Prerequisites
+- Node.js 18+
+- Python 3.11+
+- PostgreSQL 14+
 
-Day 3-4: Data Input Features
-├─ Food search and logging (USDA API)
-├─ Exercise recording forms
-├─ Sleep logging forms
-└─ Basic API endpoints
+### Environment Variables
 
-Day 5-7: Health Calculation Engine
-├─ Implement health scoring algorithms
-├─ Character state calculations
-├─ Data persistence
-└─ Unit testing
-```
-
-### Week 2: Virtual Character + Workplace Scenarios
-```
-Day 8-10: Character System
-├─ Character state display UI
-├─ Health attribute visualization (progress bars)
-├─ Simple character avatar (emoji/icons)
-├─ Real-time state updates
-
-Day 11-14: Workplace Scenario Engine ⭐
-├─ Scenario trigger logic
-├─ Event library design (10 core scenarios)
-├─ User choice and consequence system
-├─ Workplace scenario UI interface
-└─ Scenario history tracking
-```
-
-### Week 3: AI Integration + Optimization & Deployment
-```
-Day 15-17: AI Assistant
-├─ Gemini API integration
-├─ Conversation interface
-├─ Context management
-└─ Personalized responses
-
-Day 18-19: Data Visualization
-├─ Health dashboard
-├─ Chart displays (Recharts)
-├─ Daily/weekly reports
-└─ Trend analysis
-
-Day 20-21: Deployment and Testing
-├─ Docker configuration
-├─ PWA setup
-├─ Cloud platform deployment
-├─ User testing and bug fixes
-└─ Documentation refinement
-```
-
----
-
-## 🎨 Design Style Guide
-
-### Visual Style
-```
-Theme: Modern, Fresh, Gamified
-Color Scheme:
-  ├─ Primary: #4CAF50 (Health Green)
-  ├─ Secondary: #2196F3 (Energy Blue)
-  ├─ Warning: #FF9800 (Caution Orange)
-  ├─ Danger: #F44336 (Stress Red)
-  └─ Background: #FAFAFA (Light Gray)
-
-Character Avatar:
-  ├─ MVP: Emoji combinations (😊💪🏃 etc.)
-  ├─ V2: Simplified cartoon illustrations
-  └─ V3: Dynamic SVG characters
-```
-
-### Interaction Design Principles
-```
-1. Instant Feedback - Every action has visual/audio response
-2. Gamification - Use levels, achievements, animations
-3. Emotional Connection - AI uses empathetic language, not cold data
-4. Simplified Input - Minimize steps to complete logging
-5. Mobile-First - Responsive design
-```
-
----
-
-## 🚀 Deployment Strategy
-
-### Development Environment
+**Backend (.env):**
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/oystraz.git
-cd oystraz
-
-# One-click startup with Docker Compose
-docker-compose up -d
-
-# Or start frontend and backend separately
-cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload
-cd frontend && npm install && npm run dev
+DATABASE_URL=postgresql://user:password@localhost:5432/oystraz
+SECRET_KEY=your-secret-key-here
+GEMINI_API_KEY=your-gemini-api-key
+USDA_API_KEY=your-usda-api-key
 ```
 
-### Production Environment
+**Frontend (.env):**
+```bash
+VITE_API_URL=http://localhost:8000
 ```
-Frontend: Vercel
-  - Automatic deployment
-  - Global CDN
-  - PWA support
 
-Backend: Railway / Render
-  - Docker deployment
-  - Auto-scaling
-  - Environment variable management
+### Running Locally
 
-Database: Supabase
-  - PostgreSQL hosting
-  - Automatic backups
-  - 10GB free tier
+**Backend:**
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+# Runs on http://localhost:8000
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+# Runs on http://localhost:5173
 ```
 
 ---
 
-## 📊 Success Metrics
+## 🎨 Key Features Showcase
 
-### Product Metrics
+### 1. USDA Food Search
+- 600,000+ food items from USDA FoodData Central
+- Real-time search with calorie preview
+- Smart deduplication and formatting
+- Brand name cleaning (removes Inc, LLC, etc.)
+
+### 2. Interactive Stats Dashboard
+- 4 summary cards with key metrics
+- Time allocation pie chart (24-hour breakdown)
+- Calorie intake area chart
+- Exercise bar chart
+- Sleep duration & quality dual-axis chart
+- Net calories comparison
+
+### 3. Workplace Scenarios
+- Dynamic events based on character health
+- 4 choices per scenario with stat impacts
+- Leveling and experience system
+- Fallback scenarios for variety
+
+### 4. Pearl AI Chat
+- Context-aware responses
+- Food science expertise
+- Dry humor and puns
+- Gets excited about food discussions
+- Anti-hustle culture advice
+
+---
+
+## 🔮 Future Development Roadmap
+
+### Phase 1: Mobile Optimization (Next Sprint)
 ```
-User Engagement:
-├─ DAU (Daily Active Users)
-├─ Average daily logging frequency
-├─ Workplace scenario trigger rate
-└─ AI conversation interaction rate
+📱 Responsive Design
+├─ Optimize all pages for mobile screens
+├─ Touch-friendly button sizes
+├─ Mobile navigation improvements
+└─ Ensure charts are readable on small screens
 
-User Retention:
-├─ Day-1 retention > 40%
-├─ Day-7 retention > 25%
-└─ Day-30 retention > 15%
-
-Feature Usage:
-├─ Most popular workplace scenarios
-├─ Average character level
-└─ Achievement unlock rate
+🎨 Visual Enhancement
+├─ Stickman character design (SVG)
+├─ Ocean fishing theme for Work page
+├─ Animated character states
+└─ Unified color palette
 ```
 
-### Technical Metrics
+### Phase 2: Enhanced Features
 ```
-Performance:
-├─ API response time < 200ms
-├─ First contentful paint < 2s
-└─ PWA score > 90
+🎮 Gamification Improvements
+├─ Achievement system
+├─ Daily/weekly challenges
+├─ Streak tracking
+├─ Unlockable character accessories
+└─ Leaderboards (optional social)
 
-Reliability:
-├─ System uptime > 99%
-├─ Error rate < 0.1%
-└─ Data accuracy 100%
+📊 Advanced Analytics
+├─ Weight tracking over time
+├─ BMI calculator and trends
+├─ Macro balance analysis
+├─ Correlation insights (sleep vs mood, etc.)
+└─ Weekly/monthly reports
+
+🍔 Enhanced Food Logging
+├─ Recent foods quick-add
+├─ Favorite foods list
+├─ Meal templates (breakfast combos)
+├─ Photo recognition (Gemini Vision)
+└─ Barcode scanner
 ```
+
+### Phase 3: Mobile App Deployment
+```
+📱 Cross-Platform App
+├─ Capacitor/Ionic integration
+├─ iOS App Store deployment
+├─ Google Play Store deployment
+├─ Push notifications
+├─ Offline mode with sync
+└─ Native device features (camera, health data)
+
+🔄 Data Sync & Integration
+├─ Apple Health integration
+├─ Google Fit integration
+├─ Fitbit/smartwatch sync
+├─ Cloud backup
+└─ Multi-device sync
+```
+
+### Phase 4: Community & Social
+```
+👥 Social Features
+├─ Friend system
+├─ Share progress/achievements
+├─ Group challenges
+├─ Community scenario library (user-created)
+└─ Support/accountability partners
+
+🎭 Expanded Work Scenarios
+├─ Multiple career paths (programmer, designer, etc.)
+├─ Branching storylines
+├─ Long-term consequences
+├─ Career progression system
+└─ AI-generated personalized scenarios
+```
+
+### Phase 5: Advanced AI Features
+```
+🤖 Enhanced Pearl
+├─ Voice chat support
+├─ Proactive check-ins
+├─ Trend prediction and warnings
+├─ Personalized meal planning
+├─ Recipe suggestions based on preferences
+└─ Workout routine generation
+
+🧠 Smart Insights
+├─ Pattern recognition (e.g., "You sleep poorly after late dinners")
+├─ Predictive mood tracking
+├─ Optimal timing suggestions
+└─ Personalized goal recommendations
+```
+
+---
+
+## 🎯 Design Philosophy
+
+### User Experience Principles
+1. **No Guilt Trips** - Focus on progress, not perfection
+2. **Make It Easy** - Minimize steps to log activities
+3. **Make It Fun** - Gamification without feeling childish
+4. **Be Honest** - Pearl tells it like it is, no sugar-coating
+5. **Respect Boundaries** - Anti-hustle, pro-rest mentality
+
+### Visual Design Goals
+- **Minimalist** - Clean, uncluttered interface
+- **Playful** - Stickman character, ocean theme, light animations
+- **Data-Rich** - Charts and stats without overwhelming
+- **Mobile-First** - Designed for on-the-go logging
+- **Accessible** - High contrast, readable fonts, clear icons
+
+### Character Design Concept (Fishing Theme)
+```
+🎣 Stickman Character as Fisherman:
+├─ Fishing in the ocean = working
+├─ Different fish = different tasks/projects
+├─ Bigger fish = harder challenges
+├─ Character's health affects fishing success
+│   ├─ High stamina = catch big fish easily
+│   ├─ Low energy = fish get away
+│   ├─ High stress = tangled line, broken rod
+│   └─ Good mood = rare/special fish appear
+└─ Leveling up = better fishing gear
+```
+
+---
+
+## 💡 Innovation Highlights
+
+### What Makes Oystraz Different?
+
+1. **Health → Work Performance Link**
+   - Unlike fitness apps that just track data, Oystraz shows the *consequences* of your health choices through workplace simulation
+   - Makes abstract health metrics concrete and relatable
+
+2. **Stress Relief Through Simulation**
+   - Safe outlet for workplace frustrations
+   - Cathartic "confront boss" or "take nap at work" options
+   - Reduces real-world stress by gamifying it
+
+3. **Food Science-Backed AI**
+   - Pearl has actual food science knowledge, not generic wellness advice
+   - Gets genuinely excited about nutrition, making learning fun
+   - Combines humor with expertise
+
+4. **Anti-Productivity Culture**
+   - Refreshing stance against hustle culture
+   - Encourages real breaks, work-life balance
+   - Validates rest as productive
+
+5. **Comprehensive USDA Integration**
+   - 600,000+ foods with accurate nutrition data
+   - Smart search with deduplication
+   - Scientific accuracy for calorie tracking
 
 ---
 
 ## 🤝 Contributing
 
-Welcome contributions for new workplace scenarios, algorithm optimizations, or UI improvements!
-
-### Adding New Workplace Scenarios
-```json
-// data/work_events.json
-{
-  "event_id": "boss_unreasonable_demand",
-  "title": "Boss Makes Unreasonable Demand",
-  "description": "Your boss suddenly demands you work overtime tonight to finish tomorrow's report...",
-  "triggers": {
-    "stress": [60, 100],
-    "time_of_day": "evening"
-  },
-  "choices": [
-    {
-      "text": "💥 Refuse directly with explanation",
-      "requires": {"mood": 70},
-      "consequences": {"stress": -20, "mood": +10, "reputation": -5}
-    },
-    {
-      "text": "😤 Reluctantly agree but feel upset",
-      "consequences": {"stress": +15, "mood": -10, "overtime": +3}
-    },
-    {
-      "text": "📱 Pretend phone died, didn't see message",
-      "consequences": {"stress": -10, "mood": +5, "reputation": -10}
-    }
-  ]
-}
-```
+Contributions welcome! Especially interested in:
+- New workplace scenario ideas
+- Food science facts for Pearl
+- UI/UX improvements
+- Mobile optimization suggestions
 
 ---
 
@@ -745,37 +528,21 @@ MIT License - Free to use and modify
 
 ---
 
-## 🌈 Future Roadmap
+## 🌟 Acknowledgments
 
-### V2.0 Features
-```
-├─ Multi-character system (different careers: programmer, designer, salesperson)
-├─ Social features (friends, challenges, leaderboards)
-├─ Richer animation effects
-├─ Voice input
-├─ Smart band/watch data sync
-└─ Multi-language support
-```
-
-### V3.0 Vision
-```
-├─ Native mobile app (React Native)
-├─ AR virtual character (ARKit/ARCore)
-├─ Community scenario library (user-created scenarios)
-├─ AI-generated personalized storylines
-└─ Enterprise wellness management edition
-```
+- **USDA FoodData Central** - Nutritional database
+- **Google Gemini** - AI capabilities
+- **Material-UI** - React component library
+- **Recharts** - Data visualization
 
 ---
 
 ## 📞 Contact
 
-- Project Homepage: [GitHub Repository]
-- Issue Reporting: [Issues]
-- Discussion Forum: [Discussions]
+- GitHub: https://github.com/dingonewen/oystraz
 
 ---
 
-**Make wellness fun, give workplace stress a safe outlet!** 🎮💪😊
+**Make wellness fun. Give workplace stress a safe outlet. The world is your oyster.** 🎮💪🦪
 
-**Orchestrate your health. Control your life. The world is your oyster.**
+**Built for the Google Gemini 3 Hackathon** ✨
