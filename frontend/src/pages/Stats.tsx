@@ -48,6 +48,7 @@ interface TimeAllocation {
   name: string;
   value: number;
   color: string;
+  [key: string]: string | number;
 }
 
 export default function Stats() {
