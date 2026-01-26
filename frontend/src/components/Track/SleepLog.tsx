@@ -128,11 +128,20 @@ export default function SleepLog() {
       : '0';
 
   return (
-    <Box sx={{ px: 3 }}>
-      <Typography variant="h5" gutterBottom>
+    <Box sx={{ px: { xs: 0, sm: 1, md: 3 } }}>
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+      >
         Log Your Sleep
       </Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        gutterBottom
+        sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
+      >
         Track your sleep to maintain your character's energy and mood
       </Typography>
 
@@ -149,8 +158,8 @@ export default function SleepLog() {
       )}
 
       {/* Sleep Form */}
-      <Paper sx={{ p: 3, mt: 3 }}>
-        <Grid container spacing={3}>
+      <Paper sx={{ p: { xs: 2, sm: 2.5, md: 3 }, mt: { xs: 2, sm: 3 } }}>
+        <Grid container spacing={{ xs: 2, sm: 2.5, md: 3 }}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
@@ -211,14 +220,26 @@ export default function SleepLog() {
       </Paper>
 
       {/* Recent Logs */}
-      <Box sx={{ mt: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6">Last 7 Days</Typography>
+      <Box sx={{ mt: { xs: 3, sm: 4 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
+          <Typography variant="h6" sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}>
+            Last 7 Days
+          </Typography>
           <Chip
             icon={<BedtimeIcon />}
             label={`Avg: ${averageSleep} hrs`}
             color="primary"
             variant="outlined"
+            size="small"
           />
         </Box>
 
@@ -227,8 +248,8 @@ export default function SleepLog() {
             <CircularProgress />
           </Box>
         ) : recentLogs.length === 0 ? (
-          <Paper sx={{ p: 3, textAlign: 'center' }}>
-            <Typography color="text.secondary">
+          <Paper sx={{ p: { xs: 2, sm: 3 }, textAlign: 'center' }}>
+            <Typography color="text.secondary" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
               No sleep logged yet. Start tracking your sleep to improve your character's wellbeing!
             </Typography>
           </Paper>

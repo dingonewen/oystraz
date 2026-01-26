@@ -133,11 +133,20 @@ export default function DietLog() {
   const totalCalories = todayLogs.reduce((sum, log) => sum + log.calories, 0);
 
   return (
-    <Box sx={{ px: 3 }}>
-      <Typography variant="h5" gutterBottom>
+    <Box sx={{ px: { xs: 0, sm: 1, md: 3 } }}>
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+      >
         Log Your Meals
       </Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        gutterBottom
+        sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
+      >
         Search for foods in the USDA database (600,000+ items)
       </Typography>
 
@@ -154,8 +163,8 @@ export default function DietLog() {
       )}
 
       {/* Food Search */}
-      <Paper sx={{ p: 2, mt: 3 }}>
-        <Grid container spacing={2} alignItems="center">
+      <Paper sx={{ p: { xs: 1.5, sm: 2 }, mt: { xs: 2, sm: 3 } }}>
+        <Grid container spacing={{ xs: 1.5, sm: 2 }} alignItems="center">
           <Grid size={{ xs: 12, sm: 9 }}>
             <TextField
               fullWidth
@@ -204,11 +213,15 @@ export default function DietLog() {
 
         {/* Selected Food */}
         {selectedFood && (
-          <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
-            <Typography variant="subtitle1" gutterBottom>
+          <Box sx={{ mt: { xs: 2, sm: 3 }, p: { xs: 1.5, sm: 2 }, bgcolor: 'action.hover', borderRadius: 1 }}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontSize: { xs: '0.9375rem', sm: '1rem' } }}
+            >
               Selected: {selectedFood.description}
             </Typography>
-            <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+            <Grid container spacing={{ xs: 1.5, sm: 2 }} alignItems="center" sx={{ mt: 1 }}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
@@ -242,13 +255,25 @@ export default function DietLog() {
       </Paper>
 
       {/* Today's Logs */}
-      <Box sx={{ mt: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6">Today's Meals</Typography>
+      <Box sx={{ mt: { xs: 3, sm: 4 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
+          <Typography variant="h6" sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}>
+            Today's Meals
+          </Typography>
           <Chip
             label={`Total: ${totalCalories} cal`}
             color="primary"
             variant="outlined"
+            size="small"
           />
         </Box>
 
@@ -257,8 +282,8 @@ export default function DietLog() {
             <CircularProgress />
           </Box>
         ) : todayLogs.length === 0 ? (
-          <Paper sx={{ p: 3, textAlign: 'center' }}>
-            <Typography color="text.secondary">
+          <Paper sx={{ p: { xs: 2, sm: 3 }, textAlign: 'center' }}>
+            <Typography color="text.secondary" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
               No meals logged today. Start by searching for foods above!
             </Typography>
           </Paper>
