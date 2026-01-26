@@ -68,7 +68,7 @@ const CALORIE_RATES: Record<string, Record<string, number>> = {
 
 export default function ExerciseLog() {
   const [exerciseType, setExerciseType] = useState('');
-  const [duration, setDuration] = useState(30);
+  const [duration, setDuration] = useState('30');
   const [intensity, setIntensity] = useState('Moderate');
   const [todayLogs, setTodayLogs] = useState<ExerciseLogItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,11 +93,13 @@ export default function ExerciseLog() {
 
   const calculateCalories = (): number => {
     const rates = CALORIE_RATES[exerciseType] || CALORIE_RATES.Other;
-    return Math.round(duration * rates[intensity]);
+    const durationNum = parseFloat(duration) || 0;
+    return Math.round(durationNum * rates[intensity]);
   };
 
   const handleLogExercise = async () => {
-    if (!exerciseType || duration <= 0) {
+    const durationNum = parseFloat(duration) || 0;
+    if (!exerciseType || durationNum <= 0) {
       setError('Please select exercise type and duration');
       return;
     }
@@ -107,13 +109,13 @@ export default function ExerciseLog() {
       setError(null);
       await logExercise({
         activity_name: exerciseType,
-        duration_minutes: duration,
+        duration_minutes: durationNum,
         intensity: intensity.toLowerCase(),
         calories_burned: calculateCalories(),
       });
       setSuccess('Exercise logged successfully!');
       setExerciseType('');
-      setDuration(30);
+      setDuration('30');
       setIntensity('Moderate');
       await loadTodayLogs();
       setTimeout(() => setSuccess(null), 3000);
@@ -185,7 +187,7 @@ export default function ExerciseLog() {
               type="number"
               label="Duration (minutes)"
               value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
+              onChange={(e) => setDuration(e.target.value)}
               inputProps={{ min: 1 }}
             />
           </Grid>
