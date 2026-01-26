@@ -23,7 +23,6 @@ import WorkIcon from '@mui/icons-material/Work';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useCharacterStore } from '../store/characterStore';
 import { getCharacter, updateCharacter } from '../services/characterService';
-import { generateWorkScenario } from '../services/aiService';
 
 interface ScenarioChoice {
   id: number;
@@ -135,14 +134,6 @@ export default function Work() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const getScenarioTitle = (char: any): string => {
-    if (char.energy < 30) return "😴 Low Energy Alert";
-    if (char.stress > 70) return "😰 High Pressure Situation";
-    if (char.mood < 40) return "😔 Challenging Moment";
-    if (char.stamina < 40) return "💤 Fatigue Setting In";
-    return "🏢 Another Day at Work";
   };
 
   const getFallbackScenario = (char: any): WorkScenario => {
