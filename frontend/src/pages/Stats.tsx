@@ -191,9 +191,22 @@ export default function Stats() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h3" component="h1">
+      <Box sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            mb: { xs: 2, sm: 3 },
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="h1"
+            sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+          >
             Your Statistics
           </Typography>
           <ToggleButtonGroup
@@ -201,6 +214,7 @@ export default function Stats() {
             exclusive
             onChange={(_, value) => value && setTimeRange(value)}
             size="small"
+            sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
           >
             <ToggleButton value="7">7 Days</ToggleButton>
             <ToggleButton value="30">30 Days</ToggleButton>
@@ -208,7 +222,7 @@ export default function Stats() {
         </Box>
 
         {/* Summary Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={{ xs: 2, sm: 2, md: 3 }} sx={{ mb: { xs: 2, sm: 3, md: 4 } }}>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
@@ -264,12 +278,12 @@ export default function Stats() {
         </Grid>
 
         {/* Time Allocation Pie Chart */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
           <Typography variant="h6" gutterBottom>
             Daily Time Allocation (24 Hours)
           </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <ResponsiveContainer width="100%" height={400}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={timeAllocation}
@@ -277,7 +291,7 @@ export default function Stats() {
                   cy="50%"
                   labelLine={true}
                   label={({ name, value }) => `${name}: ${value}h`}
-                  outerRadius={120}
+                  outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
                 >
@@ -293,11 +307,11 @@ export default function Stats() {
         </Paper>
 
         {/* Calories Chart */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
           <Typography variant="h6" gutterBottom>
             Daily Calorie Intake
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={dailyStats}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
@@ -317,11 +331,11 @@ export default function Stats() {
         </Paper>
 
         {/* Exercise Chart */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
           <Typography variant="h6" gutterBottom>
             Daily Exercise Activity
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={dailyStats}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
@@ -334,11 +348,11 @@ export default function Stats() {
         </Paper>
 
         {/* Sleep Chart */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
           <Typography variant="h6" gutterBottom>
             Sleep Duration & Quality
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <LineChart data={dailyStats}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
@@ -367,11 +381,11 @@ export default function Stats() {
         </Paper>
 
         {/* Net Calories Chart */}
-        <Paper elevation={2} sx={{ p: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 } }}>
           <Typography variant="h6" gutterBottom>
             Net Calories (Intake - Exercise)
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <LineChart data={dailyStats}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
