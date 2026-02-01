@@ -1,6 +1,6 @@
 /**
  * Ocean Work Scene Component
- * Seal employee chasing fish theme with rich ocean environment
+ * Seal employee chasing fish theme with rich ocean environment using Kenney assets
  */
 
 import { useState, useEffect } from 'react';
@@ -17,11 +17,19 @@ interface OceanWorkSceneProps {
 
 interface Fish {
   id: number;
-  type: string; // fish type for different images
+  type: string; // fish color: blue, brown, green, grey, orange, pink, red
   x: number;
   y: number;
   speed: number;
   direction: number; // 1 or -1
+}
+
+interface Decoration {
+  id: number;
+  type: string;
+  x: string;
+  y: string;
+  size: number;
 }
 
 export default function OceanWorkScene({
@@ -47,9 +55,12 @@ export default function OceanWorkScene({
   // Swimming fish in the ocean
   const [backgroundFish, setBackgroundFish] = useState<Fish[]>([]);
 
+  // Static decorations (rocks and seaweed) - generated once on mount
+  const [decorations, setDecorations] = useState<Decoration[]>([]);
+
   // Initialize random swimming fish on mount
   useEffect(() => {
-    const fishTypes = ['fish1', 'fish2', 'fish3', 'fish4', 'fish5'];
+    const fishTypes = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'red'];
     const initialFish: Fish[] = Array.from({ length: 8 }, (_, i) => ({
       id: i,
       type: fishTypes[Math.floor(Math.random() * fishTypes.length)],
@@ -59,6 +70,22 @@ export default function OceanWorkScene({
       direction: Math.random() > 0.5 ? 1 : -1,
     }));
     setBackgroundFish(initialFish);
+
+    // Generate random decorations
+    const rocks = [
+      { id: 1, type: 'rock_a', x: '15%', y: '85%', size: 40 },
+      { id: 2, type: 'rock_b', x: '60%', y: '88%', size: 35 },
+      { id: 3, type: 'background_rock_a', x: '80%', y: '82%', size: 30 },
+    ];
+
+    const seaweeds = [
+      { id: 4, type: 'seaweed_green_a', x: '25%', y: '75%', size: 50 },
+      { id: 5, type: 'seaweed_pink_b', x: '45%', y: '80%', size: 45 },
+      { id: 6, type: 'seaweed_orange_a', x: '70%', y: '78%', size: 48 },
+      { id: 7, type: 'seaweed_grass_a', x: '35%', y: '83%', size: 40 },
+    ];
+
+    setDecorations([...rocks, ...seaweeds]);
   }, []);
 
   // Animate background fish swimming
@@ -177,7 +204,7 @@ export default function OceanWorkScene({
           borderRadius: 2,
         }}
       >
-        {/* Ocean Floor - Terrain */}
+        {/* Ocean Floor - Terrain with texture */}
         <Box
           sx={{
             position: 'absolute',
@@ -186,30 +213,35 @@ export default function OceanWorkScene({
             width: '100%',
             height: '30%',
             background: 'linear-gradient(180deg, transparent 0%, rgba(139, 90, 43, 0.3) 50%, rgba(101, 67, 33, 0.5) 100%)',
+            backgroundImage: 'url(/assets/ocean/background_terrain.png)',
+            backgroundRepeat: 'repeat-x',
+            backgroundPosition: 'bottom',
+            backgroundSize: 'auto 60%',
           }}
         />
 
-        {/* Rocks (decorative) - Use Kenney assets here */}
-        <Box sx={{ position: 'absolute', bottom: '5%', left: '15%' }}>
-          <Typography sx={{ fontSize: { xs: '30px', sm: '40px' } }}>🪨</Typography>
-        </Box>
-        <Box sx={{ position: 'absolute', bottom: '3%', left: '60%' }}>
-          <Typography sx={{ fontSize: { xs: '25px', sm: '35px' } }}>🪨</Typography>
-        </Box>
-        <Box sx={{ position: 'absolute', bottom: '8%', left: '80%' }}>
-          <Typography sx={{ fontSize: { xs: '20px', sm: '30px' } }}>🪨</Typography>
-        </Box>
-
-        {/* Seaweed (decorative) - Use Kenney assets here */}
-        <Box sx={{ position: 'absolute', bottom: '5%', left: '25%' }}>
-          <Typography sx={{ fontSize: { xs: '40px', sm: '50px' } }}>🌿</Typography>
-        </Box>
-        <Box sx={{ position: 'absolute', bottom: '3%', left: '45%' }}>
-          <Typography sx={{ fontSize: { xs: '35px', sm: '45px' } }}>🌿</Typography>
-        </Box>
-        <Box sx={{ position: 'absolute', bottom: '6%', left: '70%' }}>
-          <Typography sx={{ fontSize: { xs: '38px', sm: '48px' } }}>🌿</Typography>
-        </Box>
+        {/* Decorations (rocks and seaweed) */}
+        {decorations.map(deco => (
+          <Box
+            key={deco.id}
+            sx={{
+              position: 'absolute',
+              left: deco.x,
+              top: deco.y,
+              zIndex: deco.type.startsWith('rock') ? 3 : 2,
+            }}
+          >
+            <img
+              src={`/assets/ocean/${deco.type}.png`}
+              alt={deco.type}
+              style={{
+                width: `${deco.size}px`,
+                height: 'auto',
+                imageRendering: 'pixelated', // Crisp pixel art
+              }}
+            />
+          </Box>
+        ))}
 
         {/* Background Swimming Fish (ambient) */}
         {backgroundFish.map(fish => (
@@ -222,14 +254,22 @@ export default function OceanWorkScene({
               transform: fish.direction === -1 ? 'scaleX(-1)' : 'none',
               opacity: isWorking ? 1 : 0.6,
               transition: 'left 0.05s linear, opacity 0.3s',
+              zIndex: 4,
             }}
           >
-            {/* Replace with <img src={`/assets/ocean/${fish.type}.png`} /> */}
-            <Typography sx={{ fontSize: { xs: '20px', sm: '25px' } }}>🐟</Typography>
+            <img
+              src={`/assets/ocean/fish_${fish.type}.png`}
+              alt={`${fish.type} fish`}
+              style={{
+                width: '25px',
+                height: 'auto',
+                imageRendering: 'pixelated',
+              }}
+            />
           </Box>
         ))}
 
-        {/* Fishing Hook (hanging from top) */}
+        {/* Fishing Hook (hanging from top) - Using emoji as requested */}
         <Box
           sx={{
             position: 'absolute',
@@ -238,6 +278,7 @@ export default function OceanWorkScene({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            zIndex: 5,
           }}
         >
           {/* Fishing line */}
@@ -248,9 +289,8 @@ export default function OceanWorkScene({
               background: 'rgba(255, 255, 255, 0.5)',
             }}
           />
-          {/* Hook */}
+          {/* Hook (emoji - no asset available) */}
           <Typography sx={{ fontSize: { xs: '25px', sm: '35px' } }}>🪝</Typography>
-          {/* Replace with <img src="/assets/ocean/hook.png" style={{ width: '30px' }} /> */}
         </Box>
 
         {/* Seal Character (chasing fish) */}
@@ -266,18 +306,39 @@ export default function OceanWorkScene({
               '0%, 100%': { transform: `scaleX(${sealDirection}) translateY(0)` },
               '50%': { transform: `scaleX(${sealDirection}) translateY(-5px)` },
             },
+            zIndex: 6,
           }}
         >
-          <Typography variant="h1" sx={{ fontSize: { xs: '40px', sm: '60px' } }}>
-            🦭
-          </Typography>
-          {/* Replace with <img src="/assets/ocean/seal.png" style={{ width: '60px' }} /> */}
-          <Typography variant="caption" sx={{ color: 'white', fontWeight: 'bold', display: 'block', textAlign: 'center' }}>
-            You
-          </Typography>
+          <Box sx={{ position: 'relative', display: 'inline-block' }}>
+            <img
+              src="/assets/ocean/seal.png"
+              alt="seal"
+              style={{
+                width: '60px',
+                height: 'auto',
+                imageRendering: 'pixelated',
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{
+                position: 'absolute',
+                bottom: -15,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: { xs: '0.6rem', sm: '0.7rem' },
+                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              You
+            </Typography>
+          </Box>
         </Box>
 
-        {/* Octopus Boss (on boat/platform) */}
+        {/* Octopus Boss (on platform) */}
         <Box
           sx={{
             position: 'absolute',
@@ -286,15 +347,36 @@ export default function OceanWorkScene({
             textAlign: 'center',
             transform: octopusAnnoyed ? 'rotate(15deg) scale(1.1)' : 'none',
             transition: 'transform 0.3s',
+            zIndex: 7,
           }}
         >
-          <Typography variant="h1" sx={{ fontSize: { xs: '50px', sm: '70px' } }}>
-            🐙
-          </Typography>
-          {/* Replace with <img src="/assets/ocean/octopus.png" style={{ width: '70px' }} /> */}
-          <Typography variant="caption" sx={{ color: 'white', fontWeight: 'bold' }}>
-            Manager
-          </Typography>
+          <Box sx={{ position: 'relative', display: 'inline-block' }}>
+            <img
+              src={`/assets/ocean/octopus_${octopusAnnoyed ? 'angry' : 'normal'}.png`}
+              alt="octopus boss"
+              style={{
+                width: '70px',
+                height: 'auto',
+                imageRendering: 'pixelated',
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{
+                position: 'absolute',
+                bottom: -15,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: { xs: '0.6rem', sm: '0.7rem' },
+                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Manager
+            </Typography>
+          </Box>
           {showPrankEffect && (
             <Typography
               variant="h2"
@@ -315,15 +397,37 @@ export default function OceanWorkScene({
         </Box>
 
         {/* Bubbles (ambient decoration) */}
-        <Box sx={{ position: 'absolute', left: '30%', bottom: '40%', animation: 'float 3s ease-in-out infinite', '@keyframes float': { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } } }}>
-          <Typography sx={{ fontSize: '15px', opacity: 0.6 }}>○</Typography>
-        </Box>
-        <Box sx={{ position: 'absolute', left: '50%', bottom: '25%', animation: 'float 4s ease-in-out infinite 0.5s', '@keyframes float': { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } } }}>
-          <Typography sx={{ fontSize: '12px', opacity: 0.5 }}>○</Typography>
-        </Box>
-        <Box sx={{ position: 'absolute', left: '75%', bottom: '35%', animation: 'float 3.5s ease-in-out infinite 1s', '@keyframes float': { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } } }}>
-          <Typography sx={{ fontSize: '18px', opacity: 0.7 }}>○</Typography>
-        </Box>
+        {[
+          { x: '30%', y: '40%', delay: 0, img: 'bubble_a' },
+          { x: '50%', y: '25%', delay: 0.5, img: 'bubble_b' },
+          { x: '75%', y: '35%', delay: 1, img: 'bubble_c' },
+        ].map((bubble, index) => (
+          <Box
+            key={index}
+            sx={{
+              position: 'absolute',
+              left: bubble.x,
+              bottom: bubble.y,
+              animation: `float 3s ease-in-out infinite ${bubble.delay}s`,
+              '@keyframes float': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+              zIndex: 8,
+              opacity: 0.7,
+            }}
+          >
+            <img
+              src={`/assets/ocean/${bubble.img}.png`}
+              alt="bubble"
+              style={{
+                width: '15px',
+                height: 'auto',
+                imageRendering: 'pixelated',
+              }}
+            />
+          </Box>
+        ))}
 
         {/* Work Progress HUD */}
         {isWorking && (
@@ -337,6 +441,7 @@ export default function OceanWorkScene({
               left: '50%',
               transform: 'translateX(-50%)',
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              zIndex: 10,
             }}
           />
         )}
@@ -352,6 +457,7 @@ export default function OceanWorkScene({
               transform: 'translateX(-50%)',
               width: { xs: '90%', sm: '80%' },
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              zIndex: 10,
             }}
           >
             ⚠️ High stress! Consider pranking the octopus boss!
