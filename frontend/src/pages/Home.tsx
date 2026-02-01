@@ -68,9 +68,9 @@ export default function Home() {
         <Typography
           variant="h5"
           component="h1"
-          sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, mb: { xs: 1, sm: 1.5 } }}
+          sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, mb: { xs: 3, sm: 4.5 } }}
         >
-          Welcome back, {user?.username || 'Guest'}!
+          🦪 Life is your Oyster, {user?.username || 'Guest'}!
         </Typography>
 
         {/* Character State - Compact horizontal card */}

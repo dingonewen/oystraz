@@ -319,11 +319,11 @@ function App() {
           {/* Pearl AI Assistant - Global floating widget */}
           {isAuthenticated && <PearlAssistant />}
 
-          {/* Footer */}
+          {/* Footer - compact to avoid overlap with Pearl button */}
           <Box
             component="footer"
             sx={{
-              py: 3,
+              py: 1.5,
               px: 2,
               mt: 'auto',
               backgroundColor: '#1E1F20',
@@ -332,8 +332,8 @@ function App() {
             }}
           >
             <Container maxWidth="lg">
-              <Typography variant="body2" color="text.secondary" align="center">
-                Oystraz - Orchestrate your health. Control your life.
+              <Typography variant="caption" color="text.secondary" align="center" display="block">
+                Oystraz - Orchestrate your health
               </Typography>
             </Container>
           </Box>
