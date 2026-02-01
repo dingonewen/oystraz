@@ -49,20 +49,102 @@ import PearlAssistant from './components/PearlAssistant';
 // Store
 import { useUserStore } from './store/userStore';
 
-// Create theme
+declare module '@mui/material/styles' {
+  interface Palette {
+    surface: Palette['primary']; 
+  }
+  interface PaletteOptions {
+    surface?: PaletteOptions['primary'];
+  }
+}
+
+// Material Design 3 Dark Theme with Google's Dark Mode palette
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      main: '#4CAF50', // Health Green
+      main: '#8AB4F8', // MD3 Primary Blue
+      light: '#AECBFA',
+      dark: '#669DF6',
     },
     secondary: {
-      main: '#2196F3', // Energy Blue
+      main: '#81C995', // MD3 Secondary Green
+      light: '#A8DAB5',
+      dark: '#5BB974',
     },
     error: {
-      main: '#F44336', // Stress Red
+      main: '#F28B82', // MD3 Error
     },
     warning: {
-      main: '#FF9800', // Caution Orange
+      main: '#FDD663', // MD3 Warning
+    },
+    background: {
+      default: '#131314', // Google Dark Mode background
+      paper: '#1E1F20', // Elevated surface
+    },
+    surface: {
+      main: '#1E1F20',
+    },
+    text: {
+      primary: '#E3E3E3',
+      secondary: '#9AA0A6',
+    },
+    divider: '#3C4043',
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h1: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 600 },
+    h2: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 600 },
+    h3: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 600 },
+    h4: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 600 },
+    h5: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 500 },
+    h6: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 500 },
+    button: { fontFamily: '"Inter", "Roboto", sans-serif', fontWeight: 500 },
+  },
+  shape: {
+    borderRadius: 24, // MD3 large radius for cards
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none', // Remove default gradient
+          borderRadius: 24,
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 24,
+          backgroundColor: '#1E1F20',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 20,
+          textTransform: 'none',
+          fontWeight: 500,
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#1E1F20',
+          backgroundImage: 'none',
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#1E1F20',
+          borderRadius: 0,
+        },
+      },
     },
   },
 });
@@ -101,8 +183,8 @@ function AppNavigation() {
 
   return (
     <>
-      <AppBar position="static" elevation={1}>
-        <Toolbar>
+      <AppBar position="fixed" elevation={1} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
           {isMobile && (
             <IconButton
               color="inherit"
@@ -198,8 +280,11 @@ function App() {
           {/* Navigation Bar */}
           <AppNavigation />
 
+          {/* Toolbar spacer for fixed AppBar */}
+          {isAuthenticated && <Box sx={{ height: { xs: 56, sm: 64 } }} />}
+
           {/* Main Content */}
-          <Box component="main" sx={{ flexGrow: 1, bgcolor: '#fafafa', py: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', py: 3 }}>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -221,10 +306,9 @@ function App() {
               py: 3,
               px: 2,
               mt: 'auto',
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                  ? theme.palette.grey[200]
-                  : theme.palette.grey[800],
+              backgroundColor: '#1E1F20',
+              borderTop: '1px solid',
+              borderColor: 'divider',
             }}
           >
             <Container maxWidth="lg">
