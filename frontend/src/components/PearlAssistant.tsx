@@ -214,7 +214,7 @@ export default function PearlAssistant() {
         </Box>
       )}
 
-      {/* Chat Window - fits screen, no bottom-right radius */}
+      {/* Chat Window - 2/3 of screen from bottom-right corner */}
       <Fade in={isOpen}>
         <Paper
           elevation={8}
@@ -222,24 +222,24 @@ export default function PearlAssistant() {
             position: 'fixed',
             bottom: 0,
             right: 0,
-            width: { xs: '100vw', sm: 320 },
-            height: { xs: 'calc(100vh - 56px)', sm: 450 },
-            maxWidth: { xs: '100vw', sm: 320 },
-            maxHeight: { xs: 'calc(100vh - 56px)', sm: 450 },
+            width: { xs: '85vw', sm: 300 },
+            height: { xs: '66vh', sm: 420 },
+            maxWidth: { xs: '85vw', sm: 300 },
+            maxHeight: { xs: '66vh', sm: 420 },
             display: isOpen ? 'flex' : 'none',
             flexDirection: 'column',
-            // Top corners rounded, bottom-right corner sharp
-            borderTopLeftRadius: { xs: 16, sm: 20 },
-            borderTopRightRadius: { xs: 16, sm: 20 },
-            borderBottomLeftRadius: { xs: 0, sm: 20 },
+            // Top-left, top-right, bottom-left rounded; bottom-right sharp
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+            borderBottomLeftRadius: 16,
             borderBottomRightRadius: 0,
             overflow: 'hidden',
             zIndex: 1400,
             backgroundColor: '#F0F7FB',
             border: '1px solid #B8D4E8',
             borderBottom: 'none',
-            borderRight: { xs: 'none', sm: '1px solid #B8D4E8' },
-            boxShadow: '0 -4px 32px rgba(74, 144, 217, 0.15)',
+            borderRight: 'none',
+            boxShadow: '-4px -4px 24px rgba(74, 144, 217, 0.15)',
           }}
         >
           {/* Header with Pearl Iridescent Gradient */}

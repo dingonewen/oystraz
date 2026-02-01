@@ -49,15 +49,6 @@ import PearlAssistant from './components/PearlAssistant';
 // Store
 import { useUserStore } from './store/userStore';
 
-declare module '@mui/material/styles' {
-  interface Palette {
-    surface: Palette['primary']; 
-  }
-  interface PaletteOptions {
-    surface?: PaletteOptions['primary'];
-  }
-}
-
 // Material Design 3 Dark Theme with Google's Dark Mode palette
 const theme = createTheme({
   palette: {
@@ -81,9 +72,6 @@ const theme = createTheme({
     background: {
       default: '#131314', // Google Dark Mode background
       paper: '#1E1F20', // Elevated surface
-    },
-    surface: {
-      main: '#1E1F20',
     },
     text: {
       primary: '#E3E3E3',
@@ -196,9 +184,27 @@ function AppNavigation() {
             </IconButton>
           )}
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            🎮 Oystraz
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
+            <img
+              src="/assets/ocean/seal.png"
+              alt="seal"
+              style={{ width: 28, height: 'auto', imageRendering: 'pixelated' }}
+            />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontWeight: 700,
+                fontFamily: '"Inter", sans-serif',
+              }}
+            >
+              Oystraz
+            </Typography>
+          </Box>
 
           {/* Desktop Navigation */}
           {!isMobile && (
@@ -226,20 +232,34 @@ function AppNavigation() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer - 20% narrower */}
       <Drawer
         anchor="left"
         open={drawerOpen}
         onClose={handleDrawerToggle}
         sx={{
           '& .MuiDrawer-paper': {
-            width: 250,
+            width: 200,
           },
         }}
       >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            🎮 Oystraz
+        <Box sx={{ p: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <img
+            src="/assets/ocean/seal.png"
+            alt="seal"
+            style={{ width: 24, height: 'auto', imageRendering: 'pixelated' }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Oystraz
           </Typography>
         </Box>
         <Divider />
@@ -299,11 +319,11 @@ function App() {
           {/* Pearl AI Assistant - Global floating widget */}
           {isAuthenticated && <PearlAssistant />}
 
-          {/* Footer */}
+          {/* Footer - compact to avoid overlap with Pearl button */}
           <Box
             component="footer"
             sx={{
-              py: 3,
+              py: 1.5,
               px: 2,
               mt: 'auto',
               backgroundColor: '#1E1F20',
@@ -312,8 +332,8 @@ function App() {
             }}
           >
             <Container maxWidth="lg">
-              <Typography variant="body2" color="text.secondary" align="center">
-                Oystraz - Orchestrate your health. Control your life.
+              <Typography variant="caption" color="text.secondary" align="center" display="block">
+                Oystraz - Orchestrate your health
               </Typography>
             </Container>
           </Box>

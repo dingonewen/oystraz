@@ -1,6 +1,7 @@
 /**
  * Home Page
  * Main page showing character status and quick actions
+ * Compact layout - no scrolling needed to see all stats
  */
 
 import { useEffect } from 'react';
@@ -50,159 +51,99 @@ export default function Home() {
     );
   }
 
+  // Stat card data
+  const stats = [
+    { label: 'Stamina', emoji: '💪', value: character?.stamina || 0, color: 'primary', desc: 'Exercise & sleep' },
+    { label: 'Energy', emoji: '⚡', value: character?.energy || 0, color: 'primary', desc: 'Caloric balance' },
+    { label: 'Nutrition', emoji: '🍎', value: character?.nutrition || 0, color: 'primary', desc: 'Diet balance' },
+    { label: 'Mood', emoji: '😊', value: character?.mood || 0, color: 'primary', desc: 'Overall wellness' },
+    { label: 'Stress', emoji: '😰', value: character?.stress || 0, color: 'error', desc: 'Lower is better' },
+    { label: 'Level', emoji: '🏆', value: character?.level || 1, color: 'secondary', desc: `XP: ${character?.experience || 0}` },
+  ];
+
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, px: { xs: 2, sm: 0 } }}>
-        {/* Welcome Section */}
+    <Container maxWidth="md">
+      <Box sx={{ mt: { xs: 1, sm: 2 }, mb: { xs: 1, sm: 2 }, px: { xs: 1, sm: 0 } }}>
+        {/* Welcome - compact */}
         <Typography
-          variant="h3"
+          variant="h5"
           component="h1"
-          gutterBottom
-          sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+          sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, mb: { xs: 3, sm: 4.5 } }}
         >
-          Welcome back, {user?.username || 'Guest'}!
+          🦪 Life is your Oyster, {user?.username || 'Guest'}!
         </Typography>
 
-        <Typography
-          variant="subtitle1"
-          color="text.secondary"
-          gutterBottom
-          sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-        >
-          Your virtual character is ready to orchestrate your wellness journey
-        </Typography>
-
-        {/* Character Status Grid */}
-        <Grid container spacing={{ xs: 2, sm: 2, md: 3 }} sx={{ mt: { xs: 2, sm: 3 } }}>
-          {/* Stamina */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                💪 Stamina
-              </Typography>
-              <Typography variant="h3" color="primary">
-                {character?.stamina || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Based on exercise & sleep
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Energy */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                ⚡ Energy
-              </Typography>
-              <Typography variant="h3" color="primary">
-                {character?.energy || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Based on caloric balance
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Nutrition */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                🍎 Nutrition
-              </Typography>
-              <Typography variant="h3" color="primary">
-                {character?.nutrition || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Based on dietary balance
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Mood */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                😊 Mood
-              </Typography>
-              <Typography variant="h3" color="primary">
-                {character?.mood || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Based on overall wellness
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Stress */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                😰 Stress
-              </Typography>
-              <Typography variant="h3" color="error">
-                {character?.stress || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Lower is better
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Level */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                🏆 Level
-              </Typography>
-              <Typography variant="h3" color="secondary">
-                {character?.level || 1}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                XP: {character?.experience || 0}
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-
-        {/* Character State Display */}
+        {/* Character State - Compact horizontal card */}
         <Paper
-          elevation={3}
+          elevation={2}
           sx={{
-            p: { xs: 2, sm: 3, md: 4 },
-            mt: { xs: 3, sm: 4 },
-            textAlign: 'center',
+            p: { xs: 1.5, sm: 2 },
+            mb: { xs: 1.5, sm: 2 },
+            display: 'flex',
+            alignItems: 'center',
+            gap: { xs: 2, sm: 3 },
           }}
         >
-          <Typography
-            variant="h4"
-            gutterBottom
-            sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' } }}
-          >
-            Your Character
-          </Typography>
-          <Box sx={{ fontSize: { xs: '3rem', sm: '4rem', md: '5rem' }, my: 2 }}>
+          {/* Character emoji */}
+          <Box sx={{ fontSize: { xs: '2.5rem', sm: '3rem' } }}>
             {character?.emotionalState === 'happy' && '😊'}
             {character?.emotionalState === 'normal' && '🙂'}
             {character?.emotionalState === 'tired' && '😴'}
             {character?.emotionalState === 'stressed' && '😰'}
             {character?.emotionalState === 'angry' && '😠'}
+            {!character?.emotionalState && '🙂'}
           </Box>
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            sx={{ fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' } }}
-          >
-            Body Type: {character?.bodyType || 'Normal'}
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-          >
-            Emotional State: {character?.emotionalState || 'Normal'}
-          </Typography>
+          {/* Character info */}
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+              Your Character
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.85rem' } }}>
+              {character?.bodyType || 'Normal'} • {character?.emotionalState || 'Normal'}
+            </Typography>
+          </Box>
         </Paper>
+
+        {/* Stats Grid - 3 rows x 2 columns, compact cards */}
+        <Grid container spacing={{ xs: 1, sm: 1.5 }}>
+          {stats.map((stat) => (
+            <Grid key={stat.label} size={{ xs: 6 }}>
+              <Paper
+                elevation={1}
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                  <Typography sx={{ fontSize: { xs: '1rem', sm: '1.1rem' } }}>{stat.emoji}</Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 500, fontSize: { xs: '0.75rem', sm: '0.85rem' } }}
+                  >
+                    {stat.label}
+                  </Typography>
+                </Box>
+                <Typography
+                  variant="h4"
+                  color={stat.color as 'primary' | 'secondary' | 'error'}
+                  sx={{ fontSize: { xs: '1.5rem', sm: '1.75rem' }, fontWeight: 600 }}
+                >
+                  {stat.value}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontSize: { xs: '0.65rem', sm: '0.7rem' } }}
+                >
+                  {stat.desc}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Container>
   );
