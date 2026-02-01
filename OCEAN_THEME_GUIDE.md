@@ -1,36 +1,36 @@
 # 🌊 Ocean Theme Implementation Guide
 
-## 概述
+## Overview
 
-你的 Oystraz 工作模拟器现在采用海洋主题：
-- **主角**：🦭 海豹打工人（Seal Employee）
-- **老板**：🐙 章鱼经理（Octopus Manager）
-- **工作**：🎣 钓鱼（隐喻为他人做嫁衣）
-- **创新**：💦 恶作剧老板来释放压力
+Your Oystraz work simulator now features an ocean theme:
+- **Protagonist**: 🦭 Seal Employee
+- **Boss**: 🐙 Octopus Manager
+- **Work**: 🎣 Fishing (metaphor for working for others' benefit)
+- **Innovation**: 💦 Prank the boss to relieve stress
 
 ---
 
-## 🎨 如何添加 Kenney 素材
+## 🎨 How to Add Kenney Assets
 
-### 1. 素材放置位置
+### 1. Asset Placement
 
 ```
 frontend/public/assets/ocean/
-├── seal.png          # 海豹（你）
-├── octopus.png       # 章鱼（老板）
-├── fish-*.png        # 各种鱼（工作任务）
-├── hook.png          # 鱼钩
-├── bubble.png        # 气泡装饰
-├── ink.png           # 墨汁效果
-└── wave.png          # 波浪（可选）
+├── seal.png          # Seal (you)
+├── octopus.png       # Octopus (boss)
+├── fish-*.png        # Various fish (work tasks)
+├── hook.png          # Fishing hook
+├── bubble.png        # Bubble decoration
+├── ink.png           # Ink effect
+└── wave.png          # Wave (optional)
 ```
 
-### 2. 在组件中使用图片
+### 2. Using Images in Components
 
-编辑 `frontend/src/components/Work/OceanWorkScene.tsx`，将 emoji 替换为图片：
+Edit `frontend/src/components/Work/OceanWorkScene.tsx` and replace emojis with images:
 
 ```typescript
-// 替换第 91 行的海豹 emoji
+// Replace seal emoji at line 91
 <Box
   sx={{
     position: 'absolute',
@@ -39,12 +39,12 @@ frontend/public/assets/ocean/
     textAlign: 'center',
   }}
 >
-  {/* 方式一：使用 emoji（当前） */}
+  {/* Option 1: Using emoji (current) */}
   <Typography variant="h1" sx={{ fontSize: { xs: '60px', sm: '80px' } }}>
     🦭
   </Typography>
 
-  {/* 方式二：使用 Kenney 图片（推荐） */}
+  {/* Option 2: Using Kenney image (recommended) */}
   <img
     src="/assets/ocean/seal.png"
     alt="seal"
@@ -52,7 +52,7 @@ frontend/public/assets/ocean/
   />
 </Box>
 
-// 替换第 109 行的章鱼 emoji
+// Replace octopus emoji at line 109
 <Box
   sx={{
     position: 'absolute',
@@ -63,7 +63,7 @@ frontend/public/assets/ocean/
     transition: 'transform 0.3s',
   }}
 >
-  {/* 使用图片替换 emoji */}
+  {/* Use image instead of emoji */}
   <img
     src="/assets/ocean/octopus.png"
     alt="octopus"
@@ -75,7 +75,7 @@ frontend/public/assets/ocean/
   />
 </Box>
 
-// 替换第 135 行的鱼 emoji
+// Replace fish emoji at line 135
 {isWorking && (
   <Box sx={{ position: 'absolute', left: '40%', bottom: '40%' }}>
     <img
@@ -89,49 +89,49 @@ frontend/public/assets/ocean/
 
 ---
 
-## 🎮 功能说明
+## 🎮 Feature Documentation
 
-### 工作记录功能
+### Work Logging System
 
-**新增的 API endpoints**：
-- `POST /work/log` - 记录工作session
-- `GET /work/logs?days=7` - 获取最近7天的工作记录
-- `GET /work/stats?days=7` - 获取工作统计数据
-- `DELETE /work/log/{id}` - 删除工作记录
+**New API endpoints**:
+- `POST /work/log` - Log work session
+- `GET /work/logs?days=7` - Get work logs from last 7 days
+- `GET /work/stats?days=7` - Get work statistics
+- `DELETE /work/log/{id}` - Delete work log
 
-**数据库表** (`work_logs`)：
-- `duration_hours` - 工作时长
-- `intensity` - 工作强度（1-5）
-- `energy_cost` - 消耗的能量
-- `stress_gain` - 增加的压力
-- `experience_gain` - 获得的经验
-- `pranked_boss` - 恶作剧次数
+**Database table** (`work_logs`):
+- `duration_hours` - Work duration
+- `intensity` - Work intensity (1-5)
+- `energy_cost` - Energy consumed
+- `stress_gain` - Stress gained
+- `experience_gain` - Experience earned
+- `pranked_boss` - Number of pranks
 
-### 工作模式
+### Work Modes
 
-**普通工作**：
-1. 调整工作时长（1-8小时）
-2. 设置工作强度（1-5）
-3. 预览影响：
-   - 能量损失 = 时长 × 强度 × 3
-   - 压力增加 = 时长 × 强度 × 2
-   - 经验获得 = 时长 × 强度 × 10
-4. 点击 "Start Work Session" 开始工作
-5. 看着海豹钓鱼（动画效果）
+**Normal Work**:
+1. Adjust work duration (1-8 hours)
+2. Set work intensity (1-5)
+3. Preview impact:
+   - Energy loss = duration × intensity × 3
+   - Stress gain = duration × intensity × 2
+   - Experience gain = duration × intensity × 10
+4. Click "Start Work Session" to begin
+5. Watch the seal fishing (animation effect)
 
-**恶作剧老板**（创新功能！）：
-1. 当压力 ≥ 30 时解锁
-2. 点击 "💦 Prank the Octopus Boss!"
-3. 效果：
-   - 压力 -20
-   - 心情 +10
-   - 章鱼被墨汁喷到（动画）
-4. 30秒冷却时间
+**Prank the Boss** (Innovative Feature!):
+1. Unlocks when stress ≥ 30
+2. Click "💦 Prank the Octopus Boss!"
+3. Effects:
+   - Stress -20
+   - Mood +10
+   - Octopus gets inked (animation)
+4. 30-second cooldown
 
-### 压力管理机制
+### Stress Management System
 
 ```typescript
-// 自动提醒系统（在场景中）
+// Auto reminder system (in scene)
 {characterStress > 70 && (
   <Alert severity="warning">
     ⚠️ High stress detected!
@@ -142,11 +142,11 @@ frontend/public/assets/ocean/
 
 ---
 
-## 🎨 美化建议
+## 🎨 Enhancement Suggestions
 
-### 1. 改进海洋背景
+### 1. Improve Ocean Background
 
-在 `OceanWorkScene.tsx` 第 89 行：
+In `OceanWorkScene.tsx` at line 89:
 
 ```typescript
 <Paper
@@ -157,7 +157,7 @@ frontend/public/assets/ocean/
     minHeight: 300,
     position: 'relative',
     overflow: 'hidden',
-    // 添加波浪动画背景
+    // Add animated wave background
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -176,10 +176,10 @@ frontend/public/assets/ocean/
 >
 ```
 
-### 2. 添加气泡装饰
+### 2. Add Bubble Decorations
 
 ```typescript
-// 在海洋场景中添加
+// Add to ocean scene
 <Box
   sx={{
     position: 'absolute',
@@ -196,13 +196,13 @@ frontend/public/assets/ocean/
 </Box>
 ```
 
-### 3. 钓鱼动画
+### 3. Fishing Animation
 
 ```typescript
-// 在工作时添加钓鱼竿动画
+// Add fishing rod animation while working
 {isWorking && (
   <>
-    {/* 鱼钩 */}
+    {/* Hook */}
     <Box
       sx={{
         position: 'absolute',
@@ -223,87 +223,87 @@ frontend/public/assets/ocean/
 
 ---
 
-## 📱 移动端优化
+## 📱 Mobile Optimization
 
-已完成的响应式设计：
-- ✅ 海洋场景自适应屏幕大小
-- ✅ 海豹/章鱼在移动端自动缩小
-- ✅ 工作控制面板在手机上堆叠显示
-- ✅ 触控友好的滑块和按钮
-
----
-
-## 🚀 下一步建议
-
-### 短期（视觉优化）：
-1. **替换 emoji 为 Kenney 图片**
-2. **添加波浪背景动画**
-3. **优化颜色方案**（使用海洋蓝色系）
-4. **添加音效**（可选）：
-   - 钓到鱼的声音
-   - 章鱼被恶作剧的声音
-   - 背景海浪声
-
-### 中期（功能增强）：
-1. **不同种类的鱼**：
-   - 小鱼 = 简单任务
-   - 大鱼 = 复杂项目
-   - 金鱼 = 奖励任务
-2. **章鱼老板状态**：
-   - 心情好时给更简单的任务
-   - 被恶作剧太多次会"报复"
-3. **成就系统**：
-   - "恶作剧大师" - 恶作剧老板50次
-   - "钓鱼达人" - 完成100小时工作
-   - "压力管理大师" - 保持压力<30连续7天
-
-### 长期（AI集成）：
-1. **Gemini 生成工作场景**
-2. **Pearl 给工作建议**
-3. **智能推荐休息时间**
+Completed responsive design features:
+- ✅ Ocean scene adapts to screen size
+- ✅ Seal/octopus automatically scale down on mobile
+- ✅ Work control panel stacks on mobile
+- ✅ Touch-friendly sliders and buttons
 
 ---
 
-## 💡 创意点亮点
+## 🚀 Next Steps
 
-你的**恶作剧老板**功能是非常独特的创新：
-1. ✅ **解决实际痛点** - 工作压力释放
-2. ✅ **安全宣泄** - 虚拟环境不影响现实
-3. ✅ **游戏化** - 有冷却时间，不能滥用
-4. ✅ **反hustle culture** - 鼓励减压
+### Short-term (Visual Optimization):
+1. **Replace emojis with Kenney images**
+2. **Add wave background animation**
+3. **Optimize color scheme** (ocean blue palette)
+4. **Add sound effects** (optional):
+   - Fish catching sound
+   - Octopus prank sound
+   - Background ocean waves
 
-这个功能在 Hackathon 演示时会很吸引眼球！
+### Mid-term (Feature Enhancement):
+1. **Different fish types**:
+   - Small fish = simple tasks
+   - Big fish = complex projects
+   - Golden fish = bonus tasks
+2. **Octopus boss states**:
+   - Good mood = easier tasks
+   - Pranked too much = "retaliation"
+3. **Achievement system**:
+   - "Prank Master" - Prank boss 50 times
+   - "Fishing Expert" - Complete 100 hours of work
+   - "Stress Manager" - Keep stress <30 for 7 days straight
+
+### Long-term (AI Integration):
+1. **Gemini-generated work scenarios**
+2. **Pearl gives work advice**
+3. **Smart break time recommendations**
 
 ---
 
-## 🔧 运行和测试
+## 💡 Innovation Highlights
+
+Your **Prank the Boss** feature is a unique innovation:
+1. ✅ **Solves real pain point** - Work stress relief
+2. ✅ **Safe outlet** - Virtual environment, no real-world consequences
+3. ✅ **Gamified** - Has cooldown, prevents abuse
+4. ✅ **Anti-hustle culture** - Encourages stress management
+
+This feature will stand out during Hackathon demos!
+
+---
+
+## 🔧 Running and Testing
 
 ```bash
-# 后端（创建数据库表）
+# Backend (create database table)
 cd backend
 alembic revision --autogenerate -m "Add work_logs table"
 alembic upgrade head
 uvicorn app.main:app --reload
 
-# 前端
+# Frontend
 cd frontend
 npm run dev
 ```
 
-访问 http://localhost:5173/work 查看新的海洋主题！
+Visit http://localhost:5173/work to see the new ocean theme!
 
 ---
 
-## 📝 演示脚本建议
+## 📝 Demo Script Suggestion
 
-**Hackathon 演示时**：
-1. "大家工作压力大吗？想暴揍老板吗？"
-2. "在 Oystraz，你是一只海豹打工人，老板是章鱼"
-3. 演示工作 → 压力上升
-4. **高潮**："压力太大？没关系，趁老板不注意..."
-5. 点击恶作剧按钮 → 章鱼喷墨汁 → 全场笑
-6. "这就是我们的创新 - 在虚拟世界安全释放工作压力"
+**For Hackathon presentation**:
+1. "Does everyone feel stressed at work? Ever wanted to punch your boss?"
+2. "In Oystraz, you're a seal employee, and your boss is an octopus"
+3. Demo work session → stress increases
+4. **Climax**: "Too stressed? No problem, when boss isn't looking..."
+5. Click prank button → octopus sprays ink → audience laughs
+6. "This is our innovation - safely release work stress in a virtual world"
 
 ---
 
-祝 Hackathon 成功！🎉🏆
+Good luck with your Hackathon! 🎉🏆
