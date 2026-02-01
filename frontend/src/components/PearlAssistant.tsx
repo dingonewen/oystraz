@@ -1,13 +1,13 @@
 /**
  * Pearl AI Assistant - Global Floating Chat Widget
  * A laid-back, WLB-focused AI assistant that cares about your health
+ * Material Design 3 Dark Theme with Gemini-inspired styling
  */
 
 import { useState, useRef, useEffect } from 'react';
 import { chatWithPearl } from '../services/pearlService';
 import {
   Box,
-  Fab,
   Paper,
   Typography,
   TextField,
@@ -24,6 +24,10 @@ interface Message {
   content: string;
   timestamp: Date;
 }
+
+// Gemini gradient colors
+const geminiGradient = 'linear-gradient(135deg, #4285F4 0%, #9B72CB 25%, #D96570 50%, #D96570 75%, #FFC857 100%)';
+const geminiGradientHover = 'linear-gradient(135deg, #FFC857 0%, #D96570 25%, #9B72CB 50%, #4285F4 100%)';
 
 export default function PearlAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +82,7 @@ export default function PearlAssistant() {
     } catch (error) {
       const errorMessage: Message = {
         role: 'assistant',
-        content: "Oops, something went wrong. Even I need a break sometimes 😅",
+        content: "Oops, something went wrong. Even I need a break sometimes",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -96,27 +100,44 @@ export default function PearlAssistant() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button with Gemini Gradient Border */}
       {!isOpen && (
-        <Fab
-          color="primary"
-          aria-label="open pearl assistant"
+        <Box
+          onClick={handleToggle}
           sx={{
             position: 'fixed',
             bottom: { xs: 16, sm: 24 },
             right: { xs: 16, sm: 24 },
-            width: { xs: 50, sm: 64 },
-            height: { xs: 50, sm: 64 },
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-            },
+            width: { xs: 56, sm: 68 },
+            height: { xs: 56, sm: 68 },
+            borderRadius: '50%',
+            background: geminiGradient,
+            padding: '3px',
+            cursor: 'pointer',
             zIndex: 1400,
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 20px rgba(66, 133, 244, 0.4)',
+            '&:hover': {
+              background: geminiGradientHover,
+              transform: 'scale(1.05)',
+              boxShadow: '0 6px 28px rgba(155, 114, 203, 0.5)',
+            },
           }}
-          onClick={handleToggle}
         >
-          <Typography sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>💎</Typography>
-        </Fab>
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              backgroundColor: '#1E1F20',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>💎</Typography>
+          </Box>
+        </Box>
       )}
 
       {/* Chat Window */}
@@ -127,21 +148,23 @@ export default function PearlAssistant() {
             position: 'fixed',
             bottom: { xs: 8, sm: 24 },
             right: { xs: 8, sm: 24 },
-            width: { xs: 'calc(100vw - 16px)', sm: 350 },
-            height: { xs: 'calc(100vh - 80px)', sm: 500 },
-            maxWidth: { xs: '100%', sm: 350 },
-            maxHeight: { xs: 'calc(100vh - 80px)', sm: 500 },
+            width: { xs: 'calc(100vw - 16px)', sm: 360 },
+            height: { xs: 'calc(100vh - 80px)', sm: 520 },
+            maxWidth: { xs: '100%', sm: 360 },
+            maxHeight: { xs: 'calc(100vh - 80px)', sm: 520 },
             display: isOpen ? 'flex' : 'none',
             flexDirection: 'column',
-            borderRadius: { xs: 2, sm: 3 },
+            borderRadius: { xs: 3, sm: 4 },
             overflow: 'hidden',
             zIndex: 1400,
+            backgroundColor: '#1E1F20',
+            border: '1px solid #3C4043',
           }}
         >
-          {/* Header */}
+          {/* Header with Gemini Gradient */}
           <Box
             sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: geminiGradient,
               color: 'white',
               p: 2,
               display: 'flex',
@@ -150,9 +173,9 @@ export default function PearlAssistant() {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)' }}>💎</Avatar>
+              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 40, height: 40 }}>💎</Avatar>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: '"Inter", sans-serif' }}>
                   Pearl
                 </Typography>
                 <Typography variant="caption" sx={{ opacity: 0.9 }}>
@@ -177,7 +200,7 @@ export default function PearlAssistant() {
               flex: 1,
               overflowY: 'auto',
               p: 2,
-              bgcolor: '#f5f5f5',
+              bgcolor: '#131314',
               display: 'flex',
               flexDirection: 'column',
               gap: 2,
@@ -192,13 +215,14 @@ export default function PearlAssistant() {
                 }}
               >
                 <Paper
-                  elevation={1}
+                  elevation={0}
                   sx={{
                     p: 1.5,
-                    maxWidth: '80%',
-                    bgcolor: message.role === 'user' ? '#667eea' : 'white',
-                    color: message.role === 'user' ? 'white' : 'text.primary',
-                    borderRadius: 2,
+                    maxWidth: '85%',
+                    bgcolor: message.role === 'user' ? '#394457' : '#2D2E30',
+                    color: '#E3E3E3',
+                    borderRadius: 3,
+                    border: message.role === 'assistant' ? '1px solid #3C4043' : 'none',
                   }}
                 >
                   <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
@@ -207,10 +231,11 @@ export default function PearlAssistant() {
                   <Typography
                     variant="caption"
                     sx={{
-                      opacity: 0.7,
+                      opacity: 0.5,
                       display: 'block',
                       mt: 0.5,
                       fontSize: '0.65rem',
+                      color: '#9AA0A6',
                     }}
                   >
                     {message.timestamp.toLocaleTimeString([], {
@@ -223,57 +248,95 @@ export default function PearlAssistant() {
             ))}
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <Paper elevation={1} sx={{ p: 1.5, borderRadius: 2 }}>
-                  <CircularProgress size={20} />
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 1.5,
+                    borderRadius: 3,
+                    bgcolor: '#2D2E30',
+                    border: '1px solid #3C4043',
+                  }}
+                >
+                  <CircularProgress size={20} sx={{ color: '#8AB4F8' }} />
                 </Paper>
               </Box>
             )}
             <div ref={messagesEndRef} />
           </Box>
 
-          {/* Input */}
+          {/* Input with Gemini-style border */}
           <Box
             sx={{
               p: 2,
-              bgcolor: 'white',
-              borderTop: '1px solid',
-              borderColor: 'divider',
+              bgcolor: '#1E1F20',
+              borderTop: '1px solid #3C4043',
             }}
           >
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <TextField
-                fullWidth
-                multiline
-                maxRows={3}
-                size="small"
-                placeholder="Ask Pearl anything..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={isLoading}
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 1,
+                p: '3px',
+                borderRadius: 3,
+                background: 'linear-gradient(90deg, #4285F4, #9B72CB, #D96570)',
+              }}
+            >
+              <Box
                 sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                  },
-                }}
-              />
-              <IconButton
-                color="primary"
-                onClick={handleSend}
-                disabled={!input.trim() || isLoading}
-                sx={{
-                  bgcolor: '#667eea',
-                  color: 'white',
-                  '&:hover': {
-                    bgcolor: '#764ba2',
-                  },
-                  '&.Mui-disabled': {
-                    bgcolor: 'action.disabledBackground',
-                  },
+                  display: 'flex',
+                  gap: 1,
+                  flex: 1,
+                  bgcolor: '#1E1F20',
+                  borderRadius: 2.5,
+                  p: 0.5,
                 }}
               >
-                <SendIcon />
-              </IconButton>
+                <TextField
+                  fullWidth
+                  multiline
+                  maxRows={3}
+                  size="small"
+                  placeholder="Ask Pearl anything..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={isLoading}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      bgcolor: 'transparent',
+                      color: '#E3E3E3',
+                      '& fieldset': {
+                        border: 'none',
+                      },
+                    },
+                    '& .MuiInputBase-input::placeholder': {
+                      color: '#9AA0A6',
+                      opacity: 1,
+                    },
+                  }}
+                />
+                <IconButton
+                  color="primary"
+                  onClick={handleSend}
+                  disabled={!input.trim() || isLoading}
+                  sx={{
+                    background: geminiGradient,
+                    color: 'white',
+                    width: 40,
+                    height: 40,
+                    '&:hover': {
+                      background: geminiGradientHover,
+                    },
+                    '&.Mui-disabled': {
+                      bgcolor: '#3C4043',
+                      color: '#5F6368',
+                    },
+                  }}
+                >
+                  <SendIcon fontSize="small" />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
         </Paper>
