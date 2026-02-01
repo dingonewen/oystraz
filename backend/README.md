@@ -10,8 +10,9 @@ FastAPI backend for the Oystraz health tracking application with Google Gemini A
 - 🍽️ **Diet Tracking** - Log meals with USDA nutrition data
 - 🏃 **Exercise Tracking** - Record workouts and activities
 - 😴 **Sleep Tracking** - Monitor sleep quality and duration
-- 🤖 **Gemini AI Assistant** - Personalized health insights
-- 🏢 **Workplace Simulator** - AI-generated scenarios based on health
+- 💼 **Work Logging** - Track work sessions with intensity and stress impacts
+- 🤖 **Gemini AI Assistant (Pearl)** - Personalized health insights with personality
+- 🏢 **Ocean Work Simulator** - Interactive work tracking with visual feedback
 - 📊 **USDA API Integration** - 600k+ foods nutrition database
 
 ## Tech Stack
@@ -31,10 +32,10 @@ backend/
 │   ├── models/          # SQLAlchemy database models
 │   │   ├── user.py
 │   │   ├── character.py
-│   │   ├── diet.py
-│   │   ├── exercise.py
-│   │   ├── sleep.py
-│   │   └── workplace.py
+│   │   ├── diet_log.py
+│   │   ├── exercise_log.py
+│   │   ├── sleep_log.py
+│   │   └── work_log.py
 │   ├── routers/         # API endpoints
 │   │   ├── auth.py      # Register/Login
 │   │   ├── user.py      # User profile
@@ -42,8 +43,16 @@ backend/
 │   │   ├── diet.py      # Diet logging
 │   │   ├── exercise.py  # Exercise logging
 │   │   ├── sleep.py     # Sleep logging
+│   │   ├── work.py      # Work session logging
 │   │   └── assistant.py # AI & USDA APIs
 │   ├── schemas/         # Pydantic schemas
+│   │   ├── auth.py
+│   │   ├── user.py
+│   │   ├── character.py
+│   │   ├── diet.py
+│   │   ├── exercise.py
+│   │   ├── sleep.py
+│   │   └── work.py
 │   ├── services/        # Business logic
 │   │   ├── auth.py      # JWT & password utils
 │   │   ├── gemini.py    # Gemini AI integration
@@ -175,6 +184,12 @@ FastAPI provides automatic interactive API documentation:
 - `DELETE /api/diet/{log_id}` - Delete diet log
 
 *(Similar endpoints for `/api/exercise` and `/api/sleep`)*
+
+### Work Tracking
+
+- `POST /api/work/log` - Log a work session
+- `GET /api/work/logs` - Get work logs (last N days)
+- `GET /api/work/stats` - Get work statistics (hours, pranks, etc.)
 
 ### AI Assistant
 
@@ -312,6 +327,15 @@ CORS_ORIGINS=https://yourdomain.com
 
 - Verify API keys are correctly set in `.env`
 - Check API key quotas (USDA: 3,600 requests/hour)
+
+## 🌟 Acknowledgments
+
+- **Google Gemini 2.5 Flash** - AI-powered health assistant (Pearl)
+- **USDA FoodData Central** - Nutritional database (600k+ foods)
+- **FastAPI** - High-performance Python web framework
+- **SQLAlchemy** - Database ORM
+
+Note: Visual assets (ocean theme, characters) are handled on the frontend and credited separately in frontend/README.md.
 
 ## License
 
