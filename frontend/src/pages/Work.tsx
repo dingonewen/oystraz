@@ -1,6 +1,6 @@
 /**
- * Work Simulation Page
- * Interactive workplace scenarios based on health state
+ * Work Page - Ocean Theme
+ * Seal Employee vs Octopus Manager
  */
 
 import { useState, useEffect } from 'react';
@@ -8,54 +8,34 @@ import {
   Container,
   Typography,
   Box,
-  Button,
   Paper,
   Grid,
   LinearProgress,
   Chip,
-  Card,
-  CardContent,
-  CardActions,
   Alert,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
 } from '@mui/material';
-import WorkIcon from '@mui/icons-material/Work';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useCharacterStore } from '../store/characterStore';
 import { getCharacter, updateCharacter } from '../services/characterService';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { generateWorkScenario } from '../services/aiService'; // TODO: Use for AI-generated scenarios
-
-interface ScenarioChoice {
-  id: number;
-  text: string;
-  emoji: string;
-  effects: {
-    stamina?: number;
-    energy?: number;
-    nutrition?: number;
-    mood?: number;
-    stress?: number;
-    experience?: number;
-  };
-}
-
-interface WorkScenario {
-  title: string;
-  description: string;
-  situation: string;
-  choices: ScenarioChoice[];
-}
+import { logWork, getWorkLogs, getWorkStats } from '../services/workService';
+import type { WorkLog, WorkStats } from '../services/workService';
+import OceanWorkScene from '../components/Work/OceanWorkScene';
 
 export default function Work() {
   const { character, setCharacter } = useCharacterStore();
-  const [scenario, setScenario] = useState<WorkScenario | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
-  const [scenarioHistory, setScenarioHistory] = useState<number>(0);
+  const [workLogs, setWorkLogs] = useState<WorkLog[]>([]);
+  const [workStats, setWorkStats] = useState<WorkStats | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadCharacter();
+    loadWorkData();
   }, []);
 
   const loadCharacter = async () => {
@@ -77,152 +57,97 @@ export default function Work() {
     }
   };
 
-  const generateNewScenario = async () => {
-    if (!character) return;
-
-    setIsLoading(true);
-    setResult(null);
-
+  const loadWorkData = async () => {
     try {
-      // For now, use fallback scenarios based on character health state
-      // TODO: Enhance Gemini API to return structured scenario data
-      const newScenario: WorkScenario = getFallbackScenario(character);
-
-      setScenario(newScenario);
+      const [logs, stats] = await Promise.all([
+        getWorkLogs(7),
+        getWorkStats(7),
+      ]);
+      setWorkLogs(logs);
+      setWorkStats(stats);
     } catch (error) {
-      console.error('Failed to generate scenario:', error);
-      // Fallback scenario if API fails
-      setScenario(getFallbackScenario(character));
-    } finally {
-      setIsLoading(false);
+      console.error('Failed to load work data:', error);
     }
   };
 
-  const handleChoice = async (choice: ScenarioChoice) => {
+  const handleWorkComplete = async (hours: number, intensity: number, isPrank: boolean = false) => {
     if (!character) return;
 
-    setIsLoading(true);
-
     try {
-      // Calculate new stats
-      const newStats = {
-        stamina: Math.max(0, Math.min(100, character.stamina + (choice.effects.stamina || 0))),
-        energy: Math.max(0, Math.min(100, character.energy + (choice.effects.energy || 0))),
-        nutrition: Math.max(0, Math.min(100, character.nutrition + (choice.effects.nutrition || 0))),
-        mood: Math.max(0, Math.min(100, character.mood + (choice.effects.mood || 0))),
-        stress: Math.max(0, Math.min(100, character.stress + (choice.effects.stress || 0))),
-      };
+      setIsLoading(true);
+      setError(null);
 
-      const newExperience = character.experience + (choice.effects.experience || 0);
-      const newLevel = Math.floor(newExperience / 100) + 1;
+      let energyCost = 0;
+      let stressGain = 0;
+      let experienceGain = 0;
+      let newStats = { ...character };
 
-      // Update character on backend
-      await updateCharacter(newStats);
+      if (isPrank) {
+        // Prank reduces stress!
+        const stressReduction = 20;
+        newStats.stress = Math.max(0, character.stress - stressReduction);
+        newStats.mood = Math.min(100, character.mood + 10);
 
-      // Update local state
-      setCharacter({
-        ...character,
-        ...newStats,
-        experience: newExperience,
-        level: newLevel,
+        // Log prank work "session"
+        await logWork({
+          duration_hours: 0,
+          intensity: 0,
+          energy_cost: 0,
+          stress_gain: -stressReduction,
+          experience_gain: 5,
+          pranked_boss: 1,
+          notes: 'Pranked the octopus boss! 💦',
+        });
+
+        setSuccess('😂 Successfully pranked the boss! Stress -20, Mood +10');
+      } else {
+        // Normal work session
+        energyCost = Math.round(hours * intensity * 3);
+        stressGain = Math.round(hours * intensity * 2);
+        experienceGain = Math.round(hours * intensity * 10);
+
+        newStats.energy = Math.max(0, character.energy - energyCost);
+        newStats.stress = Math.min(100, character.stress + stressGain);
+        newStats.mood = Math.max(0, character.mood - Math.round(stressGain / 2));
+        newStats.experience = character.experience + experienceGain;
+        newStats.level = Math.floor(newStats.experience / 100) + 1;
+
+        // Log work session
+        await logWork({
+          duration_hours: hours,
+          intensity,
+          energy_cost: energyCost,
+          stress_gain: stressGain,
+          experience_gain: experienceGain,
+          pranked_boss: 0,
+          notes: `${hours}h work at intensity ${intensity}`,
+        });
+
+        setSuccess(`Work complete! Energy -${energyCost}, Stress +${stressGain}, XP +${experienceGain}`);
+      }
+
+      // Update character
+      await updateCharacter({
+        stamina: newStats.stamina,
+        energy: newStats.energy,
+        nutrition: newStats.nutrition,
+        mood: newStats.mood,
+        stress: newStats.stress,
       });
 
-      // Show result
-      setResult(getChoiceResult(choice));
-      setScenarioHistory(scenarioHistory + 1);
-      setScenario(null);
-    } catch (error) {
-      console.error('Failed to update character:', error);
+      setCharacter(newStats);
+
+      // Reload work data
+      await loadWorkData();
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError('Failed to complete work session. Please try again.');
+      console.error('Work error:', err);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // TODO: Use this function when implementing AI-generated scenarios with dynamic titles
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getScenarioTitle = (char: any): string => {
-    if (char.energy < 30) return "😴 Low Energy Alert";
-    if (char.stress > 70) return "😰 High Pressure Situation";
-    if (char.mood < 40) return "😔 Challenging Moment";
-    if (char.stamina < 40) return "💤 Fatigue Setting In";
-    return "🏢 Another Day at Work";
-  };
-
-  const getFallbackScenario = (char: any): WorkScenario => {
-    if (char.stress > 60) {
-      return {
-        title: "😰 Tight Deadline Pressure",
-        description: "Your boss just moved up the deadline for a major project.",
-        situation: "The project that was due next week is now due tomorrow. How do you respond?",
-        choices: [
-          {
-            id: 1,
-            text: "Pull an all-nighter to finish it",
-            emoji: "🌙",
-            effects: { stamina: -25, energy: -30, stress: 15, mood: -10, experience: 35 },
-          },
-          {
-            id: 2,
-            text: "Negotiate a more realistic timeline",
-            emoji: "💬",
-            effects: { stamina: -5, energy: -10, stress: -10, mood: 10, experience: 45 },
-          },
-          {
-            id: 3,
-            text: "Focus on core features only",
-            emoji: "🎯",
-            effects: { stamina: -10, energy: -15, stress: 5, mood: 5, experience: 40 },
-          },
-          {
-            id: 4,
-            text: "Get team members to help",
-            emoji: "👥",
-            effects: { stamina: -5, energy: -10, stress: -5, mood: 15, experience: 30 },
-          },
-        ],
-      };
-    }
-
-    return {
-      title: "🏢 Regular Workday",
-      description: "Just another day at the office.",
-      situation: "You have a normal workload today. How do you approach it?",
-      choices: [
-        {
-          id: 1,
-          text: "Hustle and get everything done quickly",
-          emoji: "⚡",
-          effects: { stamina: -15, energy: -20, stress: 10, mood: 5, experience: 30 },
-        },
-        {
-          id: 2,
-          text: "Take it steady and pace yourself",
-          emoji: "🚶",
-          effects: { stamina: -8, energy: -10, stress: -5, mood: 10, experience: 25 },
-        },
-        {
-          id: 3,
-          text: "Take breaks and maintain work-life balance",
-          emoji: "⚖️",
-          effects: { stamina: 5, energy: 5, stress: -15, mood: 20, experience: 20 },
-        },
-        {
-          id: 4,
-          text: "Slack off a bit (摸鱼 mode)",
-          emoji: "🐟",
-          effects: { stamina: 10, energy: 15, stress: -20, mood: 15, experience: 10 },
-        },
-      ],
-    };
-  };
-
-  const getChoiceResult = (choice: ScenarioChoice): string => {
-    const results = [
-      `You chose to ${choice.text.toLowerCase()}. ${choice.emoji}`,
-      "Your choice has affected your wellbeing.",
-      choice.effects.experience ? `+${choice.effects.experience} XP gained!` : "",
-    ];
-    return results.filter(Boolean).join(" ");
   };
 
   if (!character) {
@@ -244,7 +169,7 @@ export default function Work() {
           gutterBottom
           sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
         >
-          Work Simulator
+          🦭 Ocean Office Simulator
         </Typography>
         <Typography
           variant="subtitle1"
@@ -252,25 +177,25 @@ export default function Work() {
           gutterBottom
           sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
         >
-          Navigate workplace challenges - your health affects your performance
+          You're a seal employee fishing for work. Beware of the octopus manager!
         </Typography>
+
+        {/* Success/Error Messages */}
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(null)}>
+            {success}
+          </Alert>
+        )}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        )}
 
         {/* Character Status */}
         <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 } }}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2">💪 Stamina</Typography>
-                  <Typography variant="body2">{character.stamina}/100</Typography>
-                </Box>
-                <LinearProgress
-                  variant="determinate"
-                  value={character.stamina}
-                  sx={{ height: 8, borderRadius: 1 }}
-                />
-              </Box>
-
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">⚡ Energy</Typography>
@@ -312,9 +237,8 @@ export default function Work() {
                 />
               </Box>
 
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 3 }}>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                 <Chip
-                  icon={<AutoAwesomeIcon />}
                   label={`Level ${character.level}`}
                   color="primary"
                   variant="outlined"
@@ -330,162 +254,91 @@ export default function Work() {
                   />
                 </Box>
               </Box>
-
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-                Scenarios completed: {scenarioHistory}
-              </Typography>
             </Grid>
           </Grid>
         </Paper>
 
-        {/* Result Message */}
-        {result && (
-          <Alert severity="success" sx={{ mb: 3 }} onClose={() => setResult(null)}>
-            {result}
-          </Alert>
-        )}
+        {/* Ocean Work Scene */}
+        <OceanWorkScene
+          onWorkComplete={handleWorkComplete}
+          characterStress={character.stress}
+          characterEnergy={character.energy}
+        />
 
-        {/* Scenario or Generate Button */}
-        {!scenario ? (
-          <Box sx={{ textAlign: 'center', py: { xs: 4, sm: 5, md: 6 }, px: { xs: 2, sm: 0 } }}>
-            <WorkIcon sx={{ fontSize: { xs: 60, sm: 70, md: 80 }, color: 'text.secondary', mb: 2 }} />
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
-            >
-              Ready for a workplace challenge?
+        {/* Work Statistics */}
+        {workStats && (
+          <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              📊 This Week's Stats
             </Typography>
-            <Typography
-              color="text.secondary"
-              paragraph
-              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-            >
-              Your health state will influence the scenarios you face
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<AutoAwesomeIcon />}
-              onClick={generateNewScenario}
-              disabled={isLoading}
-              sx={{
-                mt: 2,
-                fontSize: { xs: '1rem', sm: '1.1rem' },
-                py: { xs: 1.25, sm: 1.5 },
-                px: { xs: 3, sm: 4 }
-              }}
-            >
-              {isLoading ? 'Generating...' : 'Generate Scenario'}
-            </Button>
-          </Box>
-        ) : (
-          <Paper sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-            <Typography
-              variant="h4"
-              gutterBottom
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
-              }}
-            >
-              {scenario.title}
-            </Typography>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              paragraph
-              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-            >
-              {scenario.description}
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                mt: { xs: 2, sm: 3 },
-                mb: 2,
-                fontSize: { xs: '1.125rem', sm: '1.25rem' }
-              }}
-            >
-              {scenario.situation}
-            </Typography>
-
-            <Grid container spacing={{ xs: 1.5, sm: 2 }} sx={{ mt: { xs: 1, sm: 2 } }}>
-              {scenario.choices.map((choice) => (
-                <Grid size={{ xs: 12, sm: 6 }} key={choice.id}>
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      height: '100%',
-                      cursor: isLoading ? 'not-allowed' : 'pointer',
-                      '&:hover': isLoading ? {} : {
-                        borderColor: 'primary.main',
-                        boxShadow: 2,
-                      },
-                    }}
-                  >
-                    <CardContent sx={{ pb: 1 }}>
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        sx={{ fontSize: { xs: '1.75rem', sm: '2rem' } }}
-                      >
-                        {choice.emoji}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        gutterBottom
-                        sx={{ fontSize: { xs: '0.9375rem', sm: '1rem' } }}
-                      >
-                        {choice.text}
-                      </Typography>
-                      <Box sx={{ mt: { xs: 1.5, sm: 2 }, display: 'flex', gap: 0.75, flexWrap: 'wrap' }}>
-                        {Object.entries(choice.effects).map(([key, value]) => {
-                          if (key === 'experience') {
-                            return (
-                              <Chip
-                                key={key}
-                                label={`+${value} XP`}
-                                size="small"
-                                color="primary"
-                                variant="outlined"
-                              />
-                            );
-                          }
-                          const icon = key === 'stamina' ? '💪' :
-                                      key === 'energy' ? '⚡' :
-                                      key === 'mood' ? '😊' :
-                                      key === 'stress' ? '😰' : '🍎';
-                          return (
-                            <Chip
-                              key={key}
-                              label={`${icon} ${value > 0 ? '+' : ''}${value}`}
-                              size="small"
-                              color={value < 0 ? 'error' : 'success'}
-                              variant="outlined"
-                            />
-                          );
-                        })}
-                      </Box>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        onClick={() => handleChoice(choice)}
-                        disabled={isLoading}
-                      >
-                        Choose This
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))}
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Total Hours
+                </Typography>
+                <Typography variant="h5">{workStats.total_hours.toFixed(1)}h</Typography>
+              </Grid>
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Sessions
+                </Typography>
+                <Typography variant="h5">{workStats.total_sessions}</Typography>
+              </Grid>
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Avg Intensity
+                </Typography>
+                <Typography variant="h5">{workStats.avg_intensity.toFixed(1)}/5</Typography>
+              </Grid>
+              <Grid size={{ xs: 6, sm: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Boss Pranks
+                </Typography>
+                <Typography variant="h5">💦 {workStats.total_pranks}</Typography>
+              </Grid>
             </Grid>
           </Paper>
         )}
+
+        {/* Recent Work Logs */}
+        <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            📜 Recent Work History
+          </Typography>
+          {workLogs.length === 0 ? (
+            <Typography color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+              No work logs yet. Start a work session above!
+            </Typography>
+          ) : (
+            <List>
+              {workLogs.slice(0, 10).map((log, index) => (
+                <Box key={log.id}>
+                  <ListItem>
+                    <ListItemText
+                      primary={
+                        log.pranked_boss > 0
+                          ? `💦 Pranked the boss! (${new Date(log.logged_at).toLocaleDateString()})`
+                          : `${log.duration_hours}h work - Intensity ${log.intensity}/5`
+                      }
+                      secondary={
+                        log.pranked_boss > 0
+                          ? `Stress -${Math.abs(log.stress_gain)} • Mood boost!`
+                          : `Energy -${log.energy_cost} • Stress +${log.stress_gain} • XP +${log.experience_gain}`
+                      }
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      {new Date(log.logged_at).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </Typography>
+                  </ListItem>
+                  {index < workLogs.length - 1 && <Divider />}
+                </Box>
+              ))}
+            </List>
+          )}
+        </Paper>
       </Box>
     </Container>
   );

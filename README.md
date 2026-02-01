@@ -357,7 +357,7 @@ npm run dev
 
 ## 🔮 Future Development Roadmap
 
-### Phase 1: Mobile Optimization (Next Sprint)
+### Phase 1: Mobile Optimization & Visual Polish (In Progress)
 ```
 📱 Responsive Design
 ├─ Optimize all pages for mobile screens
@@ -365,11 +365,14 @@ npm run dev
 ├─ Mobile navigation improvements
 └─ Ensure charts are readable on small screens
 
-🎨 Visual Enhancement
-├─ Stickman character design (SVG)
-├─ Ocean fishing theme for Work page
-├─ Animated character states
-└─ Unified color palette
+🎨 Visual Enhancement ✅ (Mostly Complete)
+├─ ✅ Ocean work simulator with pixel art assets
+├─ ✅ Seal employee character with chase mechanics
+├─ ✅ Octopus boss with mood states (normal/angry)
+├─ ✅ Rich ocean environment (fish, rocks, seaweed, bubbles)
+├─ ✅ Animated character movements and swimming fish
+├─ 🚧 Additional character states for other pages
+└─ ✅ Unified ocean/blue color palette
 ```
 
 ### Phase 2: Enhanced Features
@@ -466,18 +469,24 @@ npm run dev
 - **Mobile-First** - Designed for on-the-go logging
 - **Accessible** - High contrast, readable fonts, clear icons
 
-### Character Design Concept (Fishing Theme)
+### Ocean Work Simulator Theme (Implemented)
 ```
-🎣 Stickman Character as Fisherman:
-├─ Fishing in the ocean = working
-├─ Different fish = different tasks/projects
-├─ Bigger fish = harder challenges
-├─ Character's health affects fishing success
-│   ├─ High stamina = catch big fish easily
-│   ├─ Low energy = fish get away
-│   ├─ High stress = tangled line, broken rod
-│   └─ Good mood = rare/special fish appear
-└─ Leveling up = better fishing gear
+🦭 Seal Employee in Ocean Workplace:
+├─ Fishing hook hanging from above = work assignments
+├─ Seal chases fish across screen = completing tasks
+├─ Multiple swimming fish = ambient ocean life
+├─ Octopus boss assigns work and can be pranked
+├─ Character's health affects work performance:
+│   ├─ High energy = faster chase speed (higher intensity)
+│   ├─ Low energy = slower work, more fatigue
+│   ├─ High stress = need for stress relief (prank boss)
+│   └─ Work hours/intensity affects stamina and stress
+└─ Rich ocean environment with rocks, seaweed, bubbles
+
+🎨 Visual Assets:
+├─ Environment: Kenney Fish Pack (rocks, seaweed, fish, bubbles)
+├─ Characters: Google Nano Banana Pro 2 generated (seal, octopus)
+└─ Logo: Custom designed with AI assistance
 ```
 
 ---
@@ -531,7 +540,9 @@ MIT License - Free to use and modify
 ## 🌟 Acknowledgments
 
 - **USDA FoodData Central** - Nutritional database
-- **Google Gemini** - AI capabilities
+- **Google Gemini 2.5 Flash** - AI capabilities for Pearl assistant
+- **Google Nano Banana Pro 2** - AI-generated character assets (seal, octopus, logo)
+- **Kenney Fish Pack** - Ocean environment assets (fish, rocks, seaweed, bubbles, terrain)
 - **Material-UI** - React component library
 - **Recharts** - Data visualization
 
@@ -539,7 +550,8 @@ MIT License - Free to use and modify
 
 ## 📞 Contact
 
-- GitHub: https://github.com/dingonewen/oystraz
+- GitHub: www.github.com/dingonewen
+- Email: dingywn@seas.upenn.edu
 
 ---
 
