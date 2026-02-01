@@ -115,7 +115,7 @@ export default function Profile() {
   ];
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Box sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2 } }}>
         <Box
           sx={{
