@@ -184,9 +184,27 @@ function AppNavigation() {
             </IconButton>
           )}
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            🎮 Oystraz
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
+            <img
+              src="/assets/ocean/seal.png"
+              alt="seal"
+              style={{ width: 28, height: 'auto', imageRendering: 'pixelated' }}
+            />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontWeight: 700,
+                fontFamily: '"Inter", sans-serif',
+              }}
+            >
+              Oystraz
+            </Typography>
+          </Box>
 
           {/* Desktop Navigation */}
           {!isMobile && (
@@ -214,20 +232,34 @@ function AppNavigation() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer - 20% narrower */}
       <Drawer
         anchor="left"
         open={drawerOpen}
         onClose={handleDrawerToggle}
         sx={{
           '& .MuiDrawer-paper': {
-            width: 250,
+            width: 200,
           },
         }}
       >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            🎮 Oystraz
+        <Box sx={{ p: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <img
+            src="/assets/ocean/seal.png"
+            alt="seal"
+            style={{ width: 24, height: 'auto', imageRendering: 'pixelated' }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Oystraz
           </Typography>
         </Box>
         <Divider />
