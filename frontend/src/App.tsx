@@ -101,8 +101,8 @@ function AppNavigation() {
 
   return (
     <>
-      <AppBar position="static" elevation={1}>
-        <Toolbar>
+      <AppBar position="fixed" elevation={1} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
           {isMobile && (
             <IconButton
               color="inherit"
@@ -197,6 +197,9 @@ function App() {
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           {/* Navigation Bar */}
           <AppNavigation />
+
+          {/* Toolbar spacer for fixed AppBar */}
+          {isAuthenticated && <Box sx={{ height: { xs: 56, sm: 64 } }} />}
 
           {/* Main Content */}
           <Box component="main" sx={{ flexGrow: 1, bgcolor: '#fafafa', py: 3 }}>

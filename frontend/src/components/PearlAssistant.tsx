@@ -103,18 +103,19 @@ export default function PearlAssistant() {
           aria-label="open pearl assistant"
           sx={{
             position: 'fixed',
-            bottom: 24,
-            right: 24,
-            width: 64,
-            height: 64,
+            bottom: { xs: 16, sm: 24 },
+            right: { xs: 16, sm: 24 },
+            width: { xs: 50, sm: 64 },
+            height: { xs: 50, sm: 64 },
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
             },
+            zIndex: 1400,
           }}
           onClick={handleToggle}
         >
-          <Typography sx={{ fontSize: '2rem' }}>💎</Typography>
+          <Typography sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>💎</Typography>
         </Fab>
       )}
 
@@ -124,15 +125,17 @@ export default function PearlAssistant() {
           elevation={8}
           sx={{
             position: 'fixed',
-            bottom: 24,
-            right: 24,
-            width: 380,
-            height: 600,
+            bottom: { xs: 8, sm: 24 },
+            right: { xs: 8, sm: 24 },
+            width: { xs: 'calc(100vw - 16px)', sm: 350 },
+            height: { xs: 'calc(100vh - 80px)', sm: 500 },
+            maxWidth: { xs: '100%', sm: 350 },
+            maxHeight: { xs: 'calc(100vh - 80px)', sm: 500 },
             display: isOpen ? 'flex' : 'none',
             flexDirection: 'column',
-            borderRadius: 3,
+            borderRadius: { xs: 2, sm: 3 },
             overflow: 'hidden',
-            zIndex: 1300,
+            zIndex: 1400,
           }}
         >
           {/* Header */}
