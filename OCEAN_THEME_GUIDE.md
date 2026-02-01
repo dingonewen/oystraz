@@ -2,89 +2,216 @@
 
 ## Overview
 
-Your Oystraz work simulator now features an ocean theme:
-- **Protagonist**: 🦭 Seal Employee
-- **Boss**: 🐙 Octopus Manager
-- **Work**: 🎣 Fishing (metaphor for working for others' benefit)
+Your Oystraz work simulator features a rich ocean environment where:
+- **Protagonist**: 🦭 Seal Employee (chases fish for work)
+- **Boss**: 🐙 Octopus Manager (watches from above)
+- **Work Mechanism**: Seal chases swimming fish at different speeds
 - **Innovation**: 💦 Prank the boss to relieve stress
 
 ---
 
-## 🎨 How to Add Kenney Assets
+## 🎨 New Ocean Scene Features
 
-### 1. Asset Placement
+### Layered Environment Design
+
+**Bottom Layer (Ocean Floor)**:
+- Gradient terrain effect
+- 3 rocks at different positions
+- 3 seaweed plants swaying
+- All easily replaceable with Kenney assets
+
+**Middle Layer (Active Zone)**:
+- 8 background fish swimming randomly
+- Each fish has unique speed, direction, type
+- Fish bounce off edges automatically
+- Seal chases across the screen
+
+**Top Layer (UI & Boss)**:
+- Fishing hook hanging from top
+- Octopus manager on platform
+- Work progress HUD
+- Stress warnings
+
+**Ambient Elements**:
+- 3 floating bubbles with animation
+- Ocean gradient background (light to deep blue)
+
+---
+
+## 🎣 Work Mechanics: Seal Chasing Fish
+
+### How It Works
+
+1. **Set Chase Speed** (1-5 intensity)
+   - 🐌 **Lazy Swim** (1): Slowest, minimal energy/stress cost
+   - 🦭 **Casual** (2): Relaxed pace
+   - 🏊 **Normal** (3): Standard work speed
+   - ⚡ **Fast** (4): High productivity, high cost
+   - 🚀 **Turbo** (5): Maximum speed, maximum toll
+
+2. **Chase Animation**
+   - Seal starts at left side (20% position)
+   - Swims across screen with wave motion
+   - Catches fish when reaching right side (80%)
+   - Resets to left for next fish
+   - Fish caught counter updates
+
+3. **Work Completion**
+   - Total fish = work hours × intensity
+   - Example: 2 hours × intensity 3 = 6 fish to catch
+   - Even slowest speed completes all fish (guaranteed!)
+
+4. **Health Impact**
+   - Energy cost = hours × intensity × 3
+   - Stress gain = hours × intensity × 2
+   - Experience = hours × intensity × 10
+
+---
+
+## 🐟 Swimming Fish System
+
+### Automatic Fish Spawning
+
+On page load, 8 background fish are randomly generated:
+```typescript
+- Random position (10-90% horizontal, 20-80% vertical)
+- Random type (fish1, fish2, fish3, fish4, fish5)
+- Random speed (0.2 - 0.7)
+- Random direction (left or right)
+```
+
+### Swimming Behavior
+
+- Fish swim continuously at their own pace
+- Bounce when hitting screen edges
+- Semi-transparent when not working (0.6 opacity)
+- Fully visible during work sessions
+- Smooth 50ms animation intervals
+
+---
+
+## 📦 How to Add Kenney Assets
+
+### 1. Recommended Asset Organization
 
 ```
 frontend/public/assets/ocean/
-├── seal.png          # Seal (you)
-├── octopus.png       # Octopus (boss)
-├── fish-*.png        # Various fish (work tasks)
-├── hook.png          # Fishing hook
-├── bubble.png        # Bubble decoration
-├── ink.png           # Ink effect
-└── wave.png          # Wave (optional)
+├── Characters
+│   ├── seal.png              # Seal employee (60px recommended)
+│   └── octopus.png           # Octopus manager (70px recommended)
+│
+├── Fish (for random swimming)
+│   ├── fish1.png             # Small fish
+│   ├── fish2.png             # Medium fish
+│   ├── fish3.png             # Large fish
+│   ├── fish4.png             # Colorful fish
+│   └── fish5.png             # Golden fish
+│
+├── Decorations
+│   ├── rock1.png             # Rock variant 1 (30-40px)
+│   ├── rock2.png             # Rock variant 2
+│   ├── seaweed1.png          # Seaweed variant 1 (40-50px)
+│   ├── seaweed2.png          # Seaweed variant 2
+│   ├── hook.png              # Fishing hook (30-35px)
+│   └── bubble.png            # Bubble (15-20px)
+│
+└── Optional
+    ├── terrain.png           # Ocean floor texture
+    └── ink.png               # Ink spray effect
 ```
 
-### 2. Using Images in Components
+### 2. Replace Emojis with Images
 
-Edit `frontend/src/components/Work/OceanWorkScene.tsx` and replace emojis with images:
+Edit `frontend/src/components/Work/OceanWorkScene.tsx`:
 
+#### Rocks (Lines 193-201)
 ```typescript
-// Replace seal emoji at line 91
-<Box
-  sx={{
-    position: 'absolute',
-    left: '20%',
-    bottom: '30%',
-    textAlign: 'center',
+// Current:
+<Typography sx={{ fontSize: { xs: '30px', sm: '40px' } }}>🪨</Typography>
+
+// Replace with:
+<img
+  src="/assets/ocean/rock1.png"
+  alt="rock"
+  style={{ width: '40px', height: 'auto' }}
+/>
+```
+
+#### Seaweed (Lines 204-212)
+```typescript
+// Current:
+<Typography sx={{ fontSize: { xs: '40px', sm: '50px' } }}>🌿</Typography>
+
+// Replace with:
+<img
+  src="/assets/ocean/seaweed1.png"
+  alt="seaweed"
+  style={{ width: '50px', height: 'auto' }}
+/>
+```
+
+#### Background Fish (Line 228)
+```typescript
+// Current:
+<Typography sx={{ fontSize: { xs: '20px', sm: '25px' } }}>🐟</Typography>
+
+// Replace with:
+<img
+  src={`/assets/ocean/${fish.type}.png`}  // Automatically uses fish1.png, fish2.png, etc.
+  alt="fish"
+  style={{
+    width: '25px',
+    height: 'auto',
+    transform: fish.direction === -1 ? 'scaleX(-1)' : 'none' // Flip when swimming left
   }}
->
-  {/* Option 1: Using emoji (current) */}
-  <Typography variant="h1" sx={{ fontSize: { xs: '60px', sm: '80px' } }}>
-    🦭
-  </Typography>
+/>
+```
 
-  {/* Option 2: Using Kenney image (recommended) */}
-  <img
-    src="/assets/ocean/seal.png"
-    alt="seal"
-    style={{ width: '80px', height: '80px' }}
-  />
-</Box>
+#### Fishing Hook (Line 252)
+```typescript
+// Current:
+<Typography sx={{ fontSize: { xs: '25px', sm: '35px' } }}>🪝</Typography>
 
-// Replace octopus emoji at line 109
-<Box
-  sx={{
-    position: 'absolute',
-    right: '20%',
-    top: '20%',
-    textAlign: 'center',
-    transform: octopusAnnoyed ? 'rotate(15deg)' : 'none',
-    transition: 'transform 0.3s',
+// Replace with:
+<img
+  src="/assets/ocean/hook.png"
+  alt="hook"
+  style={{ width: '35px', height: 'auto' }}
+/>
+```
+
+#### Seal (Lines 271-273)
+```typescript
+// Current:
+<Typography variant="h1" sx={{ fontSize: { xs: '40px', sm: '60px' } }}>
+  🦭
+</Typography>
+
+// Replace with:
+<img
+  src="/assets/ocean/seal.png"
+  alt="seal"
+  style={{ width: '60px', height: 'auto' }}
+/>
+```
+
+#### Octopus (Lines 291-293)
+```typescript
+// Current:
+<Typography variant="h1" sx={{ fontSize: { xs: '50px', sm: '70px' } }}>
+  🐙
+</Typography>
+
+// Replace with:
+<img
+  src="/assets/ocean/octopus.png"
+  alt="octopus"
+  style={{
+    width: '70px',
+    height: 'auto',
+    filter: showPrankEffect ? 'brightness(1.5)' : 'none'  // Highlight when pranked
   }}
->
-  {/* Use image instead of emoji */}
-  <img
-    src="/assets/ocean/octopus.png"
-    alt="octopus"
-    style={{
-      width: '80px',
-      height: '80px',
-      filter: showPrankEffect ? 'brightness(1.5)' : 'none'
-    }}
-  />
-</Box>
-
-// Replace fish emoji at line 135
-{isWorking && (
-  <Box sx={{ position: 'absolute', left: '40%', bottom: '40%' }}>
-    <img
-      src="/assets/ocean/fish-1.png"
-      alt="fish"
-      style={{ width: '40px', height: '40px' }}
-    />
-  </Box>
-)}
+/>
 ```
 
 ---
@@ -93,196 +220,185 @@ Edit `frontend/src/components/Work/OceanWorkScene.tsx` and replace emojis with i
 
 ### Work Logging System
 
-**New API endpoints**:
-- `POST /work/log` - Log work session
-- `GET /work/logs?days=7` - Get work logs from last 7 days
-- `GET /work/stats?days=7` - Get work statistics
+**API endpoints**:
+- `POST /work/log` - Log work session with chase metrics
+- `GET /work/logs?days=7` - Get recent work history
+- `GET /work/stats?days=7` - Get statistics (total hours, avg speed, pranks)
 - `DELETE /work/log/{id}` - Delete work log
 
-**Database table** (`work_logs`):
-- `duration_hours` - Work duration
-- `intensity` - Work intensity (1-5)
-- `energy_cost` - Energy consumed
-- `stress_gain` - Stress gained
-- `experience_gain` - Experience earned
-- `pranked_boss` - Number of pranks
-
-### Work Modes
-
-**Normal Work**:
-1. Adjust work duration (1-8 hours)
-2. Set work intensity (1-5)
-3. Preview impact:
-   - Energy loss = duration × intensity × 3
-   - Stress gain = duration × intensity × 2
-   - Experience gain = duration × intensity × 10
-4. Click "Start Work Session" to begin
-5. Watch the seal fishing (animation effect)
-
-**Prank the Boss** (Innovative Feature!):
-1. Unlocks when stress ≥ 30
-2. Click "💦 Prank the Octopus Boss!"
-3. Effects:
-   - Stress -20
-   - Mood +10
-   - Octopus gets inked (animation)
-4. 30-second cooldown
-
-### Stress Management System
-
-```typescript
-// Auto reminder system (in scene)
-{characterStress > 70 && (
-  <Alert severity="warning">
-    ⚠️ High stress detected!
-    Consider pranking the octopus boss or taking a break!
-  </Alert>
-)}
+**Database fields** (`work_logs`):
+```sql
+- duration_hours: FLOAT      -- Work session duration
+- intensity: INT (1-5)        -- Chase speed
+- energy_cost: INT            -- Energy consumed
+- stress_gain: INT            -- Stress accumulated
+- experience_gain: INT        -- XP earned
+- pranked_boss: INT           -- Number of pranks (0 or 1)
 ```
+
+### Stress Management
+
+**Prank the Boss Feature**:
+1. Unlocks when stress ≥ 30
+2. Click button → Octopus sprays ink (2s animation)
+3. Effects: Stress -20, Mood +10
+4. 30-second cooldown prevents spam
+5. Auto-reminder appears when stress > 70
 
 ---
 
-## 🎨 Enhancement Suggestions
+## 🎨 Visual Customization Tips
 
-### 1. Improve Ocean Background
+### 1. Add More Variety
 
-In `OceanWorkScene.tsx` at line 89:
-
+**Multiple Rock/Seaweed Variants**:
 ```typescript
-<Paper
-  sx={{
-    p: { xs: 2, sm: 3 },
-    mb: 3,
-    background: 'linear-gradient(180deg, #87CEEB 0%, #4A90E2 50%, #2C5F8D 100%)',
-    minHeight: 300,
-    position: 'relative',
-    overflow: 'hidden',
-    // Add animated wave background
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      width: '200%',
-      height: '100px',
-      background: 'url(/assets/ocean/wave.png) repeat-x',
-      animation: 'wave 10s linear infinite',
-    },
-    '@keyframes wave': {
-      '0%': { transform: 'translateX(0)' },
-      '100%': { transform: 'translateX(-50%)' },
-    },
-  }}
->
+// Randomly select decorations
+const rocks = ['rock1.png', 'rock2.png', 'rock3.png'];
+const seaweeds = ['seaweed1.png', 'seaweed2.png', 'seaweed3.png'];
+
+<img
+  src={`/assets/ocean/${rocks[Math.floor(Math.random() * rocks.length)]}`}
+  alt="rock"
+/>
 ```
 
-### 2. Add Bubble Decorations
+### 2. Improve Ocean Floor
 
+**Add Texture**:
 ```typescript
-// Add to ocean scene
 <Box
   sx={{
     position: 'absolute',
-    left: '30%',
-    bottom: '20%',
-    animation: 'float 3s ease-in-out infinite',
-    '@keyframes float': {
-      '0%, 100%': { transform: 'translateY(0)' },
-      '50%': { transform: 'translateY(-20px)' },
-    },
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '30%',
+    background: 'url(/assets/ocean/terrain.png) repeat-x bottom',
+    backgroundSize: 'cover',
+    opacity: 0.8,
   }}
->
-  <img src="/assets/ocean/bubble.png" alt="bubble" style={{ width: '20px', opacity: 0.6 }} />
+/>
+```
+
+### 3. Enhance Bubbles
+
+**Use Kenney Bubble Assets**:
+```typescript
+<Box sx={{
+  position: 'absolute',
+  left: '30%',
+  bottom: '40%',
+  animation: 'float 3s ease-in-out infinite'
+}}>
+  <img src="/assets/ocean/bubble.png" style={{ width: '15px', opacity: 0.6 }} />
 </Box>
 ```
 
-### 3. Fishing Animation
+### 4. Add HUD Elements
+
+Use Kenney's HUD pack for:
+- Progress bars
+- Score displays
+- Button frames
+- Icon backgrounds
+
+---
+
+## 🚀 Performance Tips
+
+### Optimize Fish Animation
+
+Current: 8 fish updating every 50ms
+If laggy on mobile:
+```typescript
+// Reduce fish count
+const initialFish: Fish[] = Array.from({ length: 5 }, ...);  // Was 8
+
+// Increase interval
+setInterval(() => { ... }, 100);  // Was 50ms
+```
+
+### Lazy Load Images
 
 ```typescript
-// Add fishing rod animation while working
-{isWorking && (
-  <>
-    {/* Hook */}
-    <Box
-      sx={{
-        position: 'absolute',
-        left: '25%',
-        top: '50%',
-        animation: 'fishing 2s ease-in-out infinite',
-        '@keyframes fishing': {
-          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-          '50%': { transform: 'translateY(10px) rotate(5deg)' },
-        },
-      }}
-    >
-      <img src="/assets/ocean/hook.png" alt="hook" style={{ width: '30px' }} />
-    </Box>
-  </>
-)}
+import { lazy, Suspense } from 'react';
+
+const OceanScene = lazy(() => import('./components/Work/OceanWorkScene'));
+
+<Suspense fallback={<CircularProgress />}>
+  <OceanScene {...props} />
+</Suspense>
 ```
 
 ---
 
 ## 📱 Mobile Optimization
 
-Completed responsive design features:
-- ✅ Ocean scene adapts to screen size
-- ✅ Seal/octopus automatically scale down on mobile
-- ✅ Work control panel stacks on mobile
+Already implemented:
+- ✅ Responsive font sizes for all elements
 - ✅ Touch-friendly sliders and buttons
-
----
-
-## 🚀 Next Steps
-
-### Short-term (Visual Optimization):
-1. **Replace emojis with Kenney images**
-2. **Add wave background animation**
-3. **Optimize color scheme** (ocean blue palette)
-4. **Add sound effects** (optional):
-   - Fish catching sound
-   - Octopus prank sound
-   - Background ocean waves
-
-### Mid-term (Feature Enhancement):
-1. **Different fish types**:
-   - Small fish = simple tasks
-   - Big fish = complex projects
-   - Golden fish = bonus tasks
-2. **Octopus boss states**:
-   - Good mood = easier tasks
-   - Pranked too much = "retaliation"
-3. **Achievement system**:
-   - "Prank Master" - Prank boss 50 times
-   - "Fishing Expert" - Complete 100 hours of work
-   - "Stress Manager" - Keep stress <30 for 7 days straight
-
-### Long-term (AI Integration):
-1. **Gemini-generated work scenarios**
-2. **Pearl gives work advice**
-3. **Smart break time recommendations**
+- ✅ Scaled-down characters on small screens
+- ✅ Adaptive scene height (250px mobile → 400px desktop)
+- ✅ Stacked controls on mobile
 
 ---
 
 ## 💡 Innovation Highlights
 
-Your **Prank the Boss** feature is a unique innovation:
-1. ✅ **Solves real pain point** - Work stress relief
-2. ✅ **Safe outlet** - Virtual environment, no real-world consequences
-3. ✅ **Gamified** - Has cooldown, prevents abuse
-4. ✅ **Anti-hustle culture** - Encourages stress management
+### What Makes This Special
 
-This feature will stand out during Hackathon demos!
+1. **Work ≠ Boring Clicking**
+   - Visual feedback (seal chasing)
+   - Speed customization
+   - Guaranteed completion (no frustration)
+
+2. **Stress Management Gamified**
+   - Prank boss feature is unique
+   - Safe outlet for workplace frustration
+   - Cooldown prevents abuse
+
+3. **Rich Environment**
+   - 8 swimming fish (ambient life)
+   - Layered decorations
+   - Smooth animations
+   - Professional game feel
+
+4. **Anti-Hustle Philosophy**
+   - "Lazy Swim" is a valid choice
+   - Slower ≠ failure, just lower cost
+   - Rest encouraged (prank feature)
 
 ---
 
-## 🔧 Running and Testing
+## 🎤 Demo Script for Hackathon
+
+### Setup (30 seconds)
+> "Ever feel like work is just chasing fish all day for someone else's benefit? In Oystraz, that's literally what happens!"
+
+### Demo Work (45 seconds)
+1. Show chase speed slider: "You control how hard you work"
+2. Select "Turbo" speed
+3. Watch seal chase fish: "See? Working hard drains energy and builds stress"
+4. Point out stats: "High productivity, but at what cost?"
+
+### Climax - Prank Boss (30 seconds)
+> "But wait - stress too high? No problem!"
+
+5. Click "Prank the Octopus Boss"
+6. Watch ink spray animation
+7. Show stress drop: "Safe stress relief in a virtual world!"
+
+### Closing (15 seconds)
+> "That's Oystraz - real health tracking meets playful stress management. Your fish-catching seal thanks you!"
+
+---
+
+## 🔧 Running & Testing
 
 ```bash
-# Backend (create database table)
+# Backend
 cd backend
-alembic revision --autogenerate -m "Add work_logs table"
-alembic upgrade head
 uvicorn app.main:app --reload
 
 # Frontend
@@ -290,20 +406,37 @@ cd frontend
 npm run dev
 ```
 
-Visit http://localhost:5173/work to see the new ocean theme!
+Visit http://localhost:5173/work
+
+**Test checklist**:
+- [ ] 8 fish swim continuously
+- [ ] Seal chases when work starts
+- [ ] Speed affects chase animation
+- [ ] Fish counter updates correctly
+- [ ] Prank button shows cooldown
+- [ ] Mobile responsive (test on phone)
 
 ---
 
-## 📝 Demo Script Suggestion
+## 🌟 Future Enhancements
 
-**For Hackathon presentation**:
-1. "Does everyone feel stressed at work? Ever wanted to punch your boss?"
-2. "In Oystraz, you're a seal employee, and your boss is an octopus"
-3. Demo work session → stress increases
-4. **Climax**: "Too stressed? No problem, when boss isn't looking..."
-5. Click prank button → octopus sprays ink → audience laughs
-6. "This is our innovation - safely release work stress in a virtual world"
+### Short-term
+- Replace all emojis with Kenney assets
+- Add sound effects (splash, ink spray)
+- More fish variety (10+ types)
+
+### Mid-term
+- Different catch animations per fish type
+- Octopus "attacks" if pranked too much
+- Day/night ocean themes
+
+### Long-term
+- Multiplayer (race other seals)
+- Fish leaderboard
+- Seasonal ocean events
 
 ---
 
-Good luck with your Hackathon! 🎉🏆
+Good luck with your Hackathon presentation! 🎉🏆
+
+The seal is ready to chase fish! 🦭🐟💨
