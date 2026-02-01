@@ -73,9 +73,6 @@ const theme = createTheme({
       default: '#131314', // Google Dark Mode background
       paper: '#1E1F20', // Elevated surface
     },
-    surface: {
-      main: '#1E1F20',
-    },
     text: {
       primary: '#E3E3E3',
       secondary: '#9AA0A6',
