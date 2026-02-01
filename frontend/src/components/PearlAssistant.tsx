@@ -25,9 +25,10 @@ interface Message {
   timestamp: Date;
 }
 
-// Gemini gradient colors
-const geminiGradient = 'linear-gradient(135deg, #4285F4 0%, #9B72CB 25%, #D96570 50%, #D96570 75%, #FFC857 100%)';
-const geminiGradientHover = 'linear-gradient(135deg, #FFC857 0%, #D96570 25%, #9B72CB 50%, #4285F4 100%)';
+// Pearl iridescent gradient - soft pearlescent colors
+const pearlGradient = 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)';
+const pearlGradientHover = 'linear-gradient(135deg, #FFFEF8 0%, #F0EDE8 20%, #D5E5F0 40%, #E8D5E7 60%, #F8E8EE 80%, #FEFEFE 100%)';
+const pearlHeaderGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 
 export default function PearlAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -100,7 +101,7 @@ export default function PearlAssistant() {
 
   return (
     <>
-      {/* Floating Button with Gemini Gradient Border */}
+      {/* Floating Button with Pearl Iridescent Gradient Border */}
       {!isOpen && (
         <Box
           onClick={handleToggle}
@@ -111,16 +112,16 @@ export default function PearlAssistant() {
             width: { xs: 56, sm: 68 },
             height: { xs: 56, sm: 68 },
             borderRadius: '50%',
-            background: geminiGradient,
+            background: pearlGradient,
             padding: '3px',
             cursor: 'pointer',
             zIndex: 1400,
             transition: 'all 0.3s ease',
-            boxShadow: '0 4px 20px rgba(66, 133, 244, 0.4)',
+            boxShadow: '0 4px 20px rgba(232, 213, 231, 0.6)',
             '&:hover': {
-              background: geminiGradientHover,
+              background: pearlGradientHover,
               transform: 'scale(1.05)',
-              boxShadow: '0 6px 28px rgba(155, 114, 203, 0.5)',
+              boxShadow: '0 6px 28px rgba(213, 229, 240, 0.7)',
             },
           }}
         >
@@ -161,11 +162,11 @@ export default function PearlAssistant() {
             border: '1px solid #3C4043',
           }}
         >
-          {/* Header with Gemini Gradient */}
+          {/* Header with Pearl Iridescent Gradient */}
           <Box
             sx={{
-              background: geminiGradient,
-              color: 'white',
+              background: pearlHeaderGradient,
+              color: '#3C3C3C',
               p: 2,
               display: 'flex',
               alignItems: 'center',
@@ -173,12 +174,12 @@ export default function PearlAssistant() {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 40, height: 40 }}>💎</Avatar>
+              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.6)', width: 40, height: 40 }}>💎</Avatar>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: '"Inter", sans-serif' }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: '"Roboto", sans-serif', color: '#2D2D2D' }}>
                   Pearl
                 </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                <Typography variant="caption" sx={{ opacity: 0.8, fontFamily: '"Roboto", sans-serif', color: '#5C5C5C' }}>
                   Your chill health buddy
                 </Typography>
               </Box>
@@ -187,7 +188,7 @@ export default function PearlAssistant() {
               <IconButton
                 size="small"
                 onClick={handleToggle}
-                sx={{ color: 'white' }}
+                sx={{ color: '#5C5C5C' }}
               >
                 <MinimizeIcon />
               </IconButton>
@@ -217,15 +218,25 @@ export default function PearlAssistant() {
                 <Paper
                   elevation={0}
                   sx={{
-                    p: 1.5,
+                    p: 2,
+                    px: 2.5,
                     maxWidth: '85%',
                     bgcolor: message.role === 'user' ? '#394457' : '#2D2E30',
                     color: '#E3E3E3',
-                    borderRadius: 3,
+                    borderRadius: 4,
                     border: message.role === 'assistant' ? '1px solid #3C4043' : 'none',
+                    overflow: 'hidden',
+                    wordBreak: 'break-word',
                   }}
                 >
-                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: '"Roboto", sans-serif',
+                      lineHeight: 1.5,
+                    }}
+                  >
                     {message.content}
                   </Typography>
                   <Typography
@@ -236,6 +247,7 @@ export default function PearlAssistant() {
                       mt: 0.5,
                       fontSize: '0.65rem',
                       color: '#9AA0A6',
+                      fontFamily: '"Roboto", sans-serif',
                     }}
                   >
                     {message.timestamp.toLocaleTimeString([], {
@@ -264,7 +276,7 @@ export default function PearlAssistant() {
             <div ref={messagesEndRef} />
           </Box>
 
-          {/* Input with Gemini-style border */}
+          {/* Input with Pearl-style border */}
           <Box
             sx={{
               p: 2,
@@ -276,9 +288,9 @@ export default function PearlAssistant() {
               sx={{
                 display: 'flex',
                 gap: 1,
-                p: '3px',
+                p: '2px',
                 borderRadius: 3,
-                background: 'linear-gradient(90deg, #4285F4, #9B72CB, #D96570)',
+                background: pearlGradient,
               }}
             >
               <Box
@@ -289,6 +301,7 @@ export default function PearlAssistant() {
                   bgcolor: '#1E1F20',
                   borderRadius: 2.5,
                   p: 0.5,
+                  alignItems: 'center',
                 }}
               >
                 <TextField
@@ -306,6 +319,7 @@ export default function PearlAssistant() {
                       borderRadius: 2,
                       bgcolor: 'transparent',
                       color: '#E3E3E3',
+                      fontFamily: '"Roboto", sans-serif',
                       '& fieldset': {
                         border: 'none',
                       },
@@ -313,6 +327,7 @@ export default function PearlAssistant() {
                     '& .MuiInputBase-input::placeholder': {
                       color: '#9AA0A6',
                       opacity: 1,
+                      fontFamily: '"Roboto", sans-serif',
                     },
                   }}
                 />
@@ -321,12 +336,12 @@ export default function PearlAssistant() {
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
                   sx={{
-                    background: geminiGradient,
-                    color: 'white',
+                    background: pearlGradient,
+                    color: '#3C3C3C',
                     width: 40,
                     height: 40,
                     '&:hover': {
-                      background: geminiGradientHover,
+                      background: pearlGradientHover,
                     },
                     '&.Mui-disabled': {
                       bgcolor: '#3C4043',
