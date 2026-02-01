@@ -158,8 +158,9 @@ export default function PearlAssistant() {
             borderRadius: { xs: 3, sm: 4 },
             overflow: 'hidden',
             zIndex: 1400,
-            backgroundColor: '#1E1F20',
-            border: '1px solid #3C4043',
+            backgroundColor: '#F0F7FB',
+            border: '1px solid #B8D4E8',
+            boxShadow: '0 8px 32px rgba(74, 144, 217, 0.15)',
           }}
         >
           {/* Header with Pearl Iridescent Gradient */}
@@ -195,13 +196,14 @@ export default function PearlAssistant() {
             </Box>
           </Box>
 
-          {/* Messages */}
+          {/* Messages - Ocean blue theme */}
           <Box
             sx={{
               flex: 1,
               overflowY: 'auto',
               p: 2,
-              bgcolor: '#131314',
+              bgcolor: '#E8F4FC',
+              background: 'linear-gradient(180deg, #E8F4FC 0%, #D4EAF7 100%)',
               display: 'flex',
               flexDirection: 'column',
               gap: 2,
@@ -216,24 +218,27 @@ export default function PearlAssistant() {
                 }}
               >
                 <Paper
-                  elevation={0}
+                  elevation={1}
                   sx={{
-                    p: 2,
-                    px: 2.5,
+                    p: 1.5,
+                    px: 2,
                     maxWidth: '85%',
-                    bgcolor: message.role === 'user' ? '#394457' : '#2D2E30',
-                    color: '#E3E3E3',
-                    borderRadius: 4,
-                    border: message.role === 'assistant' ? '1px solid #3C4043' : 'none',
+                    bgcolor: message.role === 'user' ? '#4A90D9' : '#FFFFFF',
+                    color: message.role === 'user' ? '#FFFFFF' : '#2C3E50',
+                    borderRadius: 2.5,
+                    border: message.role === 'assistant' ? '1px solid #B8D4E8' : 'none',
                     overflow: 'hidden',
                     wordBreak: 'break-word',
+                    boxShadow: message.role === 'user'
+                      ? '0 2px 8px rgba(74, 144, 217, 0.3)'
+                      : '0 2px 8px rgba(0, 0, 0, 0.08)',
                   }}
                 >
                   <Typography
                     variant="body2"
                     sx={{
                       whiteSpace: 'pre-wrap',
-                      fontFamily: '"Roboto", sans-serif',
+                      fontFamily: '"Roboto", "Noto Color Emoji", sans-serif',
                       lineHeight: 1.5,
                     }}
                   >
@@ -242,11 +247,11 @@ export default function PearlAssistant() {
                   <Typography
                     variant="caption"
                     sx={{
-                      opacity: 0.5,
+                      opacity: 0.6,
                       display: 'block',
                       mt: 0.5,
                       fontSize: '0.65rem',
-                      color: '#9AA0A6',
+                      color: message.role === 'user' ? 'rgba(255,255,255,0.8)' : '#7F8C9A',
                       fontFamily: '"Roboto", sans-serif',
                     }}
                   >
@@ -261,15 +266,15 @@ export default function PearlAssistant() {
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
                 <Paper
-                  elevation={0}
+                  elevation={1}
                   sx={{
                     p: 1.5,
-                    borderRadius: 3,
-                    bgcolor: '#2D2E30',
-                    border: '1px solid #3C4043',
+                    borderRadius: 2.5,
+                    bgcolor: '#FFFFFF',
+                    border: '1px solid #B8D4E8',
                   }}
                 >
-                  <CircularProgress size={20} sx={{ color: '#8AB4F8' }} />
+                  <CircularProgress size={20} sx={{ color: '#4A90D9' }} />
                 </Paper>
               </Box>
             )}
@@ -280,8 +285,8 @@ export default function PearlAssistant() {
           <Box
             sx={{
               p: 2,
-              bgcolor: '#1E1F20',
-              borderTop: '1px solid #3C4043',
+              bgcolor: '#F0F7FB',
+              borderTop: '1px solid #B8D4E8',
             }}
           >
             <Box
@@ -289,7 +294,7 @@ export default function PearlAssistant() {
                 display: 'flex',
                 gap: 1,
                 p: '2px',
-                borderRadius: 3,
+                borderRadius: 2.5,
                 background: pearlGradient,
               }}
             >
@@ -298,8 +303,8 @@ export default function PearlAssistant() {
                   display: 'flex',
                   gap: 1,
                   flex: 1,
-                  bgcolor: '#1E1F20',
-                  borderRadius: 2.5,
+                  bgcolor: '#FFFFFF',
+                  borderRadius: 2,
                   p: 0.5,
                   alignItems: 'center',
                 }}
@@ -318,14 +323,14 @@ export default function PearlAssistant() {
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       bgcolor: 'transparent',
-                      color: '#E3E3E3',
-                      fontFamily: '"Roboto", sans-serif',
+                      color: '#2C3E50',
+                      fontFamily: '"Roboto", "Noto Color Emoji", sans-serif',
                       '& fieldset': {
                         border: 'none',
                       },
                     },
                     '& .MuiInputBase-input::placeholder': {
-                      color: '#9AA0A6',
+                      color: '#7F8C9A',
                       opacity: 1,
                       fontFamily: '"Roboto", sans-serif',
                     },
@@ -344,8 +349,8 @@ export default function PearlAssistant() {
                       background: pearlGradientHover,
                     },
                     '&.Mui-disabled': {
-                      bgcolor: '#3C4043',
-                      color: '#5F6368',
+                      bgcolor: '#D4E5F2',
+                      color: '#9AA0A6',
                     },
                   }}
                 >
