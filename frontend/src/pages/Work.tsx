@@ -169,7 +169,7 @@ export default function Work() {
           gutterBottom
           sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
         >
-          🦭 Ocean Office Simulator
+          🦭 Ocean Office
         </Typography>
         <Typography
           variant="subtitle1"

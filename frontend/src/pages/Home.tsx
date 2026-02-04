@@ -70,7 +70,7 @@ export default function Home() {
           component="h1"
           sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, mb: { xs: 3, sm: 4.5 } }}
         >
-          🦪 Life is your Oyster, {user?.username || 'Guest'}!
+          🦪 Life is your oyster, {user?.username || 'Guest'}!
         </Typography>
 
         {/* Character State - Compact horizontal card */}
