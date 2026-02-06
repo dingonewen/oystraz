@@ -67,6 +67,7 @@ export default function OceanWorkScene({
   const [isWorking, setIsWorking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
   const [showPrankEffect, setShowPrankEffect] = useState(false);
+  const [autoPrankTriggered, setAutoPrankTriggered] = useState(false); // NEW: Prevent multiple triggers
 
   const [fishCaught, setFishCaught] = useState(0);
   const [octopusAnnoyed, setOctopusAnnoyed] = useState(false);
@@ -209,7 +210,18 @@ export default function OceanWorkScene({
   const updateSealChase = useCallback(() => {
     if (!isWorking) return;
 
-    const chaseSpeed = workIntensity * 0.4 + 0.3;
+    // ADDED: Extra safety check - stop if target reached
+    if (fishCaught >= totalFishToCatch.current) {
+      setIsWorking(false);
+      setSealState('idle');
+      setFish(prev => prev.filter(f => !f.caught));
+      onWorkComplete(workHours, workIntensity);
+      return;
+    }
+
+    // FIXED: Much slower, more realistic speeds
+    // Lazy (1): 0.25, Casual (2): 0.40, Normal (3): 0.55, Fast (4): 0.70, Turbo (5): 0.85
+    const chaseSpeed = workIntensity * 0.15 + 0.1;
 
     if (sealState === 'idle' || sealState === 'chasing') {
       const uncaughtFish = fish.filter(f => !f.caught);
@@ -218,6 +230,10 @@ export default function OceanWorkScene({
         if (fishCaught >= totalFishToCatch.current) {
           setIsWorking(false);
           setSealState('idle');
+          
+          // FIXED: Clean up caught fish when work is done
+          setFish(prev => prev.filter(f => !f.caught));
+          
           onWorkComplete(workHours, workIntensity);
         }
         return;
@@ -243,10 +259,32 @@ export default function OceanWorkScene({
 
       if (distance < 5) {
         // Caught the fish!
-        setFish(prev => prev.map(f => (f.id === nearestFish.id ? { ...f, caught: true } : f)));
+        const newFishCaught = fishCaught + 1;
+        
+        setFish(prev => {
+          const updated = prev.map(f => (f.id === nearestFish.id ? { ...f, caught: true } : f));
+          
+          // FIXED: Only spawn new fish if we haven't reached the target yet
+          if (newFishCaught < totalFishToCatch.current) {
+            const fishTypes = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'red'];
+            const newFish: Fish = {
+              id: Date.now(), // Unique ID based on timestamp
+              type: fishTypes[Math.floor(Math.random() * fishTypes.length)],
+              x: Math.random() > 0.5 ? 5 : 85, // Spawn from left or right edge
+              y: Math.random() * 50 + 25,
+              speed: Math.random() * 0.3 + 0.15,
+              direction: Math.random() > 0.5 ? 1 : -1,
+              caught: false,
+            };
+            
+            return [...updated, newFish];
+          }
+          
+          return updated;
+        });
         setCarriedFish(nearestFish);
         setSealState('carrying');
-        setFishCaught(prev => prev + 1);
+        setFishCaught(newFishCaught);
       } else {
         // Move towards fish - smooth update
         const moveX = (dx / distance) * chaseSpeed;
@@ -265,17 +303,31 @@ export default function OceanWorkScene({
       if (distance < 5) {
         // Arrived at hook!
         if (carriedFish) {
-          setFishOnHook(prev => [
-            ...prev,
+          const newFishOnHook = [
+            ...fishOnHook,
             {
               id: carriedFish.id,
               type: carriedFish.type,
-              yOffset: prev.length * 12,
+              yOffset: fishOnHook.length * 12,
             },
-          ]);
+          ];
+          
+          setFishOnHook(newFishOnHook);
         }
         setCarriedFish(null);
-        setSealState('idle');
+        
+        // FIXED: Check if work is complete after delivering fish
+        if (fishCaught >= totalFishToCatch.current) {
+          setIsWorking(false);
+          setSealState('idle');
+          
+          // Clean up caught fish
+          setFish(prev => prev.filter(f => !f.caught));
+          
+          onWorkComplete(workHours, workIntensity);
+        } else {
+          setSealState('idle');
+        }
       } else {
         // Move towards hook
         const moveX = (dx / distance) * chaseSpeed;
@@ -327,9 +379,107 @@ export default function OceanWorkScene({
     setSealState('idle');
     setFishOnHook([]);
     setCarriedFish(null);
+    setAutoPrankTriggered(false); // Reset auto-prank flag
 
     // Reset fish
     setFish(prev => prev.map(f => ({ ...f, caught: false })));
+  };
+
+  // NEW: Auto-prank when hook is full (clears the hook)
+  // Auto-prank when hook is full (clears the hook)
+  const handleAutoPrank = async () => {
+    // Save current position
+    prankStartPosition.current = { x: sealX, y: sealY };
+
+    const octopusX = 88;
+    const octopusY = 15;
+
+    setSealState('pranking_move');
+    
+    // Phase 1: Move to octopus
+    const moveInterval = setInterval(() => {
+      setSealX(currentX => {
+        const dx = octopusX - currentX;
+        const currentY = sealY;
+        const dy = octopusY - currentY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 3) {
+          // Arrived at octopus!
+          clearInterval(moveInterval);
+          
+          setSealState('pranking_spray');
+          setShowPrankEffect(true);
+          setOctopusAnnoyed(true);
+
+          // Phase 2: Spray for 1.5 seconds, then return
+          setTimeout(() => {
+            setSealState('pranking_return');
+            
+            // Phase 3: Return to start position
+            const returnInterval = setInterval(() => {
+              setSealX(cx => {
+                const rdx = prankStartPosition.current.x - cx;
+                const cy = sealY;
+                const rdy = prankStartPosition.current.y - cy;
+                const rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+
+                if (rdist < 2) {
+                  // Back home!
+                  clearInterval(returnInterval);
+                  setSealState('idle');
+                  setShowPrankEffect(false);
+                  setOctopusAnnoyed(false);
+                  
+                  // Clear the fish hook!
+                  setFishOnHook([]);
+                  
+                  // Reset auto-prank flag so it can trigger again
+                  setAutoPrankTriggered(false);
+                  
+                  // Complete prank action
+                  onWorkComplete(0, 0, true);
+                  
+                  return cx;
+                }
+                
+                return cx + (rdx / rdist) * 0.8;
+              });
+              
+              setSealY(cy => {
+                const rdx = prankStartPosition.current.x - sealX;
+                const rdy = prankStartPosition.current.y - cy;
+                const rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+                
+                if (rdist < 2) return cy;
+                return cy + (rdy / rdist) * 0.8;
+              });
+              
+              setSealDirection(prankStartPosition.current.x - sealX > 0 ? 1 : -1);
+            }, 50);
+          }, 1500);
+          
+          return currentX;
+        }
+
+        return currentX + (dx / distance) * 0.8;
+      });
+
+      setSealY(currentY => {
+        const dx = octopusX - sealX;
+        const dy = octopusY - currentY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 3) return currentY;
+        return currentY + (dy / distance) * 0.8;
+      });
+
+      setSealDirection(octopusX - sealX > 0 ? 1 : -1);
+    }, 50);
+
+    // Cooldown
+    setPrankCooldown(true);
+    setTimeout(() => setPrankCooldown(false), 30000);
   };
 
   // NEW: Prank boss animation with smooth seal movement
@@ -406,6 +556,24 @@ export default function OceanWorkScene({
     setPrankCooldown(true);
     setTimeout(() => setPrankCooldown(false), 30000);
   };
+
+  // ADDED: Auto-prank when hook is full (24 fish)
+  useEffect(() => {
+    if (fishOnHook.length >= 24 && !prankCooldown && sealState === 'idle' && !autoPrankTriggered) {
+      // Hook is full! Auto-prank the boss (only once)
+      setAutoPrankTriggered(true);
+      
+      // Stop working if still working
+      if (isWorking) {
+        setIsWorking(false);
+        setFish(prev => prev.filter(f => !f.caught));
+      }
+      
+      setTimeout(() => {
+        handleAutoPrank();
+      }, 500);
+    }
+  }, [fishOnHook.length, prankCooldown, sealState, isWorking, autoPrankTriggered]);
 
   const getWorkIntensityLabel = (intensity: number) => {
     const labels = ['', 'Lazy 🐌', 'Casual 🚶', 'Normal 🏃', 'Fast 🏃‍♂️💨', 'Turbo 🚀'];
@@ -486,7 +654,7 @@ export default function OceanWorkScene({
                   left: `${f.x}%`,
                   top: `${f.y}%`,
                   transform: `scaleX(${f.direction}) translateY(${Math.sin(Date.now() / 400 + f.id) * 3}px)`,
-                  transition: 'left 0.3s ease-out, top 0.3s ease-out',
+                  // FIXED: Removed transition to prevent ghosting/trailing
                   zIndex: 4,
                 }}
               >
@@ -602,7 +770,7 @@ export default function OceanWorkScene({
                 whiteSpace: 'nowrap',
               }}
             >
-             
+              
             </Typography>
           </Box>
         </Box>
@@ -671,7 +839,7 @@ export default function OceanWorkScene({
         {isWorking && (
           <Chip
             icon={<WorkIcon />}
-            label={`Fish: ${fishCaught}/${totalFishToCatch.current} | ${
+            label={`Fish: ${fishCaught}/${totalFishToCatch.current} | Hook: ${fishOnHook.length}/24 | ${
               sealState === 'chasing'
                 ? 'Chasing...'
                 : sealState === 'carrying'
@@ -731,6 +899,24 @@ export default function OceanWorkScene({
             High stress! Consider pranking the octopus boss!
           </Alert>
         )}
+
+        {/* ADDED: Hook Almost Full Warning */}
+        {fishOnHook.length >= 20 && fishOnHook.length < 24 && sealState === 'idle' && (
+          <Alert
+            severity="info"
+            sx={{
+              position: 'absolute',
+              bottom: 60,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: { xs: '90%', sm: '80%' },
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              zIndex: 10,
+            }}
+          >
+            🎣 Hook almost full! ({fishOnHook.length}/24) At 24 fish, auto-prank will trigger!
+          </Alert>
+        )}
       </Paper>
 
       {/* Work Controls */}
@@ -751,7 +937,7 @@ export default function OceanWorkScene({
             onChange={(_, value) => setWorkHours(value as number)}
             min={1}
             max={16}
-            step={0.5}
+            step={1}
             marks
             valueLabelDisplay="auto"
             disabled={isWorking || sealState !== 'idle'}
@@ -852,7 +1038,7 @@ export default function OceanWorkScene({
         </Button>
         {showPrankEffect && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            😂 You pranked the octopus! Ink sprayed everywhere! Stress -20, Mood +10
+            😂 You pranked the Octopus Manager, ink sprayed everywhere! Stress -20, Mood +10
           </Alert>
         )}
       </Paper>
