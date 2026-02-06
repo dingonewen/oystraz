@@ -1,6 +1,7 @@
 /**
  * Work Service
  * API calls for work session tracking
+ * Backend handles metric calculations using health_calculator
  */
 
 import api from './api';
@@ -8,11 +9,12 @@ import api from './api';
 export interface WorkLogData {
   duration_hours: number;
   intensity: number;
-  energy_cost: number;
-  stress_gain: number;
-  experience_gain: number;
   pranked_boss: number;
   notes?: string;
+  // These fields are ignored by backend (it calculates them)
+  energy_cost?: number;
+  stress_gain?: number;
+  experience_gain?: number;
 }
 
 export interface WorkLog {
@@ -22,10 +24,12 @@ export interface WorkLog {
   intensity: number;
   energy_cost: number;
   stress_gain: number;
+  stamina_cost: number;
   experience_gain: number;
   pranked_boss: number;
   notes?: string;
   logged_at: string;
+  created_at: string;
 }
 
 export interface WorkStats {
@@ -37,7 +41,13 @@ export interface WorkStats {
 }
 
 export const logWork = async (workData: WorkLogData): Promise<WorkLog> => {
-  const response = await api.post('/work/log', workData);
+  // Backend only needs duration, intensity, pranked_boss, and notes
+  const response = await api.post('/work/log', {
+    duration_hours: workData.duration_hours,
+    intensity: workData.intensity,
+    pranked_boss: workData.pranked_boss,
+    notes: workData.notes,
+  });
   return response.data;
 };
 

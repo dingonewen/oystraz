@@ -14,12 +14,12 @@ class Character(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
 
-    # Health metrics (0-100)
-    stamina = Column(Float, default=100.0)
-    energy = Column(Float, default=100.0)
-    nutrition = Column(Float, default=100.0)
-    mood = Column(Float, default=100.0)
-    stress = Column(Float, default=0.0)
+    # Health metrics (0-100) - Default values for new users
+    stamina = Column(Float, default=80.0)
+    energy = Column(Float, default=80.0)
+    nutrition = Column(Float, default=80.0)
+    mood = Column(Float, default=80.0)
+    stress = Column(Float, default=30.0)
 
     # Character progression
     level = Column(Integer, default=1)

@@ -77,65 +77,25 @@ export default function Work() {
       setIsLoading(true);
       setError(null);
 
-      let energyCost = 0;
-      let stressGain = 0;
-      let experienceGain = 0;
-      let newStats = { ...character };
-
-      if (isPrank) {
-        // Prank reduces stress!
-        const stressReduction = 20;
-        newStats.stress = Math.max(0, character.stress - stressReduction);
-        newStats.mood = Math.min(100, character.mood + 10);
-
-        // Log prank work "session"
-        await logWork({
-          duration_hours: 0,
-          intensity: 0,
-          energy_cost: 0,
-          stress_gain: -stressReduction,
-          experience_gain: 5,
-          pranked_boss: 1,
-          notes: 'Pranked the octopus boss! 💦',
-        });
-
-        setSuccess('😂 Successfully pranked the boss! Stress -20, Mood +10');
-      } else {
-        // Normal work session
-        energyCost = Math.round(hours * intensity * 3);
-        stressGain = Math.round(hours * intensity * 2);
-        experienceGain = Math.round(hours * intensity * 10);
-
-        newStats.energy = Math.max(0, character.energy - energyCost);
-        newStats.stress = Math.min(100, character.stress + stressGain);
-        newStats.mood = Math.max(0, character.mood - Math.round(stressGain / 2));
-        newStats.experience = character.experience + experienceGain;
-        newStats.level = Math.floor(newStats.experience / 100) + 1;
-
-        // Log work session
-        await logWork({
-          duration_hours: hours,
-          intensity,
-          energy_cost: energyCost,
-          stress_gain: stressGain,
-          experience_gain: experienceGain,
-          pranked_boss: 0,
-          notes: `${hours}h work at intensity ${intensity}`,
-        });
-
-        setSuccess(`Work complete! Energy -${energyCost}, Stress +${stressGain}, XP +${experienceGain}`);
-      }
-
-      // Update character
-      await updateCharacter({
-        stamina: newStats.stamina,
-        energy: newStats.energy,
-        nutrition: newStats.nutrition,
-        mood: newStats.mood,
-        stress: newStats.stress,
+      // Log work session - backend will calculate and update metrics
+      await logWork({
+        duration_hours: hours,
+        intensity: isPrank ? 0 : intensity,
+        energy_cost: 0,  // Backend calculates this
+        stress_gain: 0,  // Backend calculates this
+        experience_gain: 0,  // Backend calculates this
+        pranked_boss: isPrank ? 1 : 0,
+        notes: isPrank ? 'Pranked the octopus boss! 💦' : `${hours}h work at intensity ${intensity}`,
       });
 
-      setCharacter(newStats);
+      if (isPrank) {
+        setSuccess('😂 Successfully pranked the boss! Stress reduced!');
+      } else {
+        setSuccess(`Work complete! ${hours}h at intensity ${intensity}. Metrics updated!`);
+      }
+
+      // Reload character to get updated metrics from backend
+      await loadCharacter();
 
       // Reload work data
       await loadWorkData();
@@ -192,14 +152,32 @@ export default function Work() {
           </Alert>
         )}
 
-        {/* Character Status */}
+        {/* Character Status - Synced with Home */}
         <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 } }}>
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            Current Status (synced with Home)
+          </Typography>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{ mb: 2 }}>
+            <Grid size={{ xs: 6, md: 3 }}>
+              <Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="body2">💪 Stamina</Typography>
+                  <Typography variant="body2">{Math.round(character.stamina)}/100</Typography>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={character.stamina}
+                  sx={{ height: 8, borderRadius: 1 }}
+                  color="info"
+                />
+              </Box>
+            </Grid>
+
+            <Grid size={{ xs: 6, md: 3 }}>
+              <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">⚡ Energy</Typography>
-                  <Typography variant="body2">{character.energy}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.energy)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -208,11 +186,13 @@ export default function Work() {
                   color="secondary"
                 />
               </Box>
+            </Grid>
 
-              <Box sx={{ mb: 2 }}>
+            <Grid size={{ xs: 6, md: 3 }}>
+              <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😊 Mood</Typography>
-                  <Typography variant="body2">{character.mood}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.mood)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -223,11 +203,11 @@ export default function Work() {
               </Box>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{ mb: 2 }}>
+            <Grid size={{ xs: 6, md: 3 }}>
+              <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😰 Stress</Typography>
-                  <Typography variant="body2">{character.stress}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.stress)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -236,26 +216,26 @@ export default function Work() {
                   color="error"
                 />
               </Box>
-
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                <Chip
-                  label={`Level ${character.level}`}
-                  color="primary"
-                  variant="outlined"
-                />
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="caption" color="text.secondary">
-                    XP: {character.experience % 100}/100
-                  </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(character.experience % 100)}
-                    sx={{ height: 6, borderRadius: 1, mt: 0.5 }}
-                  />
-                </Box>
-              </Box>
             </Grid>
           </Grid>
+
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 2 }}>
+            <Chip
+              label={`Level ${character.level}`}
+              color="primary"
+              variant="outlined"
+            />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="caption" color="text.secondary">
+                XP: {character.experience % (character.level * 100)}/{character.level * 100}
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={(character.experience % (character.level * 100)) / (character.level * 100) * 100}
+                sx={{ height: 6, borderRadius: 1, mt: 0.5 }}
+              />
+            </Box>
+          </Box>
         </Paper>
 
         {/* Ocean Work Scene */}
@@ -263,6 +243,8 @@ export default function Work() {
           onWorkComplete={handleWorkComplete}
           characterStress={character.stress}
           characterEnergy={character.energy}
+          characterStamina={character.stamina}
+          characterMood={character.mood}
         />
 
         {/* Work Statistics */}

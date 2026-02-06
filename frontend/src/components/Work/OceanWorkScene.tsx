@@ -18,6 +18,8 @@ interface OceanWorkSceneProps {
   onWorkComplete: (hours: number, intensity: number, isPrank?: boolean) => void;
   characterStress: number;
   characterEnergy: number;
+  characterStamina: number;
+  characterMood: number;
 }
 
 interface Fish {
@@ -60,12 +62,15 @@ export default function OceanWorkScene({
   onWorkComplete,
   characterStress,
   characterEnergy,
+  characterStamina,
+  characterMood,
 }: OceanWorkSceneProps) {
   const [workHours, setWorkHours] = useState(2);
   const [workIntensity, setWorkIntensity] = useState(3); // 1-5 scale (chase speed)
   const [isWorking, setIsWorking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
   const [showPrankEffect, setShowPrankEffect] = useState(false);
+  const [overworkPrankTriggered, setOverworkPrankTriggered] = useState(false);
 
   // Work scene state
   const [fishCaught, setFishCaught] = useState(0);
@@ -322,6 +327,31 @@ export default function OceanWorkScene({
     return () => clearInterval(interval);
   }, [isWorking, updateSealChase]);
 
+  // Auto-prank octopus when >24 fish on hook (overwork protection)
+  useEffect(() => {
+    if (fishOnHook.length > 24 && !overworkPrankTriggered && !prankCooldown) {
+      // Seal has been working too hard! Auto-prank the octopus boss
+      setOverworkPrankTriggered(true);
+      setShowPrankEffect(true);
+      setOctopusAnnoyed(true);
+      setPrankCooldown(true);
+
+      // Trigger prank effect on character
+      onWorkComplete(0, 0, true);
+
+      // Visual effect timeout
+      setTimeout(() => {
+        setShowPrankEffect(false);
+        setOctopusAnnoyed(false);
+      }, 3000);
+
+      // Cooldown timer
+      setTimeout(() => {
+        setPrankCooldown(false);
+      }, 30000);
+    }
+  }, [fishOnHook.length, overworkPrankTriggered, prankCooldown, onWorkComplete]);
+
   const handleStartWork = () => {
     // Reset state
     setIsWorking(true);
@@ -332,6 +362,7 @@ export default function OceanWorkScene({
     setSealState('idle');
     setCarriedFish(null);
     setTargetFishId(null);
+    setOverworkPrankTriggered(false);  // Reset overwork prank for new session
 
     // Calculate total fish to catch
     const total = Math.ceil(workHours * workIntensity);
@@ -703,6 +734,47 @@ export default function OceanWorkScene({
             }}
           >
             High stress! Consider pranking the octopus boss!
+          </Alert>
+        )}
+
+        {/* Overwork Prank Notification */}
+        {overworkPrankTriggered && showPrankEffect && (
+          <Alert
+            severity="info"
+            sx={{
+              position: 'absolute',
+              bottom: 60,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: { xs: '90%', sm: '80%' },
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              zIndex: 11,
+              animation: 'pulse 0.5s ease-in-out infinite',
+              '@keyframes pulse': {
+                '0%, 100%': { opacity: 1 },
+                '50%': { opacity: 0.7 },
+              },
+            }}
+          >
+            You worked too hard (24+ fish)! Seal pranked the octopus to relieve stress!
+          </Alert>
+        )}
+
+        {/* Low Stamina Warning */}
+        {characterStamina < 30 && !isWorking && (
+          <Alert
+            severity="error"
+            sx={{
+              position: 'absolute',
+              bottom: characterStress > 70 ? 70 : 20,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: { xs: '90%', sm: '80%' },
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              zIndex: 10,
+            }}
+          >
+            Low stamina! Get some rest or exercise to recover.
           </Alert>
         )}
       </Paper>
