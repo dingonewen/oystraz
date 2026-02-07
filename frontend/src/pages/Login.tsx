@@ -20,6 +20,9 @@ import { useUserStore } from '../store/userStore';
 // Logo-style gradient (red to green like the Oystraz logo)
 const logoBorderGradient = 'linear-gradient(135deg, #F28B82 0%, #FDD663 25%, #81C995 50%, #8AB4F8 75%, #E8D5E7 100%)';
 
+// Pearl iridescent gradient for title
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
+
 // Pearl purple button gradient
 const pearlPurpleGradient = 'linear-gradient(135deg, #E8D5E7 0%, #D5C4E8 50%, #C4B5E0 100%)';
 
@@ -69,15 +72,17 @@ export default function Login() {
                 sx={{ width: 64, height: 64, filter: 'drop-shadow(0 0 8px rgba(232, 213, 231, 0.6))' }}
               />
             </Box>
-            {/* Title with thin gray stroke for better contrast */}
+            {/* Title with pearl gradient */}
             <Typography
               variant="h4"
               align="center"
               gutterBottom
               sx={{
-                color: '#F5F5F5',
+                background: pearlTitleGradient,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
                 fontWeight: 600,
-                textShadow: '0 0 1px rgba(100, 100, 100, 0.8), 0 0 2px rgba(80, 80, 80, 0.5)',
               }}
             >
               Welcome to Oystraz
