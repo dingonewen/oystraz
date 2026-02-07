@@ -579,22 +579,26 @@ export default function OceanWorkScene({
             left: `${sealX}%`,
             top: `${sealY}%`,
             transform: `scaleX(${sealDirection})`,
-            transition: 'left 0.05s linear, top 0.05s linear',
-            animation: isWorking ? 'swim 0.5s ease-in-out infinite' : 'bob 2s ease-in-out infinite',
-            '@keyframes swim': {
-              '0%, 100%': { transform: `scaleX(${sealDirection}) translateY(0) rotate(0deg)` },
-              '25%': { transform: `scaleX(${sealDirection}) translateY(-3px) rotate(${sealDirection * 5}deg)` },
-              '50%': { transform: `scaleX(${sealDirection}) translateY(0) rotate(0deg)` },
-              '75%': { transform: `scaleX(${sealDirection}) translateY(3px) rotate(${sealDirection * -5}deg)` },
-            },
-            '@keyframes bob': {
-              '0%, 100%': { transform: `scaleX(${sealDirection}) translateY(0)` },
-              '50%': { transform: `scaleX(${sealDirection}) translateY(-8px)` },
-            },
             zIndex: 6,
           }}
         >
-          <Box sx={{ position: 'relative', display: 'inline-block' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'inline-block',
+              animation: isWorking ? 'sealSwim 0.5s ease-in-out infinite' : 'sealBob 2s ease-in-out infinite',
+              '@keyframes sealSwim': {
+                '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                '25%': { transform: 'translateY(-3px) rotate(5deg)' },
+                '50%': { transform: 'translateY(0) rotate(0deg)' },
+                '75%': { transform: 'translateY(3px) rotate(-5deg)' },
+              },
+              '@keyframes sealBob': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-8px)' },
+              },
+            }}
+          >
             <img
               src="/assets/ocean/seal.png"
               alt="seal"
