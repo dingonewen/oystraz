@@ -257,71 +257,74 @@ def apply_daily_decay(character_dict: Dict[str, float]) -> Dict[str, float]:
 METRICS_DOCUMENTATION = """
 ## Oystraz Health Metrics System
 
-### Default Values (New Users)
-- Stamina: 80
-- Energy: 80
-- Nutrition: 80
-- Mood: 80
-- Stress: 30
+IMPORTANT: Metrics ONLY change when users LOG activities (diet, exercise, sleep, work).
+The character will NOT decay or change automatically - no penalty for not using the app!
 
-### Stamina 💪 (0-100)
-**What affects it:**
+### Default Values (New Users)
+- Stamina: 80 (physical endurance)
+- Energy: 80 (daily energy level)
+- Nutrition: 60 (diet quality - starts lower to encourage logging meals)
+- Mood: 60 (composite emotional state)
+- Stress: 40 (stress level, lower is better)
+
+### Stamina (0-100)
+What affects it:
 - Exercise: +1.5 per 10 minutes (max +15)
-- Sleep ≥7h: +10
+- Sleep >=7h: +10
 - Sleep <5h: -15
 - Work: -0.5 per hour
 - Overwork (>8h): -5 per extra hour
 
-### Energy ⚡ (0-100)
-**What affects it:**
+### Energy (0-100)
+What affects it:
 - Caloric surplus: +1 per 100 kcal (max +20)
 - Caloric deficit: -1 per 100 kcal (max -20)
-- Sleep ≥7h: +10
+- Sleep >=7h: +10
 - Sleep <5h: -15
-- Work: -(hours × intensity × 0.5)
+- Work: -(hours x intensity x 0.5)
 
-### Nutrition 🍎 (0-100)
-**Calculated from daily diet:**
+### Nutrition (0-100)
+Calculated from daily diet:
 - Protein (target 50g): 0-33.3 points
 - Fiber (target 25g): 0-33.3 points
 - Fat (under 65g): 0-33.3 points
 - Total: protein + fiber + fat scores
 
-### Mood 😊 (0-100)
-**Composite formula:**
-`mood = (stamina + energy + nutrition) / 3 - stress / 2`
+### Mood (0-100)
+Composite formula: mood = (stamina + energy + nutrition) / 3 - stress / 2
 
-### Stress 😰 (0-100, lower is better)
-**What affects it:**
-- Work: +(hours × intensity × 0.8)
+### Stress (0-100, lower is better)
+What affects it:
+- Work: +(hours x intensity x 0.8)
 - Overwork (>8h): +8 per extra hour (VERY BAD)
 - Exercise: -1 per 6 minutes (max -10)
-- Sleep ≥7h: -5
+- Sleep >=7h: -5
 - Sleep <5h: +10
 - Prank octopus boss: -20
 
-### Level & XP 🏆
-**XP Sources:**
+### Character Emotional States
+- Happy: mood >= 80 AND stress < 30
+- Tired: mood < 40 OR energy < 30
+- Stressed: stress >= 70
+- Angry: stress >= 85
+- Normal: default state
+
+### Level & XP
+XP Sources:
 - Log diet: +10 XP
 - Log exercise: +15 XP
 - Log sleep: +10 XP
-- Work: +(hours × intensity × 10) XP
-- Daily streak: +5 XP per day (max +50)
-- Nutrition target met: +20 XP
+- Work: +(hours x intensity x 10) XP
+- Nutrition target met (>=80): +20 XP
 - Prank boss: +50 XP
 
-**Level Up Formula:**
-`XP needed = current_level × 100`
-
-### Daily Reset (4 AM)
-- Stamina: +5 recovery (if <100)
-- Stress: -3 natural recovery
-- Energy: -2 decay (if >50)
-- Nutrition: -5 decay (if >50)
+Level Up Formula: XP needed = current_level x 100
 
 ### Tips
-- **Don't overwork!** Working >8h/day severely damages stamina and skyrockets stress.
-- **Sleep is crucial.** 7+ hours gives bonuses, <5 hours hurts everything.
-- **Exercise reduces stress** and builds stamina.
-- **Balanced diet** keeps nutrition high - aim for protein and fiber!
+- Metrics only update when you log activities! No penalty for taking breaks.
+- Don't overwork! Working >8h/day severely damages stamina and skyrockets stress.
+- Sleep is crucial. 7+ hours gives bonuses, <5 hours hurts everything.
+- Exercise reduces stress AND builds stamina. Win-win.
+- Balanced diet with protein and fiber keeps nutrition high.
+- In the Work game, catching 24+ fish triggers auto-prank on the octopus boss!
 """
