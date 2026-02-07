@@ -8,8 +8,7 @@ from sqlalchemy import func
 from datetime import datetime, timedelta
 
 from app.database import get_db
-from app.models import User, Character, DietLog, ExerciseLog, SleepLog
-from app.models.work import WorkLog
+from app.models import User, Character, DietLog, ExerciseLog, SleepLog, WorkLog
 from app.schemas.work import WorkLogCreate, WorkLogResponse, WorkStats, HealthRecalculateResponse
 from app.services.auth import get_current_user
 from app.services import health_calculator as hc
