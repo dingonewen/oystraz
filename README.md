@@ -38,9 +38,11 @@ Oystraz is not just another health tracker - it's a **stress-relief simulator** 
 
 #### 2. **Character System** ✅
 - ✅ Character state management (stamina, energy, nutrition, mood, stress)
-- ✅ Real-time attribute updates based on health logs
+- ✅ **Metrics only update when user logs activities** (diet, exercise, sleep, work)
+- ✅ Character won't "decay" or "starve" if user doesn't use the app for days
 - ✅ Level and experience progression system
 - ✅ Body type and emotional state tracking
+- ✅ See [Health Metrics System](#-health-metrics-system) for detailed formulas
 
 #### 3. **Work Simulator** ✅
 - ✅ Interactive workplace scenario engine
@@ -488,6 +490,99 @@ npm run dev
 ├─ Characters: Google Nano Banana Pro 2 generated (seal, octopus)
 └─ Logo: Custom designed with AI assistance
 ```
+
+---
+
+## 📈 Health Metrics System
+
+This section documents how character stats are calculated and updated. **Important: Metrics only change when users log activities (diet, exercise, sleep, work). The character won't decay or change if users don't use the app for days.**
+
+### Default Values (New Users)
+| Metric | Default | Description |
+|--------|---------|-------------|
+| Stamina | 80 | Physical endurance |
+| Energy | 80 | Energy level |
+| Nutrition | 60 | Nutritional status |
+| Mood | 60 | Emotional state (composite) |
+| Stress | 40 | Stress level (lower is better) |
+
+### Stamina (0-100)
+Physical endurance that affects work capacity.
+
+| Action | Effect |
+|--------|--------|
+| Exercise | +1.5 per 10 minutes (max +15) |
+| Sleep ≥7 hours | +10 |
+| Sleep <5 hours | -15 |
+| Normal work | -0.5 per hour |
+| Overwork (>8h) | -5 per extra hour ⚠️ |
+
+### Energy (0-100)
+Daily energy level for activities.
+
+| Action | Effect |
+|--------|--------|
+| Caloric surplus | +1 per 100 kcal (max +20) |
+| Caloric deficit | -1 per 100 kcal (max -20) |
+| Sleep ≥7 hours | +10 |
+| Sleep <5 hours | -15 |
+| Work | -(hours × intensity × 0.5) |
+
+### Nutrition (0-100)
+Calculated from daily diet quality.
+
+| Component | Target | Max Score |
+|-----------|--------|-----------|
+| Protein | 50g/day | 33.3 |
+| Fiber | 25g/day | 33.3 |
+| Fat | ≤65g/day | 33.3 |
+
+**Formula:** `nutrition_score = protein_score + fiber_score + fat_score`
+
+### Mood (0-100)
+Composite emotional state.
+
+**Formula:** `mood = (stamina + energy + nutrition) / 3 - stress / 2`
+
+### Stress (0-100)
+Stress level - lower is better!
+
+| Action | Effect |
+|--------|--------|
+| Work | +(hours × intensity × 0.8) |
+| Overwork (>8h) | +8 per extra hour ⚠️⚠️ |
+| Exercise | -1 per 6 minutes (max -10) |
+| Sleep ≥7 hours | -5 |
+| Sleep <5 hours | +10 |
+| Prank octopus boss | -20 🎉 |
+
+### Level & Experience System
+
+**XP Sources:**
+| Action | XP Gained |
+|--------|-----------|
+| Log diet | +10 |
+| Log exercise | +15 |
+| Log sleep | +10 |
+| Work session | +(hours × intensity × 10) |
+| Nutrition target met (≥80) | +20 |
+| Prank boss | +50 |
+
+**Level Up Formula:** `XP needed = current_level × 100`
+
+### Character Emotional States
+The character's appearance changes based on stats:
+
+| State | Condition |
+|-------|-----------|
+| Happy | mood ≥ 80 AND stress < 30 |
+| Tired | mood < 40 OR energy < 30 |
+| Stressed | stress ≥ 70 |
+| Angry | stress ≥ 85 |
+| Normal | Default state |
+
+### Overwork Protection 🦭
+In the Ocean Work Simulator, if the seal catches more than 24 fish (representing excessive work), the seal automatically pranks the octopus boss to relieve stress! This is a built-in mechanic to discourage overworking.
 
 ---
 
