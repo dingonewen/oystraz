@@ -207,9 +207,20 @@ export default function PearlAssistant() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              overflow: 'hidden',
             }}
           >
-            <Typography sx={{ fontSize: { xs: '1.3rem', sm: '1.6rem' } }}>💎</Typography>
+            <Box
+              component="img"
+              src="/assets/pearl.png"
+              alt="Pearl"
+              sx={{
+                width: { xs: '70%', sm: '75%' },
+                height: { xs: '70%', sm: '75%' },
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 0 4px rgba(248, 232, 238, 0.6))',
+              }}
+            />
           </Box>
         </Box>
       )}
@@ -254,7 +265,20 @@ export default function PearlAssistant() {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.6)', width: 36, height: 36 }}>💎</Avatar>
+              <Avatar
+                sx={{
+                  bgcolor: 'rgba(255,255,255,0.6)',
+                  width: 36,
+                  height: 36,
+                  p: 0.5,
+                  '& img': {
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0 0 2px rgba(232, 213, 231, 0.5))',
+                  },
+                }}
+                src="/assets/pearl.png"
+                alt="Pearl"
+              />
               <Box>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600, fontFamily: '"Roboto", sans-serif', color: '#2D2D2D', lineHeight: 1.2 }}>
                   Pearl
