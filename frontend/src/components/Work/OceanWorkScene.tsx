@@ -7,6 +7,9 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Typography, Slider, Button, Alert, Paper } from '@mui/material';
 
+// Fish color types matching actual file names
+const FISH_COLORS = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'red'];
+
 interface Props {
   onWorkComplete: (hours: number, intensity: number, isPrank?: boolean) => void;
   characterStress: number;
@@ -17,7 +20,7 @@ interface Props {
 
 interface Fish {
   id: number;
-  type: number; // 1-4 for different fish images
+  color: string; // Fish color name
   x: number;
   y: number;
   speed: number;
@@ -44,7 +47,7 @@ const OceanWorkScene: React.FC<Props> = ({
   const [sealState, setSealState] = useState<SealState>('idle');
   const [fishCaught, setFishCaught] = useState(0);
   const [fishList, setFishList] = useState<Fish[]>([]);
-  const [hookedFish, setHookedFish] = useState<{ id: number; type: number }[]>([]);
+  const [hookedFish, setHookedFish] = useState<{ id: number; color: string }[]>([]);
   const [isPranking, setIsPranking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
 
@@ -62,11 +65,11 @@ const OceanWorkScene: React.FC<Props> = ({
   const estimatedXP = Math.round(workHours * workIntensity * 10);
   const totalFishGoal = Math.ceil(workHours * workIntensity);
 
-  // Initialize fish
+  // Initialize fish with random colors
   const initFish = (count: number) => {
     return Array.from({ length: Math.max(8, count + 3) }).map((_, i) => ({
       id: i,
-      type: Math.floor(Math.random() * 4) + 1,
+      color: FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)],
       x: 10 + Math.random() * 55,
       y: 25 + Math.random() * 50,
       speed: 0.08 + Math.random() * 0.15,
@@ -155,7 +158,7 @@ const OceanWorkScene: React.FC<Props> = ({
         if (dist < 6) {
           const caughtFish = fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id));
           if (caughtFish) {
-            setHookedFish((prev) => [...prev, { id: caughtFish.id, type: caughtFish.type }]);
+            setHookedFish((prev) => [...prev, { id: caughtFish.id, color: caughtFish.color }]);
             setFishCaught((prev) => prev + 1);
           }
           setSealState('delivering');
@@ -254,7 +257,7 @@ const OceanWorkScene: React.FC<Props> = ({
           position: 'relative',
           overflow: 'hidden',
           borderRadius: 3,
-          height: { xs: 320, sm: 380, md: 420 },
+          height: { xs: 380, sm: 450, md: 520 },
           background: 'linear-gradient(180deg, #1a3a5c 0%, #0d2137 50%, #0a192f 100%)',
         }}
       >
@@ -273,15 +276,29 @@ const OceanWorkScene: React.FC<Props> = ({
           }}
         />
 
-        {/* Decorations */}
-        <Box sx={{ position: 'absolute', bottom: '8%', left: '8%', opacity: 0.7 }}>
-          <img src="/assets/ocean/rock_1.png" alt="" style={{ width: 50, imageRendering: 'pixelated' }} />
+        {/* Decorations - Rocks */}
+        <Box sx={{ position: 'absolute', bottom: '8%', left: '5%', opacity: 0.8 }}>
+          <img src="/assets/ocean/rock_a.png" alt="" style={{ width: 50 }} />
         </Box>
-        <Box sx={{ position: 'absolute', bottom: '10%', left: '35%', opacity: 0.6 }}>
-          <img src="/assets/ocean/seaweed_1.png" alt="" style={{ width: 30, imageRendering: 'pixelated' }} />
+        <Box sx={{ position: 'absolute', bottom: '6%', left: '18%', opacity: 0.7 }}>
+          <img src="/assets/ocean/rock_b.png" alt="" style={{ width: 40 }} />
         </Box>
-        <Box sx={{ position: 'absolute', bottom: '12%', right: '25%', opacity: 0.5 }}>
-          <img src="/assets/ocean/seaweed_2.png" alt="" style={{ width: 25, imageRendering: 'pixelated' }} />
+
+        {/* Decorations - Seaweeds */}
+        <Box sx={{ position: 'absolute', bottom: '10%', left: '12%', opacity: 0.7 }}>
+          <img src="/assets/ocean/seaweed_green_a.png" alt="" style={{ width: 35 }} />
+        </Box>
+        <Box sx={{ position: 'absolute', bottom: '12%', left: '28%', opacity: 0.6 }}>
+          <img src="/assets/ocean/seaweed_pink_a.png" alt="" style={{ width: 30 }} />
+        </Box>
+        <Box sx={{ position: 'absolute', bottom: '8%', right: '30%', opacity: 0.6 }}>
+          <img src="/assets/ocean/seaweed_orange_a.png" alt="" style={{ width: 28 }} />
+        </Box>
+        <Box sx={{ position: 'absolute', bottom: '14%', right: '18%', opacity: 0.5 }}>
+          <img src="/assets/ocean/seaweed_green_b.png" alt="" style={{ width: 32 }} />
+        </Box>
+        <Box sx={{ position: 'absolute', bottom: '6%', right: '8%', opacity: 0.7 }}>
+          <img src="/assets/ocean/seaweed_grass_a.png" alt="" style={{ width: 25 }} />
         </Box>
 
         {/* Bubbles */}
@@ -315,7 +332,7 @@ const OceanWorkScene: React.FC<Props> = ({
                   animate={{ scale: 1, y: 0 }}
                   style={{ marginTop: -4 }}
                 >
-                  <img src={`/assets/ocean/fish_${f.type}.png`} alt="fish" style={{ width: 22, imageRendering: 'pixelated' }} />
+                  <img src={`/assets/ocean/fish_${f.color}.png`} alt="fish" style={{ width: 22 }} />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -333,19 +350,19 @@ const OceanWorkScene: React.FC<Props> = ({
             animate={{ y: [0, -3, 0, 3, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <img src={`/assets/ocean/fish_${f.type}.png`} alt="fish" style={{ width: 28, imageRendering: 'pixelated' }} />
+            <img src={`/assets/ocean/fish_${f.color}.png`} alt="fish" style={{ width: 28 }} />
           </motion.div>
         ))}
 
-        {/* Octopus Boss */}
+        {/* Octopus Boss - larger */}
         <motion.div
           style={{ position: 'absolute', right: '5%', top: '5%', zIndex: 20 }}
           animate={{ y: [0, -8, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Box sx={{ position: 'relative', textAlign: 'center' }}>
-            <img src="/assets/ocean/octopus.png" alt="boss" style={{ width: 65 }} />
-            <Typography sx={{ fontSize: 9, fontWeight: 'bold', px: 1, py: 0.3, borderRadius: 2, bgcolor: 'grey.700', color: 'white', mt: 0.5 }}>BOSS</Typography>
+            <img src="/assets/ocean/octopus.png" alt="boss" style={{ width: 90 }} />
+            <Typography sx={{ fontSize: 10, fontWeight: 'bold', px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'grey.700', color: 'white', mt: 0.5 }}>BOSS</Typography>
           </Box>
         </motion.div>
 
@@ -365,10 +382,10 @@ const OceanWorkScene: React.FC<Props> = ({
             transition={{ duration: isWorking ? 0.3 : 2, repeat: Infinity, ease: 'easeInOut' }}
             style={{ position: 'relative' }}
           >
-            <img src="/assets/ocean/seal.png" alt="seal" style={{ width: 70 }} />
+            <img src="/assets/ocean/seal.png" alt="seal" style={{ width: 55 }} />
             {sealState === 'carrying' && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ position: 'absolute', top: -5, right: -10 }}>
-                <img src={`/assets/ocean/fish_${fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id))?.type || 1}.png`} alt="carried" style={{ width: 24 }} />
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ position: 'absolute', top: -5, right: -8 }}>
+                <img src={`/assets/ocean/fish_${fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id))?.color || 'blue'}.png`} alt="carried" style={{ width: 20 }} />
               </motion.div>
             )}
             {isPranking && (
@@ -382,11 +399,11 @@ const OceanWorkScene: React.FC<Props> = ({
         {isWorking && (
           <Box sx={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', width: '80%', maxWidth: 300 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography sx={{ fontSize: 10, color: 'cyan', fontWeight: 'bold' }}>PROGRESS</Typography>
-              <Typography sx={{ fontSize: 10, color: 'cyan', fontWeight: 'bold' }}>{fishCaught} / {totalFishGoal} FISH</Typography>
+              <Typography sx={{ fontSize: 10, color: '#0068d0', fontWeight: 'bold' }}>PROGRESS</Typography>
+              <Typography sx={{ fontSize: 10, color: '#0068d0', fontWeight: 'bold' }}>{fishCaught} / {totalFishGoal} FISH</Typography>
             </Box>
             <Box sx={{ height: 6, bgcolor: 'rgba(0,100,150,0.3)', borderRadius: 1, overflow: 'hidden' }}>
-              <motion.div style={{ height: '100%', background: 'linear-gradient(90deg, #00bcd4, #4dd0e1)', boxShadow: '0 0 10px #00bcd4' }} initial={{ width: 0 }} animate={{ width: `${Math.min(100, (fishCaught / totalFishGoal) * 100)}%` }} />
+              <motion.div style={{ height: '100%', background: 'linear-gradient(90deg, #4000d0, #794de0)', boxShadow: '0 0 10px #00bcd4' }} initial={{ width: 0 }} animate={{ width: `${Math.min(100, (fishCaught / totalFishGoal) * 100)}%` }} />
             </Box>
             <Typography sx={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', textAlign: 'center', mt: 1, textTransform: 'uppercase' }}>{sealState}</Typography>
           </Box>

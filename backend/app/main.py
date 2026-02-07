@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import Base, engine
 from app.routers import auth, user, character, diet, exercise, sleep, assistant
+from app.routers.work import router as work_router
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -34,6 +35,7 @@ app.include_router(diet.router)
 app.include_router(exercise.router)
 app.include_router(sleep.router)
 app.include_router(assistant.router)
+app.include_router(work_router)
 
 
 @app.get("/")
