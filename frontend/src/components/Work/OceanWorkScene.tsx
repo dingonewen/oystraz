@@ -409,8 +409,13 @@ export default function OceanWorkScene({
     return labels[value - 1] || 'Normal';
   };
 
-  const estimatedStressIncrease = workHours * workIntensity * 2;
-  const estimatedEnergyLoss = workHours * workIntensity * 3;
+  // Estimated impacts based on health_calculator formulas
+  const estimatedStressIncrease = Math.round(workHours * workIntensity * 0.8);
+  const estimatedEnergyLoss = Math.round(workHours * workIntensity * 0.5);
+  const estimatedStaminaLoss = workHours > 8
+    ? Math.round(workHours * 0.5 + (workHours - 8) * 5)  // Overwork penalty
+    : Math.round(workHours * 0.5);
+  const estimatedXP = Math.round(workHours * workIntensity * 10);
 
   // Get the fish that is currently being targeted
   const targetFish = fish.find(f => f.id === targetFishId);
@@ -840,16 +845,26 @@ export default function OceanWorkScene({
           <Typography variant="body2" gutterBottom>
             <strong>Estimated Impact:</strong>
           </Typography>
-          <Typography variant="body2" color="error">
-            Energy: -{estimatedEnergyLoss}
-          </Typography>
-          <Typography variant="body2" color="warning.main">
-            Stress: +{estimatedStressIncrease}
-          </Typography>
-          <Typography variant="body2" color="primary">
-            Experience: +{Math.round(workHours * workIntensity * 10)}
-          </Typography>
-          <Typography variant="body2" color="info.main" sx={{ mt: 1 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.5 }}>
+            <Typography variant="body2" color="error.main">
+              Energy: -{estimatedEnergyLoss}
+            </Typography>
+            <Typography variant="body2" color="info.main">
+              Stamina: -{estimatedStaminaLoss}
+            </Typography>
+            <Typography variant="body2" color="warning.main">
+              Stress: +{estimatedStressIncrease}
+            </Typography>
+            <Typography variant="body2" color="success.main">
+              XP: +{estimatedXP}
+            </Typography>
+          </Box>
+          {workHours > 8 && (
+            <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1 }}>
+              ⚠️ Overwork! Extra stamina loss and stress!
+            </Typography>
+          )}
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             Fish to catch: {Math.ceil(workHours * workIntensity)}
           </Typography>
         </Box>
