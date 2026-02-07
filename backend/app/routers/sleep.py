@@ -6,8 +6,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
 from app.database import get_db
-from app.models import User, SleepLog, Character, DietLog, ExerciseLog
-from app.models.work import WorkLog
+from app.models import User, SleepLog, Character, DietLog, ExerciseLog, WorkLog
 from app.schemas import SleepLogCreate, SleepLogUpdate, SleepLogResponse
 from app.services.auth import get_current_user
 from app.services import health_calculator as hc
