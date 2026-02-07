@@ -1,37 +1,330 @@
 """
-User database model
+Health Calculator Service
+Calculates character metrics based on user activities (diet, exercise, sleep, work)
 """
-from sqlalchemy import Column, Integer, String, DateTime, Float
-from sqlalchemy.orm import relationship
-from datetime import datetime
-from app.database import Base
+from typing import List, Dict, Any, Optional
+from datetime import datetime, timedelta
 
 
-class User(Base):
-    """User account model"""
-    __tablename__ = "users"
+# Recommended daily values
+RECOMMENDED_PROTEIN = 50  # grams
+RECOMMENDED_FIBER = 25    # grams
+RECOMMENDED_CALORIES = 2000  # kcal
+MAX_FAT = 65              # grams
+RECOMMENDED_SLEEP = 7     # hours
+MAX_WORK_HOURS = 8        # hours per day
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
 
-    # Personal info
-    full_name = Column(String)
-    age = Column(Integer)
-    gender = Column(String)
-    height = Column(Float)  # in cm
-    weight = Column(Float)  # in kg
-    goal = Column(String)  # Health goal: lose_weight, maintain, gain_muscle, improve_health
+def calculate_nutrition_score(diet_logs: List[Dict[str, Any]]) -> float:
+    """
+    Calculate nutrition score (0-100) based on daily diet logs.
 
-    # Timestamps
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    Simplified version using existing fields:
+    - Protein ratio (target: 50g/day)
+    - Fiber ratio (target: 25g/day)
+    - Fat ratio (not exceeding 65g/day)
+    """
+    if not diet_logs:
+        return 80.0  # Default if no logs
 
-    # Relationships
-    character = relationship("Character", back_populates="user", uselist=False)
-    diet_logs = relationship("DietLog", back_populates="user", cascade="all, delete-orphan")
-    exercise_logs = relationship("ExerciseLog", back_populates="user", cascade="all, delete-orphan")
-    sleep_logs = relationship("SleepLog", back_populates="user", cascade="all, delete-orphan")
-    workplace_events = relationship("WorkplaceEvent", back_populates="user", cascade="all, delete-orphan")
-    work_logs = relationship("WorkLog", back_populates="user", cascade="all, delete-orphan")
+    total_protein = sum(log.get('protein', 0) for log in diet_logs)
+    total_fiber = sum(log.get('fiber', 0) for log in diet_logs)
+    total_fat = sum(log.get('fat', 0) for log in diet_logs)
+
+    # Protein score (0-33.3 points)
+    protein_ratio = min(1.0, total_protein / RECOMMENDED_PROTEIN)
+    protein_score = protein_ratio * 33.3
+
+    # Fiber score (0-33.3 points)
+    fiber_ratio = min(1.0, total_fiber / RECOMMENDED_FIBER)
+    fiber_score = fiber_ratio * 33.3
+
+    # Fat score (0-33.3 points) - penalize excess fat
+    if total_fat <= MAX_FAT:
+        fat_score = 33.3
+    else:
+        fat_penalty = (total_fat - MAX_FAT) / MAX_FAT
+        fat_score = max(0, 33.3 * (1 - fat_penalty))
+
+    return min(100.0, protein_score + fiber_score + fat_score)
+
+
+def calculate_energy_change(
+    calories_in: float,
+    calories_out: float,
+    sleep_hours: float,
+    work_hours: float,
+    work_intensity: int
+) -> float:
+    """
+    Calculate energy change based on caloric balance and activities.
+
+    Returns: Change in energy (-50 to +30)
+    """
+    change = 0.0
+
+    # Caloric balance effect
+    caloric_diff = calories_in - calories_out
+    if caloric_diff > 0:
+        change += min(20, caloric_diff / 100)  # Surplus gives energy, max +20
+    else:
+        change += max(-20, caloric_diff / 100)  # Deficit costs energy, max -20
+
+    # Sleep effect
+    if sleep_hours >= 7:
+        change += 10
+    elif sleep_hours >= 5:
+        change += 0
+    else:
+        change -= 15
+
+    # Work effect
+    if work_hours > 0:
+        work_cost = work_hours * work_intensity * 0.5
+        change -= min(30, work_cost)
+
+    return change
+
+
+def calculate_stamina_change(
+    exercise_minutes: int,
+    sleep_hours: float,
+    work_hours: float
+) -> float:
+    """
+    Calculate stamina change based on exercise and rest.
+
+    Returns: Change in stamina (-30 to +20)
+    """
+    change = 0.0
+
+    # Exercise effect
+    if exercise_minutes > 0:
+        change += min(15, exercise_minutes / 10)  # +1.5 per 10 min, max +15
+
+    # Sleep effect
+    if sleep_hours >= 7:
+        change += 10
+    elif sleep_hours < 5:
+        change -= 15
+
+    # Work effect (overwork penalty)
+    if work_hours > MAX_WORK_HOURS:
+        overtime = work_hours - MAX_WORK_HOURS
+        change -= overtime * 5  # -5 per hour overtime
+    elif work_hours > 0:
+        change -= work_hours * 0.5  # Small stamina cost for normal work
+
+    return max(-30, min(20, change))
+
+
+def calculate_stress_change(
+    work_hours: float,
+    work_intensity: int,
+    exercise_minutes: int,
+    sleep_hours: float,
+    pranked_boss: bool = False
+) -> float:
+    """
+    Calculate stress change based on work and recovery activities.
+
+    Returns: Change in stress (-25 to +40)
+    """
+    change = 0.0
+
+    # Work increases stress
+    if work_hours > 0:
+        work_stress = work_hours * work_intensity * 0.8
+        change += work_stress
+
+        # Overwork penalty (>8h is VERY bad)
+        if work_hours > MAX_WORK_HOURS:
+            overtime = work_hours - MAX_WORK_HOURS
+            change += overtime * 8  # Heavy penalty for overtime
+
+    # Exercise reduces stress
+    if exercise_minutes > 0:
+        change -= min(10, exercise_minutes / 6)
+
+    # Sleep reduces stress
+    if sleep_hours >= 7:
+        change -= 5
+    elif sleep_hours < 5:
+        change += 10  # Poor sleep increases stress
+
+    # Prank the octopus boss!
+    if pranked_boss:
+        change -= 20
+
+    return max(-25, min(40, change))
+
+
+def calculate_mood_score(
+    stamina: float,
+    energy: float,
+    nutrition: float,
+    stress: float
+) -> float:
+    """
+    Calculate mood as a composite of other metrics.
+
+    Formula: (stamina + energy + nutrition) / 3 - stress / 2
+    """
+    base_mood = (stamina + energy + nutrition) / 3
+    stress_penalty = stress / 2
+    return max(0, min(100, base_mood - stress_penalty))
+
+
+def calculate_xp_gain(
+    diet_logged: bool,
+    exercise_logged: bool,
+    sleep_logged: bool,
+    work_hours: float,
+    work_intensity: int,
+    daily_streak: int,
+    nutrition_target_met: bool,
+    pranked_boss: bool = False
+) -> int:
+    """
+    Calculate experience points gained.
+
+    Returns: XP gained (0-200+)
+    """
+    xp = 0
+
+    # Logging bonuses
+    if diet_logged:
+        xp += 10
+    if exercise_logged:
+        xp += 15
+    if sleep_logged:
+        xp += 10
+
+    # Work XP
+    if work_hours > 0:
+        xp += int(work_hours * work_intensity * 10)
+
+    # Streak bonus (max 50)
+    xp += min(50, daily_streak * 5)
+
+    # Nutrition target bonus
+    if nutrition_target_met:
+        xp += 20
+
+    # First prank bonus
+    if pranked_boss:
+        xp += 50
+
+    return xp
+
+
+def get_level_up_threshold(current_level: int) -> int:
+    """
+    Get XP required to reach next level.
+
+    Formula: level * 100
+    """
+    return current_level * 100
+
+
+def apply_daily_decay(character_dict: Dict[str, float]) -> Dict[str, float]:
+    """
+    Apply natural daily decay/recovery to metrics.
+    Called at daily reset (e.g., 4 AM).
+    """
+    result = character_dict.copy()
+
+    # Slight natural recovery if not overworked
+    if result.get('stamina', 80) < 100:
+        result['stamina'] = min(100, result['stamina'] + 5)
+
+    # Stress naturally decreases a bit
+    if result.get('stress', 30) > 0:
+        result['stress'] = max(0, result['stress'] - 3)
+
+    # Energy decays if not eating
+    if result.get('energy', 80) > 50:
+        result['energy'] = max(50, result['energy'] - 2)
+
+    # Nutrition decays without eating
+    if result.get('nutrition', 80) > 50:
+        result['nutrition'] = max(50, result['nutrition'] - 5)
+
+    return result
+
+
+# Metric change summary for documentation/Pearl knowledge
+METRICS_DOCUMENTATION = """
+## Oystraz Health Metrics System
+
+IMPORTANT: Metrics ONLY change when users LOG activities (diet, exercise, sleep, work).
+The character will NOT decay or change automatically - no penalty for not using the app!
+
+### Default Values (New Users)
+- Stamina: 80 (physical endurance)
+- Energy: 80 (daily energy level)
+- Nutrition: 60 (diet quality - starts lower to encourage logging meals)
+- Mood: 60 (composite emotional state)
+- Stress: 40 (stress level, lower is better)
+
+### Stamina (0-100)
+What affects it:
+- Exercise: +1.5 per 10 minutes (max +15)
+- Sleep >=7h: +10
+- Sleep <5h: -15
+- Work: -0.5 per hour
+- Overwork (>8h): -5 per extra hour
+
+### Energy (0-100)
+What affects it:
+- Caloric surplus: +1 per 100 kcal (max +20)
+- Caloric deficit: -1 per 100 kcal (max -20)
+- Sleep >=7h: +10
+- Sleep <5h: -15
+- Work: -(hours x intensity x 0.5)
+
+### Nutrition (0-100)
+Calculated from daily diet:
+- Protein (target 50g): 0-33.3 points
+- Fiber (target 25g): 0-33.3 points
+- Fat (under 65g): 0-33.3 points
+- Total: protein + fiber + fat scores
+
+### Mood (0-100)
+Composite formula: mood = (stamina + energy + nutrition) / 3 - stress / 2
+
+### Stress (0-100, lower is better)
+What affects it:
+- Work: +(hours x intensity x 0.8)
+- Overwork (>8h): +8 per extra hour (VERY BAD)
+- Exercise: -1 per 6 minutes (max -10)
+- Sleep >=7h: -5
+- Sleep <5h: +10
+- Prank octopus boss: -20
+
+### Character Emotional States
+- Happy: mood >= 80 AND stress < 30
+- Tired: mood < 40 OR energy < 30
+- Stressed: stress >= 70
+- Angry: stress >= 85
+- Normal: default state
+
+### Level & XP
+XP Sources:
+- Log diet: +10 XP
+- Log exercise: +15 XP
+- Log sleep: +10 XP
+- Work: +(hours x intensity x 10) XP
+- Nutrition target met (>=80): +20 XP
+- Prank boss: +50 XP
+
+Level Up Formula: XP needed = current_level x 100
+
+### Tips
+- Metrics only update when you log activities! No penalty for taking breaks.
+- Don't overwork! Working >8h/day severely damages stamina and skyrockets stress.
+- Sleep is crucial. 7+ hours gives bonuses, <5 hours hurts everything.
+- Exercise reduces stress AND builds stamina. Win-win.
+- Balanced diet with protein and fiber keeps nutrition high.
+- In the Work game, catching 24+ fish triggers auto-prank on the octopus boss!
+"""

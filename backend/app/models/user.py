@@ -34,3 +34,4 @@ class User(Base):
     exercise_logs = relationship("ExerciseLog", back_populates="user", cascade="all, delete-orphan")
     sleep_logs = relationship("SleepLog", back_populates="user", cascade="all, delete-orphan")
     workplace_events = relationship("WorkplaceEvent", back_populates="user", cascade="all, delete-orphan")
+    work_logs = relationship("WorkLog", back_populates="user", cascade="all, delete-orphan")

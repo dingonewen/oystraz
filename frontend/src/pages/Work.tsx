@@ -182,13 +182,19 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">💪 Stamina</Typography>
-                  <Typography variant="body2">{Math.round(character.stamina)}/100</Typography>
+                  <Typography variant="body2">{character.stamina.toFixed(1)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
                   value={character.stamina}
-                  sx={{ height: 8, borderRadius: 1 }}
-                  color="info"
+                  sx={{
+                    height: 8,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(138, 43, 226, 0.2)',
+                    '& .MuiLinearProgress-bar': {
+                      background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                    }
+                  }}
                 />
               </Box>
             </Grid>
@@ -197,13 +203,19 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">⚡ Energy</Typography>
-                  <Typography variant="body2">{Math.round(character.energy)}/100</Typography>
+                  <Typography variant="body2">{character.energy.toFixed(1)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
                   value={character.energy}
-                  sx={{ height: 8, borderRadius: 1 }}
-                  color="secondary"
+                  sx={{
+                    height: 8,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(138, 43, 226, 0.2)',
+                    '& .MuiLinearProgress-bar': {
+                      background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                    }
+                  }}
                 />
               </Box>
             </Grid>
@@ -212,13 +224,19 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😊 Mood</Typography>
-                  <Typography variant="body2">{Math.round(character.mood)}/100</Typography>
+                  <Typography variant="body2">{character.mood.toFixed(1)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
                   value={character.mood}
-                  sx={{ height: 8, borderRadius: 1 }}
-                  color="success"
+                  sx={{
+                    height: 8,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(138, 43, 226, 0.2)',
+                    '& .MuiLinearProgress-bar': {
+                      background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                    }
+                  }}
                 />
               </Box>
             </Grid>
@@ -227,13 +245,19 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😰 Stress</Typography>
-                  <Typography variant="body2">{Math.round(character.stress)}/100</Typography>
+                  <Typography variant="body2">{character.stress.toFixed(1)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
                   value={character.stress}
-                  sx={{ height: 8, borderRadius: 1 }}
-                  color="error"
+                  sx={{
+                    height: 8,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(138, 43, 226, 0.2)',
+                    '& .MuiLinearProgress-bar': {
+                      background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                    }
+                  }}
                 />
               </Box>
             </Grid>

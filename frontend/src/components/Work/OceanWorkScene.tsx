@@ -1,7 +1,10 @@
 /**
- * Ocean Work Scene - Smooth CSS Transition Version
- * Uses CSS transitions for buttery smooth seal movement
- * Uses our custom image assets
+ * Ocean Work Scene - Multi-Hook Version
+ * Features:
+ * - 3 fish hooks that seal patrols between
+ * - Fish are hooked on the hook with fewest fish
+ * - Octopus boss sprays black ink when pranked (3 times)
+ * - Supports up to 16h work duration for overtime
  */
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,6 +12,13 @@ import { Box, Typography, Slider, Button, Alert, Paper } from '@mui/material';
 
 // Fish color types matching actual file names
 const FISH_COLORS = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'red'];
+
+// Hook positions (left %, top %)
+const HOOK_POSITIONS = [
+  { x: 75, y: 25 },
+  { x: 85, y: 30 },
+  { x: 80, y: 20 },
+];
 
 interface Props {
   onWorkComplete: (hours: number, intensity: number, isPrank?: boolean) => void;
@@ -20,7 +30,7 @@ interface Props {
 
 interface Fish {
   id: number;
-  color: string; // Fish color name
+  color: string;
   x: number;
   y: number;
   speed: number;
@@ -28,7 +38,13 @@ interface Fish {
   caught: boolean;
 }
 
-type SealState = 'idle' | 'chasing' | 'carrying' | 'delivering';
+interface HookedFishData {
+  id: number;
+  color: string;
+  hookIndex: number;
+}
+
+type SealState = 'idle' | 'chasing' | 'carrying' | 'delivering' | 'patrolling';
 
 const OceanWorkScene: React.FC<Props> = ({
   onWorkComplete,
@@ -47,28 +63,56 @@ const OceanWorkScene: React.FC<Props> = ({
   const [sealState, setSealState] = useState<SealState>('idle');
   const [fishCaught, setFishCaught] = useState(0);
   const [fishList, setFishList] = useState<Fish[]>([]);
-  const [hookedFish, setHookedFish] = useState<{ id: number; color: string }[]>([]);
+  const [hookedFish, setHookedFish] = useState<HookedFishData[]>([]);
   const [isPranking, setIsPranking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
+  const [prankCount, setPrankCount] = useState(0);
+  const [currentTargetHook, setCurrentTargetHook] = useState(0);
+  const [carryingFishId, setCarryingFishId] = useState<number | null>(null);
 
-  // Seal position - use refs for smooth updates without re-renders
+  // Seal position
   const [sealPos, setSealPos] = useState({ x: 20, y: 55 });
   const [sealDirection, setSealDirection] = useState(1);
   const sealPosRef = useRef({ x: 20, y: 55 });
 
-  // Estimated impacts (matching health_calculator formulas)
-  const estimatedStressIncrease = Math.round(workHours * workIntensity * 0.8);
-  const estimatedEnergyLoss = Math.round(workHours * workIntensity * 0.5);
+  // Use ref to track hooked fish IDs to avoid duplicate hooks
+  const hookedFishIdsRef = useRef<Set<number>>(new Set());
+
+  // Estimated impacts
+  const estimatedStressIncrease = (workHours * workIntensity * 0.8).toFixed(1);
+  const estimatedEnergyLoss = (workHours * workIntensity * 0.5).toFixed(1);
   const estimatedStaminaLoss = workHours > 8
-    ? Math.round(workHours * 0.5 + (workHours - 8) * 5)
-    : Math.round(workHours * 0.5);
+    ? (workHours * 0.5 + (workHours - 8) * 5).toFixed(1)
+    : (workHours * 0.5).toFixed(1);
   const estimatedXP = Math.round(workHours * workIntensity * 10);
   const totalFishGoal = Math.ceil(workHours * workIntensity);
 
-  // Initialize fish with random colors
+  // Get hook with fewest fish
+  const getHookWithFewestFish = (): number => {
+    const counts = [0, 0, 0];
+    hookedFish.forEach(f => {
+      if (f.hookIndex >= 0 && f.hookIndex < 3) counts[f.hookIndex]++;
+    });
+    let minIndex = 0;
+    let minCount = counts[0];
+    for (let i = 1; i < 3; i++) {
+      if (counts[i] < minCount) {
+        minCount = counts[i];
+        minIndex = i;
+      }
+    }
+    return minIndex;
+  };
+
+  // Get fish count per hook
+  const getFishCountForHook = (hookIndex: number): number => {
+    return hookedFish.filter(f => f.hookIndex === hookIndex).length;
+  };
+
+  // Initialize fish
   const initFish = (count: number) => {
     return Array.from({ length: Math.max(8, count + 3) }).map((_, i) => ({
-      id: i,
+      id: Date.now() + i + Math.random() * 1000,
       color: FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)],
       x: 10 + Math.random() * 55,
       y: 25 + Math.random() * 50,
@@ -99,7 +143,7 @@ const OceanWorkScene: React.FC<Props> = ({
     return () => clearInterval(moveInterval);
   }, []);
 
-  // Core chase AI - smooth movement with requestAnimationFrame
+  // Core chase AI
   useEffect(() => {
     if (!isWorking) return;
 
@@ -107,12 +151,10 @@ const OceanWorkScene: React.FC<Props> = ({
     let lastTime = performance.now();
 
     const tick = (currentTime: number) => {
-      const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+      const deltaTime = (currentTime - lastTime) / 1000;
       lastTime = currentTime;
 
-      const chaseSpeed = (workIntensity * 8 + 10) * deltaTime; // Speed per second
-      const hookX = 85;
-      const hookY = 30;
+      const chaseSpeed = (workIntensity * 8 + 10) * deltaTime;
       const currentX = sealPosRef.current.x;
       const currentY = sealPosRef.current.y;
 
@@ -120,16 +162,17 @@ const OceanWorkScene: React.FC<Props> = ({
       let newY = currentY;
       let newDirection = sealDirection;
 
-      if (sealState === 'chasing' || sealState === 'idle') {
+      if (sealState === 'chasing' || sealState === 'idle' || sealState === 'patrolling') {
         const available = fishList.filter((f) => !f.caught);
         if (available.length === 0) {
           if (fishCaught < totalFishGoal) {
-            setFishList((prev) => [...prev, ...initFish(5).map((f, i) => ({ ...f, id: prev.length + i }))]);
+            setFishList((prev) => [...prev, ...initFish(5)]);
           }
           animationId = requestAnimationFrame(tick);
           return;
         }
 
+        // Find nearest fish
         let nearest = available[0];
         let minDist = Infinity;
         available.forEach((f) => {
@@ -142,25 +185,37 @@ const OceanWorkScene: React.FC<Props> = ({
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 6) {
+          // Catch the fish - mark it and store the ID
           setFishList((prev) => prev.map((f) => (f.id === nearest.id ? { ...f, caught: true } : f)));
+          setCarryingFishId(nearest.id);
           setSealState('carrying');
+          // Determine which hook to deliver to
+          setCurrentTargetHook(getHookWithFewestFish());
         } else {
           newX = currentX + (dx / dist) * chaseSpeed;
           newY = currentY + (dy / dist) * chaseSpeed;
           newDirection = dx > 0 ? 1 : -1;
-          if (sealState === 'idle') setSealState('chasing');
+          if (sealState !== 'chasing') setSealState('chasing');
         }
-      } else if (sealState === 'carrying') {
-        const dx = hookX - currentX;
-        const dy = hookY - currentY;
+      } else if (sealState === 'carrying' && carryingFishId !== null) {
+        const targetHook = HOOK_POSITIONS[currentTargetHook];
+        const dx = targetHook.x - currentX;
+        const dy = targetHook.y - currentY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 6) {
-          const caughtFish = fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id));
-          if (caughtFish) {
-            setHookedFish((prev) => [...prev, { id: caughtFish.id, color: caughtFish.color }]);
+          // Deliver fish to hook - use ref to prevent duplicates
+          const caughtFish = fishList.find((f) => f.id === carryingFishId);
+          if (caughtFish && !hookedFishIdsRef.current.has(caughtFish.id)) {
+            hookedFishIdsRef.current.add(caughtFish.id);
+            setHookedFish((prev) => [...prev, {
+              id: caughtFish.id,
+              color: caughtFish.color,
+              hookIndex: currentTargetHook
+            }]);
             setFishCaught((prev) => prev + 1);
           }
+          setCarryingFishId(null);
           setSealState('delivering');
         } else {
           newX = currentX + (dx / dist) * chaseSpeed * 1.3;
@@ -168,8 +223,11 @@ const OceanWorkScene: React.FC<Props> = ({
           newDirection = dx > 0 ? 1 : -1;
         }
       } else if (sealState === 'delivering') {
-        const dx = 25 - currentX;
-        const dy = 55 - currentY;
+        // Return to patrol position
+        const patrolX = 25;
+        const patrolY = 55;
+        const dx = patrolX - currentX;
+        const dy = patrolY - currentY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 5) {
@@ -177,7 +235,7 @@ const OceanWorkScene: React.FC<Props> = ({
             handleWorkDone();
             return;
           } else {
-            setSealState('chasing');
+            setSealState('patrolling');
           }
         } else {
           newX = currentX + (dx / dist) * chaseSpeed;
@@ -186,7 +244,7 @@ const OceanWorkScene: React.FC<Props> = ({
         }
       }
 
-      // Update position ref and state
+      // Update position
       if (newX !== currentX || newY !== currentY) {
         sealPosRef.current = { x: newX, y: newY };
         setSealPos({ x: newX, y: newY });
@@ -200,7 +258,7 @@ const OceanWorkScene: React.FC<Props> = ({
 
     animationId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationId);
-  }, [isWorking, sealState, fishList, workIntensity, fishCaught, totalFishGoal, hookedFish, sealDirection]);
+  }, [isWorking, sealState, fishList, workIntensity, fishCaught, totalFishGoal, sealDirection, currentTargetHook, carryingFishId]);
 
   // Auto-prank when overworked (24+ fish)
   useEffect(() => {
@@ -222,24 +280,38 @@ const OceanWorkScene: React.FC<Props> = ({
     setIsWorking(true);
     setFishCaught(0);
     setHookedFish([]);
+    hookedFishIdsRef.current.clear();
+    setCarryingFishId(null);
     setFishList(initFish(totalFishGoal + 5));
-    setSealState('chasing');
+    setSealState('patrolling');
   };
 
   const triggerPrank = () => {
     if (isPranking || prankCooldown) return;
     setIsPranking(true);
     setPrankCooldown(true);
+    setPrankCount(0);
 
+    // Move seal near octopus
     sealPosRef.current = { x: 80, y: 15 };
     setSealPos({ x: 80, y: 15 });
 
-    setTimeout(() => {
-      onWorkComplete(0, 0, true);
-      setIsPranking(false);
-      sealPosRef.current = { x: 20, y: 55 };
-      setSealPos({ x: 20, y: 55 });
-    }, 1500);
+    // Ink spray animation - 3 times
+    let count = 0;
+    const inkInterval = setInterval(() => {
+      count++;
+      setPrankCount(count);
+      if (count >= 3) {
+        clearInterval(inkInterval);
+        setTimeout(() => {
+          onWorkComplete(0, 0, true);
+          setIsPranking(false);
+          setPrankCount(0);
+          sealPosRef.current = { x: 20, y: 55 };
+          setSealPos({ x: 20, y: 55 });
+        }, 500);
+      }
+    }, 600);
 
     setTimeout(() => setPrankCooldown(false), 30000);
   };
@@ -247,6 +319,13 @@ const OceanWorkScene: React.FC<Props> = ({
   const getIntensityLabel = (value: number) => {
     const labels = ['Lazy', 'Casual', 'Normal', 'Fast', 'Turbo'];
     return labels[value - 1] || 'Normal';
+  };
+
+  // Get carrying fish color
+  const getCarryingFishColor = () => {
+    if (carryingFishId === null) return 'blue';
+    const fish = fishList.find(f => f.id === carryingFishId);
+    return fish?.color || 'blue';
   };
 
   return (
@@ -319,28 +398,45 @@ const OceanWorkScene: React.FC<Props> = ({
           />
         ))}
 
-        {/* Fish Hook */}
-        <Box sx={{ position: 'absolute', right: '10%', top: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10 }}>
-          <Box sx={{ width: 2, height: 80, bgcolor: 'rgba(255,255,255,0.4)' }} />
-          <Typography sx={{ fontSize: 32, mt: -1 }}>🪝</Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column-reverse', mt: -1 }}>
-            <AnimatePresence>
-              {hookedFish.slice(-12).map((f) => (
-                <motion.div
-                  key={`hooked-${f.id}`}
-                  initial={{ scale: 0, y: -20 }}
-                  animate={{ scale: 1, y: 0 }}
-                  style={{ marginTop: -4 }}
-                >
-                  <img src={`/assets/ocean/fish_${f.color}.png`} alt="fish" style={{ width: 22 }} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+        {/* Three Fish Hooks */}
+        {HOOK_POSITIONS.map((hookPos, hookIndex) => (
+          <Box
+            key={`hook-${hookIndex}`}
+            sx={{
+              position: 'absolute',
+              left: `${hookPos.x}%`,
+              top: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              zIndex: 10,
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <Box sx={{ width: 2, height: 60 + hookIndex * 15, bgcolor: 'rgba(255,255,255,0.4)' }} />
+            <Typography sx={{ fontSize: 28, mt: -1 }}>🪝</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column-reverse', mt: -1 }}>
+              <AnimatePresence>
+                {hookedFish
+                  .filter(f => f.hookIndex === hookIndex)
+                  .slice(-8)
+                  .map((f) => (
+                    <motion.div
+                      key={`hooked-${f.id}`}
+                      initial={{ scale: 0, y: -20 }}
+                      animate={{ scale: 1, y: 0 }}
+                      style={{ marginTop: -4 }}
+                    >
+                      <img src={`/assets/ocean/fish_${f.color}.png`} alt="fish" style={{ width: 18 }} />
+                    </motion.div>
+                  ))}
+              </AnimatePresence>
+            </Box>
+            {getFishCountForHook(hookIndex) > 8 && (
+              <Typography sx={{ fontSize: 9, color: 'white', mt: 0.5 }}>+{getFishCountForHook(hookIndex) - 8}</Typography>
+            )}
           </Box>
-          {hookedFish.length > 12 && (
-            <Typography sx={{ fontSize: 10, color: 'white', mt: 1 }}>+{hookedFish.length - 12}</Typography>
-          )}
-        </Box>
+        ))}
 
         {/* Swimming Fish */}
         {fishList.filter((f) => !f.caught).map((f) => (
@@ -354,7 +450,7 @@ const OceanWorkScene: React.FC<Props> = ({
           </motion.div>
         ))}
 
-        {/* Octopus Boss - larger */}
+        {/* Octopus Boss */}
         <motion.div
           style={{ position: 'absolute', right: '5%', top: '5%', zIndex: 20 }}
           animate={{ y: [0, -8, 0] }}
@@ -362,11 +458,47 @@ const OceanWorkScene: React.FC<Props> = ({
         >
           <Box sx={{ position: 'relative', textAlign: 'center' }}>
             <img src="/assets/ocean/octopus.png" alt="boss" style={{ width: 90 }} />
-            <Typography sx={{ fontSize: 10, fontWeight: 'bold', px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'grey.700', color: 'white', mt: 0.5 }}>BOSS</Typography>
+
+            {/* Black Ink Spray Animation - from Octopus */}
+            <AnimatePresence>
+              {isPranking && prankCount > 0 && (
+                <motion.div
+                  key={`ink-${prankCount}`}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{
+                    opacity: [0, 1, 1, 0],
+                    scale: [0.5, 1.5, 2, 2.5],
+                    y: [0, 20, 40, 60],
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: 40,
+                    filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.8))',
+                  }}
+                >
+                  <Box sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(20,20,30,0.9) 0%, rgba(10,10,20,0.7) 50%, transparent 70%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <Typography sx={{ fontSize: 24 }}>🖤</Typography>
+                  </Box>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Box>
         </motion.div>
 
-        {/* Seal Employee - CSS transition for smooth movement */}
+        {/* Seal Employee */}
         <Box
           sx={{
             position: 'absolute',
@@ -383,15 +515,11 @@ const OceanWorkScene: React.FC<Props> = ({
             style={{ position: 'relative' }}
           >
             <img src="/assets/ocean/seal.png" alt="seal" style={{ width: 55 }} />
-            {sealState === 'carrying' && (
+            {sealState === 'carrying' && carryingFishId !== null && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ position: 'absolute', top: -5, right: -8 }}>
-                <img src={`/assets/ocean/fish_${fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id))?.color || 'blue'}.png`} alt="carried" style={{ width: 20 }} />
+                <img src={`/assets/ocean/fish_${getCarryingFishColor()}.png`} alt="carried" style={{ width: 20 }} />
               </motion.div>
             )}
-            {isPranking && (
-              <motion.div initial={{ opacity: 0, y: 0 }} animate={{ opacity: [0, 1, 0], y: -40 }} style={{ position: 'absolute', top: 0, left: '50%', fontSize: 32 }}>💦</motion.div>
-            )}
-            <Typography sx={{ position: 'absolute', bottom: -12, left: '50%', transform: `translateX(-50%) scaleX(${sealDirection})`, fontSize: 10, fontWeight: 'bold', color: 'white', textShadow: '1px 1px 2px black' }}>You</Typography>
           </motion.div>
         </Box>
 
@@ -399,13 +527,21 @@ const OceanWorkScene: React.FC<Props> = ({
         {isWorking && (
           <Box sx={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', width: '80%', maxWidth: 300 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography sx={{ fontSize: 10, color: '#0068d0', fontWeight: 'bold' }}>PROGRESS</Typography>
-              <Typography sx={{ fontSize: 10, color: '#0068d0', fontWeight: 'bold' }}>{fishCaught} / {totalFishGoal} FISH</Typography>
+              <Typography sx={{ fontSize: 10, color: '#b388ff', fontWeight: 'bold' }}>PROGRESS</Typography>
+              <Typography sx={{ fontSize: 10, color: '#b388ff', fontWeight: 'bold' }}>{fishCaught} / {totalFishGoal} FISH</Typography>
             </Box>
-            <Box sx={{ height: 6, bgcolor: 'rgba(0,100,150,0.3)', borderRadius: 1, overflow: 'hidden' }}>
-              <motion.div style={{ height: '100%', background: 'linear-gradient(90deg, #4000d0, #794de0)', boxShadow: '0 0 10px #00bcd4' }} initial={{ width: 0 }} animate={{ width: `${Math.min(100, (fishCaught / totalFishGoal) * 100)}%` }} />
+            <Box sx={{ height: 6, bgcolor: 'rgba(138, 43, 226, 0.2)', borderRadius: 1, overflow: 'hidden' }}>
+              <motion.div
+                style={{
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                  boxShadow: '0 0 10px #764ba2'
+                }}
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(100, (fishCaught / totalFishGoal) * 100)}%` }}
+              />
             </Box>
-            <Typography sx={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', textAlign: 'center', mt: 1, textTransform: 'uppercase' }}>{sealState}</Typography>
+            <Typography sx={{ fontSize: 9, color: 'rgba(200,180,255,0.8)', textAlign: 'center', mt: 1, textTransform: 'uppercase' }}>{sealState}</Typography>
           </Box>
         )}
       </Paper>
@@ -415,8 +551,8 @@ const OceanWorkScene: React.FC<Props> = ({
         <Paper sx={{ p: 3, mt: 2, borderRadius: 3 }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, mb: 3 }}>
             <Box>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">DURATION</Typography>
-              <Slider value={workHours} onChange={(_, v) => setWorkHours(v as number)} min={1} max={8} marks valueLabelDisplay="auto" valueLabelFormat={(v) => `${v}h`} />
+              <Typography variant="caption" color="text.secondary" fontWeight="bold">DURATION (supports overtime!)</Typography>
+              <Slider value={workHours} onChange={(_, v) => setWorkHours(v as number)} min={1} max={16} marks valueLabelDisplay="auto" valueLabelFormat={(v) => `${v}h`} />
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary" fontWeight="bold">INTENSITY: {getIntensityLabel(workIntensity)}</Typography>
@@ -424,8 +560,8 @@ const OceanWorkScene: React.FC<Props> = ({
             </Box>
           </Box>
 
-          <Box sx={{ mb: 3, p: 2, bgcolor: 'action.hover', borderRadius: 2 }}>
-            <Typography variant="body2" fontWeight="bold" gutterBottom>Estimated Impact:</Typography>
+          <Box sx={{ mb: 3, p: 2, bgcolor: 'rgba(138, 43, 226, 0.1)', borderRadius: 2, border: '1px solid rgba(138, 43, 226, 0.3)' }}>
+            <Typography variant="body2" fontWeight="bold" gutterBottom sx={{ color: '#b388ff' }}>Estimated Impact:</Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1 }}>
               <Typography variant="body2" color="error.main">Energy: -{estimatedEnergyLoss}</Typography>
               <Typography variant="body2" color="info.main">Stamina: -{estimatedStaminaLoss}</Typography>
@@ -433,14 +569,42 @@ const OceanWorkScene: React.FC<Props> = ({
               <Typography variant="body2" color="success.main">XP: +{estimatedXP}</Typography>
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>Fish to catch: {totalFishGoal}</Typography>
-            {workHours > 8 && <Typography variant="caption" color="error">⚠️ Overwork penalty!</Typography>}
+            {workHours > 8 && <Typography variant="caption" color="error">Overwork penalty applies for hours &gt; 8!</Typography>}
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button variant="contained" fullWidth size="large" onClick={startSession} disabled={characterEnergy < 20} sx={{ py: 1.5 }}>
-              🦭 START FISHING
+            <Button
+              variant="contained"
+              fullWidth
+              size="large"
+              onClick={startSession}
+              disabled={characterEnergy < 20}
+              sx={{
+                py: 1.5,
+                background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, #5a6fd6 0%, #6a4190 100%)',
+                }
+              }}
+            >
+              START FISHING
             </Button>
-            <Button variant="outlined" onClick={triggerPrank} disabled={isPranking || prankCooldown || characterStress < 30} sx={{ minWidth: 60 }}>💦</Button>
+            <Button
+              variant="outlined"
+              onClick={triggerPrank}
+              disabled={isPranking || prankCooldown || characterStress < 30}
+              sx={{
+                minWidth: 60,
+                borderColor: '#764ba2',
+                color: '#b388ff',
+                '&:hover': {
+                  borderColor: '#9c27b0',
+                  bgcolor: 'rgba(138, 43, 226, 0.1)',
+                }
+              }}
+            >
+              🖤
+            </Button>
           </Box>
 
           {characterEnergy < 20 && <Alert severity="error" sx={{ mt: 2 }}>Low energy! Rest or eat first.</Alert>}
