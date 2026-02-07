@@ -2,6 +2,7 @@
  * Home Page
  * Main page showing character status and quick actions
  * Compact layout - no scrolling needed to see all stats
+ * Ocean theme with pearl shimmer effects
  */
 
 import { useEffect } from 'react';
@@ -9,6 +10,10 @@ import { Box, Container, Typography, Grid, Paper, CircularProgress } from '@mui/
 import { useCharacterStore } from '../store/characterStore';
 import { useUserStore } from '../store/userStore';
 import { getCharacter } from '../services/characterService';
+
+// Pearl iridescent gradients
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
+const pearlBorderGradient = 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)';
 
 export default function Home() {
   const { character, setCharacter, isLoading, setLoading, setError } = useCharacterStore();
@@ -64,26 +69,52 @@ export default function Home() {
   return (
     <Container maxWidth="md">
       <Box sx={{ mt: { xs: 1, sm: 2 }, mb: { xs: 1, sm: 2 }, px: { xs: 1, sm: 0 } }}>
-        {/* Welcome - compact */}
-        <Typography
-          variant="h5"
-          component="h1"
-          sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, mb: { xs: 3, sm: 4.5 } }}
-        >
-          🦪 Life is your oyster, {user?.username || 'Guest'}!
-        </Typography>
+        {/* Welcome - compact with pearl shimmer */}
+        <Box sx={{ mb: { xs: 3, sm: 4.5 } }}>
+          <Typography
+            variant="h5"
+            component="h1"
+            sx={{
+              fontSize: { xs: '1.25rem', sm: '1.5rem' },
+              background: pearlTitleGradient,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Box
+              component="img"
+              src="/assets/pearl.png"
+              alt=""
+              sx={{ width: 28, height: 28, filter: 'drop-shadow(0 0 4px rgba(232, 213, 231, 0.6))' }}
+            />
+            Life is your Oyster, {user?.username || 'Guest'}!
+          </Typography>
+        </Box>
 
-        {/* Character State - Compact horizontal card */}
-        <Paper
-          elevation={2}
+        {/* Character State - Compact horizontal card with ocean theme */}
+        <Box
           sx={{
-            p: { xs: 1.5, sm: 2 },
+            p: '2px',
             mb: { xs: 1.5, sm: 2 },
-            display: 'flex',
-            alignItems: 'center',
-            gap: { xs: 2, sm: 3 },
+            borderRadius: '26px',
+            background: pearlBorderGradient,
           }}
         >
+          <Paper
+            elevation={2}
+            sx={{
+              p: { xs: 1.5, sm: 2 },
+              display: 'flex',
+              alignItems: 'center',
+              gap: { xs: 2, sm: 3 },
+              background: 'linear-gradient(135deg, #1E1F20 0%, #1a2a3c 100%)',
+            }}
+          >
           {/* Character emoji */}
           <Box sx={{ fontSize: { xs: '2.5rem', sm: '3rem' } }}>
             {character?.emotionalState === 'happy' && '😊'}
@@ -102,7 +133,8 @@ export default function Home() {
               {character?.bodyType || 'Normal'} • {character?.emotionalState || 'Normal'}
             </Typography>
           </Box>
-        </Paper>
+          </Paper>
+        </Box>
 
         {/* Stats Grid - 3 rows x 2 columns, compact cards */}
         <Grid container spacing={{ xs: 1, sm: 1.5 }}>
@@ -115,6 +147,12 @@ export default function Home() {
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
+                  transition: 'all 0.3s ease',
+                  borderRadius: 3,
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)',
+                  },
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>

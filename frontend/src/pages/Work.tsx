@@ -1,6 +1,7 @@
 /**
  * Work Page - Ocean Theme
  * Seal Employee vs Octopus Manager
+ * Ocean theme with pearl shimmer effects
  */
 
 import { useState, useEffect } from 'react';
@@ -19,6 +20,9 @@ import {
   ListItemText,
   Divider,
 } from '@mui/material';
+
+// Pearl iridescent gradient for title
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import { useCharacterStore } from '../store/characterStore';
 import { getCharacter, updateCharacter } from '../services/characterService';
 import { logWork, getWorkLogs, getWorkStats } from '../services/workService';
@@ -127,9 +131,25 @@ export default function Work() {
           variant="h3"
           component="h1"
           gutterBottom
-          sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+          sx={{
+            fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+            background: pearlTitleGradient,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 600,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 1,
+          }}
         >
-          🦭 Ocean Office Simulator
+          <Box
+            component="img"
+            src="/assets/ocean/seal.png"
+            alt=""
+            sx={{ width: { xs: 36, sm: 48 }, height: { xs: 36, sm: 48 } }}
+          />
+          Ocean Office Simulator
         </Typography>
         <Typography
           variant="subtitle1"
@@ -153,7 +173,7 @@ export default function Work() {
         )}
 
         {/* Character Status - Synced with Home */}
-        <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 } }}>
+        <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 }, borderRadius: 3, background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.2) 0%, transparent 100%)' }}>
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
             Current Status (synced with Home)
           </Typography>
@@ -249,7 +269,7 @@ export default function Work() {
 
         {/* Work Statistics */}
         {workStats && (
-          <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3 }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3, borderRadius: 3 }}>
             <Typography variant="h6" gutterBottom>
               📊 This Week's Stats
             </Typography>
@@ -283,7 +303,7 @@ export default function Work() {
         )}
 
         {/* Recent Work Logs */}
-        <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3 }}>
+        <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom>
             📜 Recent Work History
           </Typography>

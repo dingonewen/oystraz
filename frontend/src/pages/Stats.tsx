@@ -1,6 +1,7 @@
 /**
  * Stats Page
  * Data visualization and reports
+ * Ocean theme with pearl shimmer effects
  */
 
 import { useState, useEffect } from 'react';
@@ -16,6 +17,9 @@ import {
   ToggleButton,
   CircularProgress,
 } from '@mui/material';
+
+// Pearl iridescent gradient for title
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import {
   LineChart,
   Line,
@@ -167,11 +171,12 @@ export default function Stats() {
       // Calculate leisure time
       const avgLeisureHours = Math.max(0, 24 - avgSleepHours - avgExerciseHours - avgWorkHours);
 
+      // Ocean theme colors with pearl iridescence
       setTimeAllocation([
-        { name: 'Sleep', value: parseFloat(avgSleepHours.toFixed(1)), color: '#8884d8' },
-        { name: 'Work', value: parseFloat(avgWorkHours.toFixed(1)), color: '#82ca9d' },
-        { name: 'Exercise', value: parseFloat(avgExerciseHours.toFixed(1)), color: '#ffc658' },
-        { name: 'Leisure', value: parseFloat(avgLeisureHours.toFixed(1)), color: '#ff7c7c' },
+        { name: 'Sleep', value: parseFloat(avgSleepHours.toFixed(1)), color: '#8AB4F8' },  // Ocean blue
+        { name: 'Work', value: parseFloat(avgWorkHours.toFixed(1)), color: '#81C995' },   // Sea green
+        { name: 'Exercise', value: parseFloat(avgExerciseHours.toFixed(1)), color: '#4dd0e1' }, // Cyan
+        { name: 'Leisure', value: parseFloat(avgLeisureHours.toFixed(1)), color: '#E8D5E7' },   // Pearl pink
       ]);
     } catch (error) {
       console.error('Failed to load stats:', error);
@@ -206,7 +211,14 @@ export default function Stats() {
           <Typography
             variant="h3"
             component="h1"
-            sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+            sx={{
+              fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+              background: pearlTitleGradient,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 600,
+            }}
           >
             Your Statistics
           </Typography>
@@ -225,12 +237,12 @@ export default function Stats() {
         {/* Summary Cards */}
         <Grid container spacing={{ xs: 2, sm: 2, md: 3 }} sx={{ mb: { xs: 2, sm: 3, md: 4 } }}>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card>
+            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)' } }}>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
                   Avg Calories/Day
                 </Typography>
-                <Typography variant="h4">{totalStats.avgCalories}</Typography>
+                <Typography variant="h4" sx={{ color: '#8AB4F8' }}>{totalStats.avgCalories}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   kcal
                 </Typography>
@@ -238,12 +250,12 @@ export default function Stats() {
             </Card>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card>
+            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(129, 201, 149, 0.15)' } }}>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
                   Avg Exercise/Day
                 </Typography>
-                <Typography variant="h4">{totalStats.avgExercise}</Typography>
+                <Typography variant="h4" sx={{ color: '#81C995' }}>{totalStats.avgExercise}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   kcal burned
                 </Typography>
@@ -251,12 +263,12 @@ export default function Stats() {
             </Card>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card>
+            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(77, 208, 225, 0.15)' } }}>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
                   Avg Sleep/Night
                 </Typography>
-                <Typography variant="h4">{totalStats.avgSleep}</Typography>
+                <Typography variant="h4" sx={{ color: '#4dd0e1' }}>{totalStats.avgSleep}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   hours
                 </Typography>
@@ -264,12 +276,12 @@ export default function Stats() {
             </Card>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card>
+            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(232, 213, 231, 0.15)' } }}>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
                   Total Workouts
                 </Typography>
-                <Typography variant="h4">{totalStats.totalWorkouts}</Typography>
+                <Typography variant="h4" sx={{ color: '#E8D5E7' }}>{totalStats.totalWorkouts}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   sessions
                 </Typography>
@@ -279,7 +291,7 @@ export default function Stats() {
         </Grid>
 
         {/* Time Allocation Pie Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom>
             Daily Time Allocation (24 Hours)
           </Typography>
@@ -308,7 +320,7 @@ export default function Stats() {
         </Paper>
 
         {/* Calories Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom>
             Daily Calorie Intake
           </Typography>
@@ -322,8 +334,8 @@ export default function Stats() {
               <Area
                 type="monotone"
                 dataKey="calories"
-                stroke="#8884d8"
-                fill="#8884d8"
+                stroke="#8AB4F8"
+                fill="#8AB4F8"
                 fillOpacity={0.6}
                 name="Calories (kcal)"
               />
@@ -332,7 +344,7 @@ export default function Stats() {
         </Paper>
 
         {/* Exercise Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom>
             Daily Exercise Activity
           </Typography>
@@ -343,13 +355,13 @@ export default function Stats() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="exercise" fill="#82ca9d" name="Calories Burned (kcal)" />
+              <Bar dataKey="exercise" fill="#81C995" name="Calories Burned (kcal)" />
             </BarChart>
           </ResponsiveContainer>
         </Paper>
 
         {/* Sleep Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 } }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom>
             Sleep Duration & Quality
           </Typography>
@@ -365,7 +377,7 @@ export default function Stats() {
                 yAxisId="left"
                 type="monotone"
                 dataKey="sleep"
-                stroke="#8884d8"
+                stroke="#8AB4F8"
                 strokeWidth={2}
                 name="Sleep (hours)"
               />
@@ -373,7 +385,7 @@ export default function Stats() {
                 yAxisId="right"
                 type="monotone"
                 dataKey="sleepQuality"
-                stroke="#82ca9d"
+                stroke="#81C995"
                 strokeWidth={2}
                 name="Quality (0-5)"
               />
@@ -382,7 +394,7 @@ export default function Stats() {
         </Paper>
 
         {/* Net Calories Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 } }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
           <Typography variant="h6" gutterBottom>
             Net Calories (Intake - Exercise)
           </Typography>
@@ -396,14 +408,14 @@ export default function Stats() {
               <Line
                 type="monotone"
                 dataKey="calories"
-                stroke="#8884d8"
+                stroke="#8AB4F8"
                 strokeWidth={2}
                 name="Intake (kcal)"
               />
               <Line
                 type="monotone"
                 dataKey="exercise"
-                stroke="#ff7300"
+                stroke="#4dd0e1"
                 strokeWidth={2}
                 name="Burned (kcal)"
               />

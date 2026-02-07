@@ -1,6 +1,7 @@
 /**
  * Track Page
  * Page for logging food, exercise, and sleep
+ * Ocean theme with pearl shimmer effects
  */
 
 import { useState } from 'react';
@@ -12,6 +13,9 @@ import {
   Tab,
   Paper,
 } from '@mui/material';
+
+// Pearl iridescent gradient for title
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import BedtimeIcon from '@mui/icons-material/Bedtime';
@@ -55,7 +59,14 @@ export default function Track() {
           variant="h3"
           component="h1"
           gutterBottom
-          sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+          sx={{
+            fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+            background: pearlTitleGradient,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 600,
+          }}
         >
           Track Your Health
         </Typography>
@@ -68,7 +79,7 @@ export default function Track() {
           Log your meals, exercise, and sleep to keep your character healthy
         </Typography>
 
-        <Paper sx={{ mt: { xs: 2, sm: 3 } }}>
+        <Paper sx={{ mt: { xs: 2, sm: 3 }, borderRadius: 3, overflow: 'hidden' }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
@@ -77,10 +88,19 @@ export default function Track() {
             sx={{
               borderBottom: 1,
               borderColor: 'divider',
+              background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.3) 0%, transparent 100%)',
               '& .MuiTab-root': {
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 minHeight: { xs: 64, sm: 72 },
-              }
+                transition: 'all 0.3s ease',
+                '&.Mui-selected': {
+                  color: '#8AB4F8',
+                },
+              },
+              '& .MuiTabs-indicator': {
+                background: 'linear-gradient(90deg, #8AB4F8, #81C995)',
+                height: 3,
+              },
             }}
           >
             <Tab

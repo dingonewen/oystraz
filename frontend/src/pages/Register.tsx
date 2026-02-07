@@ -1,5 +1,6 @@
 /**
  * Registration Page
+ * Ocean theme with pearl shimmer effects
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,10 @@ import {
 } from '@mui/material';
 import { register, getCurrentUser } from '../services/authService';
 import { useUserStore } from '../store/userStore';
+
+// Pearl iridescent gradients
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
+const pearlBorderGradient = 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -62,13 +67,33 @@ export default function Register() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 8 }}>
-        <Paper sx={{ p: 4 }}>
-          <Typography variant="h4" align="center" gutterBottom>
-            Join Oystraz
-          </Typography>
-          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-            Start your health journey today
-          </Typography>
+        <Box sx={{ p: '2px', borderRadius: '26px', background: pearlBorderGradient }}>
+          <Paper sx={{ p: 4, borderRadius: 3, background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.15) 0%, transparent 100%)' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Box
+                component="img"
+                src="/assets/pearl.png"
+                alt="Oystraz"
+                sx={{ width: 64, height: 64, filter: 'drop-shadow(0 0 8px rgba(232, 213, 231, 0.6))' }}
+              />
+            </Box>
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              sx={{
+                background: pearlTitleGradient,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 600,
+              }}
+            >
+              Join Oystraz
+            </Typography>
+            <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
+              Start your health journey today
+            </Typography>
 
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -127,15 +152,16 @@ export default function Register() {
             </Button>
           </form>
 
-          <Box sx={{ mt: 2, textAlign: 'center' }}>
-            <Typography variant="body2">
-              Already have an account?{' '}
-              <Link href="/login" sx={{ cursor: 'pointer' }}>
-                Login here
-              </Link>
-            </Typography>
-          </Box>
-        </Paper>
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              <Typography variant="body2">
+                Already have an account?{' '}
+                <Link href="/login" sx={{ cursor: 'pointer' }}>
+                  Login here
+                </Link>
+              </Typography>
+            </Box>
+          </Paper>
+        </Box>
       </Box>
     </Container>
   );

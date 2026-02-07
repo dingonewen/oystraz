@@ -1,6 +1,7 @@
 /**
  * Profile Page
  * User settings and profile management
+ * Ocean theme with pearl shimmer effects
  */
 
 import { useState } from 'react';
@@ -16,6 +17,9 @@ import {
   Alert,
 } from '@mui/material';
 import { Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material';
+
+// Pearl iridescent gradient for title
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import { useUserStore } from '../store/userStore';
 import { updateUser } from '../services/authService';
 
@@ -130,7 +134,14 @@ export default function Profile() {
           <Typography
             variant="h3"
             component="h1"
-            sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' } }}
+            sx={{
+              fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+              background: pearlTitleGradient,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 600,
+            }}
           >
             Profile Settings
           </Typography>
@@ -158,7 +169,14 @@ export default function Profile() {
           </Alert>
         )}
 
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+        <Paper
+          elevation={2}
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            borderRadius: 3,
+            background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.15) 0%, transparent 100%)',
+          }}
+        >
           <Grid container spacing={{ xs: 2, sm: 2.5, md: 3 }}>
             {/* Read-only fields */}
             <Grid size={{ xs: 12 }}>
