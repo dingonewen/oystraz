@@ -114,7 +114,26 @@ const theme = createTheme({
         root: {
           borderRadius: 20,
           textTransform: 'none',
-          fontWeight: 500,
+          fontWeight: 600,
+        },
+        contained: {
+          background: 'linear-gradient(135deg, #E8D5E7 0%, #D5C4E8 50%, #C4B5E0 100%)',
+          color: '#2D2D2D',
+          '&:hover': {
+            background: 'linear-gradient(135deg, #D5C4E8 0%, #C4B5E0 50%, #B5A6D8 100%)',
+          },
+          '&:disabled': {
+            background: '#555',
+            color: '#888',
+          },
+        },
+        outlined: {
+          borderColor: '#E8D5E7',
+          color: '#E8D5E7',
+          '&:hover': {
+            borderColor: '#D5C4E8',
+            backgroundColor: 'rgba(232, 213, 231, 0.08)',
+          },
         },
       },
     },

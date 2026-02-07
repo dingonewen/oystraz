@@ -1,10 +1,10 @@
 /**
- * Ocean Work Scene - Framer Motion Version
- * Smooth animations with spring physics
+ * Ocean Work Scene - Smooth CSS Transition Version
+ * Uses CSS transitions for buttery smooth seal movement
  * Uses our custom image assets
  */
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useSpring } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Typography, Slider, Button, Alert, Paper } from '@mui/material';
 
 interface Props {
@@ -46,21 +46,12 @@ const OceanWorkScene: React.FC<Props> = ({
   const [fishList, setFishList] = useState<Fish[]>([]);
   const [hookedFish, setHookedFish] = useState<{ id: number; type: number }[]>([]);
   const [isPranking, setIsPranking] = useState(false);
-  const [octopusMood, setOctopusMood] = useState<'normal' | 'angry'>('normal');
   const [prankCooldown, setPrankCooldown] = useState(false);
 
-  // Spring physics for smooth movement
-  const sealX = useSpring(20, { stiffness: 60, damping: 20 });
-  const sealY = useSpring(55, { stiffness: 60, damping: 20 });
-  const [sealDirection, setSealDirection] = useState(1);
-
-  // Track seal position for rendering
+  // Seal position - use refs for smooth updates without re-renders
   const [sealPos, setSealPos] = useState({ x: 20, y: 55 });
-  useEffect(() => {
-    const unsubX = sealX.on('change', (x) => setSealPos((p) => ({ ...p, x })));
-    const unsubY = sealY.on('change', (y) => setSealPos((p) => ({ ...p, y })));
-    return () => { unsubX(); unsubY(); };
-  }, [sealX, sealY]);
+  const [sealDirection, setSealDirection] = useState(1);
+  const sealPosRef = useRef({ x: 20, y: 55 });
 
   // Estimated impacts (matching health_calculator formulas)
   const estimatedStressIncrease = Math.round(workHours * workIntensity * 0.8);
@@ -105,16 +96,26 @@ const OceanWorkScene: React.FC<Props> = ({
     return () => clearInterval(moveInterval);
   }, []);
 
-  // Core chase AI
+  // Core chase AI - smooth movement with requestAnimationFrame
   useEffect(() => {
     if (!isWorking) return;
 
-    const tick = setInterval(() => {
-      const chaseSpeed = workIntensity * 0.35 + 0.4;
+    let animationId: number;
+    let lastTime = performance.now();
+
+    const tick = (currentTime: number) => {
+      const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      const chaseSpeed = (workIntensity * 8 + 10) * deltaTime; // Speed per second
       const hookX = 85;
       const hookY = 30;
-      const currentX = sealX.get();
-      const currentY = sealY.get();
+      const currentX = sealPosRef.current.x;
+      const currentY = sealPosRef.current.y;
+
+      let newX = currentX;
+      let newY = currentY;
+      let newDirection = sealDirection;
 
       if (sealState === 'chasing' || sealState === 'idle') {
         const available = fishList.filter((f) => !f.caught);
@@ -122,6 +123,7 @@ const OceanWorkScene: React.FC<Props> = ({
           if (fishCaught < totalFishGoal) {
             setFishList((prev) => [...prev, ...initFish(5).map((f, i) => ({ ...f, id: prev.length + i }))]);
           }
+          animationId = requestAnimationFrame(tick);
           return;
         }
 
@@ -140,9 +142,9 @@ const OceanWorkScene: React.FC<Props> = ({
           setFishList((prev) => prev.map((f) => (f.id === nearest.id ? { ...f, caught: true } : f)));
           setSealState('carrying');
         } else {
-          sealX.set(currentX + (dx / dist) * chaseSpeed);
-          sealY.set(currentY + (dy / dist) * chaseSpeed);
-          setSealDirection(dx > 0 ? 1 : -1);
+          newX = currentX + (dx / dist) * chaseSpeed;
+          newY = currentY + (dy / dist) * chaseSpeed;
+          newDirection = dx > 0 ? 1 : -1;
           if (sealState === 'idle') setSealState('chasing');
         }
       } else if (sealState === 'carrying') {
@@ -158,9 +160,9 @@ const OceanWorkScene: React.FC<Props> = ({
           }
           setSealState('delivering');
         } else {
-          sealX.set(currentX + (dx / dist) * chaseSpeed * 1.3);
-          sealY.set(currentY + (dy / dist) * chaseSpeed * 1.3);
-          setSealDirection(dx > 0 ? 1 : -1);
+          newX = currentX + (dx / dist) * chaseSpeed * 1.3;
+          newY = currentY + (dy / dist) * chaseSpeed * 1.3;
+          newDirection = dx > 0 ? 1 : -1;
         }
       } else if (sealState === 'delivering') {
         const dx = 25 - currentX;
@@ -170,19 +172,32 @@ const OceanWorkScene: React.FC<Props> = ({
         if (dist < 5) {
           if (fishCaught >= totalFishGoal) {
             handleWorkDone();
+            return;
           } else {
             setSealState('chasing');
           }
         } else {
-          sealX.set(currentX + (dx / dist) * chaseSpeed);
-          sealY.set(currentY + (dy / dist) * chaseSpeed);
-          setSealDirection(dx > 0 ? 1 : -1);
+          newX = currentX + (dx / dist) * chaseSpeed;
+          newY = currentY + (dy / dist) * chaseSpeed;
+          newDirection = dx > 0 ? 1 : -1;
         }
       }
-    }, 50);
 
-    return () => clearInterval(tick);
-  }, [isWorking, sealState, fishList, workIntensity, fishCaught, totalFishGoal, hookedFish]);
+      // Update position ref and state
+      if (newX !== currentX || newY !== currentY) {
+        sealPosRef.current = { x: newX, y: newY };
+        setSealPos({ x: newX, y: newY });
+        if (newDirection !== sealDirection) {
+          setSealDirection(newDirection);
+        }
+      }
+
+      animationId = requestAnimationFrame(tick);
+    };
+
+    animationId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animationId);
+  }, [isWorking, sealState, fishList, workIntensity, fishCaught, totalFishGoal, hookedFish, sealDirection]);
 
   // Auto-prank when overworked (24+ fish)
   useEffect(() => {
@@ -195,8 +210,8 @@ const OceanWorkScene: React.FC<Props> = ({
     setIsWorking(false);
     setSealState('idle');
     onWorkComplete(workHours, workIntensity);
-    sealX.set(20);
-    sealY.set(55);
+    sealPosRef.current = { x: 20, y: 55 };
+    setSealPos({ x: 20, y: 55 });
   };
 
   const startSession = () => {
@@ -206,24 +221,21 @@ const OceanWorkScene: React.FC<Props> = ({
     setHookedFish([]);
     setFishList(initFish(totalFishGoal + 5));
     setSealState('chasing');
-    setOctopusMood('normal');
   };
 
   const triggerPrank = () => {
     if (isPranking || prankCooldown) return;
     setIsPranking(true);
-    setOctopusMood('angry');
     setPrankCooldown(true);
 
-    sealX.set(80);
-    sealY.set(15);
+    sealPosRef.current = { x: 80, y: 15 };
+    setSealPos({ x: 80, y: 15 });
 
     setTimeout(() => {
       onWorkComplete(0, 0, true);
       setIsPranking(false);
-      setTimeout(() => setOctopusMood('normal'), 2000);
-      sealX.set(20);
-      sealY.set(55);
+      sealPosRef.current = { x: 20, y: 55 };
+      setSealPos({ x: 20, y: 55 });
     }, 1500);
 
     setTimeout(() => setPrankCooldown(false), 30000);
@@ -328,29 +340,35 @@ const OceanWorkScene: React.FC<Props> = ({
         {/* Octopus Boss */}
         <motion.div
           style={{ position: 'absolute', right: '5%', top: '5%', zIndex: 20 }}
-          animate={{ y: octopusMood === 'angry' ? [0, -5, 5, 0] : [0, -8, 0] }}
-          transition={{ duration: octopusMood === 'angry' ? 0.3 : 3, repeat: Infinity }}
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Box sx={{ position: 'relative', textAlign: 'center' }}>
-            <img src={`/assets/ocean/octopus_${octopusMood === 'angry' ? 'angry' : 'normal'}.png`} alt="boss" style={{ width: 65, imageRendering: 'pixelated' }} />
-            {octopusMood === 'angry' && (
-              <motion.span style={{ position: 'absolute', top: -10, right: -5, fontSize: 20 }} animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.3, repeat: Infinity }}>💢</motion.span>
-            )}
-            <Typography sx={{ fontSize: 9, fontWeight: 'bold', px: 1, py: 0.3, borderRadius: 2, bgcolor: octopusMood === 'angry' ? 'error.main' : 'grey.700', color: 'white', mt: 0.5 }}>BOSS</Typography>
+            <img src="/assets/ocean/octopus.png" alt="boss" style={{ width: 65 }} />
+            <Typography sx={{ fontSize: 9, fontWeight: 'bold', px: 1, py: 0.3, borderRadius: 2, bgcolor: 'grey.700', color: 'white', mt: 0.5 }}>BOSS</Typography>
           </Box>
         </motion.div>
 
-        {/* Seal Employee */}
-        <motion.div style={{ position: 'absolute', left: `${sealPos.x}%`, top: `${sealPos.y}%`, zIndex: 30 }}>
+        {/* Seal Employee - CSS transition for smooth movement */}
+        <Box
+          sx={{
+            position: 'absolute',
+            left: `${sealPos.x}%`,
+            top: `${sealPos.y}%`,
+            zIndex: 30,
+            transition: 'left 0.05s linear, top 0.05s linear',
+            transform: `scaleX(${sealDirection})`,
+          }}
+        >
           <motion.div
-            animate={{ rotate: isWorking ? [0, -8, 8, 0] : [-3, 3, -3], scaleX: sealDirection }}
-            transition={{ duration: isWorking ? 0.4 : 2.5, repeat: Infinity }}
+            animate={{ rotate: isWorking ? [0, -5, 5, 0] : [-2, 2, -2] }}
+            transition={{ duration: isWorking ? 0.3 : 2, repeat: Infinity, ease: 'easeInOut' }}
             style={{ position: 'relative' }}
           >
-            <img src="/assets/ocean/seal.png" alt="seal" style={{ width: 70, imageRendering: 'pixelated' }} />
+            <img src="/assets/ocean/seal.png" alt="seal" style={{ width: 70 }} />
             {sealState === 'carrying' && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ position: 'absolute', top: -5, right: sealDirection === 1 ? -10 : 'auto', left: sealDirection === -1 ? -10 : 'auto' }}>
-                <img src={`/assets/ocean/fish_${fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id))?.type || 1}.png`} alt="carried" style={{ width: 24, imageRendering: 'pixelated' }} />
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ position: 'absolute', top: -5, right: -10 }}>
+                <img src={`/assets/ocean/fish_${fishList.find((f) => f.caught && !hookedFish.some((h) => h.id === f.id))?.type || 1}.png`} alt="carried" style={{ width: 24 }} />
               </motion.div>
             )}
             {isPranking && (
@@ -358,7 +376,7 @@ const OceanWorkScene: React.FC<Props> = ({
             )}
             <Typography sx={{ position: 'absolute', bottom: -12, left: '50%', transform: `translateX(-50%) scaleX(${sealDirection})`, fontSize: 10, fontWeight: 'bold', color: 'white', textShadow: '1px 1px 2px black' }}>You</Typography>
           </motion.div>
-        </motion.div>
+        </Box>
 
         {/* Progress Bar */}
         {isWorking && (
@@ -402,7 +420,7 @@ const OceanWorkScene: React.FC<Props> = ({
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button variant="contained" fullWidth size="large" onClick={startSession} disabled={characterEnergy < 20} sx={{ py: 1.5, fontWeight: 'bold', background: 'linear-gradient(135deg, #1976d2, #42a5f5)' }}>
+            <Button variant="contained" fullWidth size="large" onClick={startSession} disabled={characterEnergy < 20} sx={{ py: 1.5 }}>
               🦭 START FISHING
             </Button>
             <Button variant="outlined" onClick={triggerPrank} disabled={isPranking || prankCooldown || characterStress < 30} sx={{ minWidth: 60 }}>💦</Button>
