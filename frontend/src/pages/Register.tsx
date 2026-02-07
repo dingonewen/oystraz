@@ -17,9 +17,14 @@ import {
 import { register, getCurrentUser } from '../services/authService';
 import { useUserStore } from '../store/userStore';
 
-// Pearl iridescent gradients
+// Logo-style gradient (red to green like the Oystraz logo)
+const logoBorderGradient = 'linear-gradient(135deg, #F28B82 0%, #FDD663 25%, #81C995 50%, #8AB4F8 75%, #E8D5E7 100%)';
+
+// Pearl iridescent gradient for title
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
-const pearlBorderGradient = 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)';
+
+// Pearl purple button gradient
+const pearlPurpleGradient = 'linear-gradient(135deg, #E8D5E7 0%, #D5C4E8 50%, #C4B5E0 100%)';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -67,8 +72,9 @@ export default function Register() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 8 }}>
-        <Box sx={{ p: '2px', borderRadius: '26px', background: pearlBorderGradient }}>
-          <Paper sx={{ p: 4, borderRadius: 3, background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.15) 0%, transparent 100%)' }}>
+        {/* Outer border with logo gradient */}
+        <Box sx={{ p: '3px', borderRadius: '28px', background: logoBorderGradient }}>
+          <Paper sx={{ p: 4, borderRadius: 3, background: '#1E1F20' }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
               <Box
                 component="img"
@@ -77,6 +83,7 @@ export default function Register() {
                 sx={{ width: 64, height: 64, filter: 'drop-shadow(0 0 8px rgba(232, 213, 231, 0.6))' }}
               />
             </Box>
+            {/* Title with pearl gradient */}
             <Typography
               variant="h4"
               align="center"
@@ -86,7 +93,7 @@ export default function Register() {
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontWeight: 600,
+                fontWeight: 500,
               }}
             >
               Join Oystraz
@@ -95,67 +102,76 @@ export default function Register() {
               Start your health journey today
             </Typography>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
 
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              margin="normal"
-              required
-              autoFocus
-            />
-            <TextField
-              fullWidth
-              label="Username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              margin="normal"
-              required
-            />
-            <TextField
-              fullWidth
-              label="Full Name"
-              name="full_name"
-              value={formData.full_name}
-              onChange={handleChange}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              margin="normal"
-              required
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              size="large"
-              disabled={loading}
-              sx={{ mt: 3, mb: 2 }}
-            >
-              {loading ? 'Creating account...' : 'Register'}
-            </Button>
-          </form>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                margin="normal"
+                required
+                autoFocus
+                sx={{ '& .MuiInputBase-input': { color: '#B0B0B0' } }}
+              />
+              <TextField
+                fullWidth
+                label="Username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                margin="normal"
+                required
+                sx={{ '& .MuiInputBase-input': { color: '#B0B0B0' } }}
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                margin="normal"
+                required
+                sx={{ '& .MuiInputBase-input': { color: '#B0B0B0' } }}
+              />
+              {/* Pearl purple button */}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                disabled={loading}
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  background: pearlPurpleGradient,
+                  color: '#2D2D2D',
+                  fontWeight: 400,
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #D5C4E8 0%, #C4B5E0 50%, #B5A6D8 100%)',
+                  },
+                  '&:disabled': {
+                    background: '#555',
+                    color: '#888',
+                  },
+                }}
+              >
+                {loading ? 'Creating account...' : 'Register'}
+              </Button>
+            </form>
 
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               <Typography variant="body2">
                 Already have an account?{' '}
-                <Link href="/login" sx={{ cursor: 'pointer' }}>
+                <Link href="/login" sx={{ cursor: 'pointer', color: '#E8D5E7' }}>
                   Login here
                 </Link>
               </Typography>
