@@ -75,6 +75,9 @@ const OceanWorkScene: React.FC<Props> = ({
   const [sealDirection, setSealDirection] = useState(1);
   const sealPosRef = useRef({ x: 20, y: 55 });
 
+  // Use ref to track hooked fish IDs to avoid duplicate hooks
+  const hookedFishIdsRef = useRef<Set<number>>(new Set());
+
   // Estimated impacts
   const estimatedStressIncrease = (workHours * workIntensity * 0.8).toFixed(1);
   const estimatedEnergyLoss = (workHours * workIntensity * 0.5).toFixed(1);
@@ -201,9 +204,10 @@ const OceanWorkScene: React.FC<Props> = ({
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 6) {
-          // Deliver fish to hook
+          // Deliver fish to hook - use ref to prevent duplicates
           const caughtFish = fishList.find((f) => f.id === carryingFishId);
-          if (caughtFish && !hookedFish.some((h) => h.id === caughtFish.id)) {
+          if (caughtFish && !hookedFishIdsRef.current.has(caughtFish.id)) {
+            hookedFishIdsRef.current.add(caughtFish.id);
             setHookedFish((prev) => [...prev, {
               id: caughtFish.id,
               color: caughtFish.color,
@@ -254,7 +258,7 @@ const OceanWorkScene: React.FC<Props> = ({
 
     animationId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationId);
-  }, [isWorking, sealState, fishList, workIntensity, fishCaught, totalFishGoal, hookedFish, sealDirection, currentTargetHook, carryingFishId]);
+  }, [isWorking, sealState, fishList, workIntensity, fishCaught, totalFishGoal, sealDirection, currentTargetHook, carryingFishId]);
 
   // Auto-prank when overworked (24+ fish)
   useEffect(() => {
@@ -276,6 +280,7 @@ const OceanWorkScene: React.FC<Props> = ({
     setIsWorking(true);
     setFishCaught(0);
     setHookedFish([]);
+    hookedFishIdsRef.current.clear();
     setCarryingFishId(null);
     setFishList(initFish(totalFishGoal + 5));
     setSealState('patrolling');
@@ -453,7 +458,6 @@ const OceanWorkScene: React.FC<Props> = ({
         >
           <Box sx={{ position: 'relative', textAlign: 'center' }}>
             <img src="/assets/ocean/octopus.png" alt="boss" style={{ width: 90 }} />
-            <Typography sx={{ fontSize: 10, fontWeight: 'bold', px: 1.5, py: 0.5, borderRadius: 2, bgcolor: 'grey.700', color: 'white', mt: 0.5 }}>BOSS</Typography>
 
             {/* Black Ink Spray Animation - from Octopus */}
             <AnimatePresence>
@@ -516,7 +520,6 @@ const OceanWorkScene: React.FC<Props> = ({
                 <img src={`/assets/ocean/fish_${getCarryingFishColor()}.png`} alt="carried" style={{ width: 20 }} />
               </motion.div>
             )}
-            <Typography sx={{ position: 'absolute', bottom: -12, left: '50%', transform: `translateX(-50%) scaleX(${sealDirection})`, fontSize: 10, fontWeight: 'bold', color: 'white', textShadow: '1px 1px 2px black' }}>You</Typography>
           </motion.div>
         </Box>
 
