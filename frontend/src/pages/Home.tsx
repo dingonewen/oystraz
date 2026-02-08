@@ -12,7 +12,7 @@ import { useCharacterStore } from '../store/characterStore';
 import { useUserStore } from '../store/userStore';
 import { usePearlStore } from '../store/pearlStore';
 import { getCharacter } from '../services/characterService';
-import { generateWorkCultureRoast } from '../services/pearlBubbleService';
+import { generateWorkCultureRoast, generateCharacterStateComment } from '../services/pearlBubbleService';
 
 // Pearl iridescent gradients
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
@@ -25,6 +25,7 @@ export default function Home() {
   const { user } = useUserStore();
   const { showBubble } = usePearlStore();
   const [isOctopusHovered, setIsOctopusHovered] = useState(false);
+  const [isCharacterHovered, setIsCharacterHovered] = useState(false);
 
   // Load character data from backend
   useEffect(() => {
@@ -66,10 +67,10 @@ export default function Home() {
   // Stat card data - integer values
   const stats = [
     { label: 'Stamina', emoji: '💪', value: Math.round(character?.stamina || 0), color: 'primary', desc: 'Exercise & sleep' },
-    { label: 'Energy', emoji: '⚡', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
+    { label: 'Energy', emoji: '🔋', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
     { label: 'Nutrition', emoji: '🍎', value: Math.round(character?.nutrition || 0), color: 'primary', desc: 'Diet balance' },
     { label: 'Mood', emoji: '😊', value: Math.round(character?.mood || 0), color: 'primary', desc: 'Overall wellness' },
-    { label: 'Stress', emoji: '😰', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
+    { label: 'Stress', emoji: '🫩', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
     { label: 'Level', emoji: '🏆', value: character?.level || 1, color: 'secondary', desc: `XP: ${character?.experience || 0}` },
   ];
 
@@ -104,44 +105,60 @@ export default function Home() {
         </Box>
 
         {/* Character State - Compact horizontal card with ocean theme */}
-        <Box
-          sx={{
-            p: '2px',
-            mb: { xs: 1.5, sm: 2 },
-            borderRadius: '26px',
-            background: pearlBorderGradient,
+        <motion.div
+          onMouseEnter={() => {
+            setIsCharacterHovered(true);
+            const state = (character?.emotionalState || 'normal') as 'happy' | 'normal' | 'tired' | 'stressed' | 'angry';
+            showBubble(generateCharacterStateComment(state));
           }}
+          onMouseLeave={() => setIsCharacterHovered(false)}
+          animate={isCharacterHovered ? { scale: 1.02 } : { scale: 1 }}
+          transition={{ duration: 0.2 }}
+          style={{ cursor: 'pointer' }}
         >
-          <Paper
-            elevation={2}
+          <Box
             sx={{
-              p: { xs: 1.5, sm: 2 },
-              display: 'flex',
-              alignItems: 'center',
-              gap: { xs: 2, sm: 3 },
-              background: darkPearlGradient,
+              p: '2px',
+              mb: { xs: 1.5, sm: 2 },
+              borderRadius: '26px',
+              background: isCharacterHovered
+                ? 'linear-gradient(135deg, #FFE8F0 0%, #E8D5F0 25%, #D5E8F5 50%, #F0EDE5 75%, #FFF8E8 100%)'
+                : pearlBorderGradient,
+              transition: 'background 0.3s ease',
             }}
           >
-          {/* Character emoji */}
-          <Box sx={{ fontSize: { xs: '2.5rem', sm: '3rem' } }}>
-            {character?.emotionalState === 'happy' && '😊'}
-            {character?.emotionalState === 'normal' && '🙂'}
-            {character?.emotionalState === 'tired' && '😴'}
-            {character?.emotionalState === 'stressed' && '😰'}
-            {character?.emotionalState === 'angry' && '😠'}
-            {!character?.emotionalState && '🙂'}
+            <Paper
+              elevation={isCharacterHovered ? 4 : 2}
+              sx={{
+                p: { xs: 1.5, sm: 2 },
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 2, sm: 3 },
+                background: darkPearlGradient,
+                transition: 'box-shadow 0.3s ease',
+              }}
+            >
+              {/* Character emoji */}
+              <Box sx={{ fontSize: { xs: '2.5rem', sm: '3rem' } }}>
+                {character?.emotionalState === 'happy' && '😊'}
+                {character?.emotionalState === 'normal' && '🙂'}
+                {character?.emotionalState === 'tired' && '😴'}
+                {character?.emotionalState === 'stressed' && '🫩'}
+                {character?.emotionalState === 'angry' && '😠'}
+                {!character?.emotionalState && '🙂'}
+              </Box>
+              {/* Character info */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                  Your Character
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.85rem' } }}>
+                  {character?.bodyType || 'Normal'} • {character?.emotionalState || 'Normal'}
+                </Typography>
+              </Box>
+            </Paper>
           </Box>
-          {/* Character info */}
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
-              Your Character
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.85rem' } }}>
-              {character?.bodyType || 'Normal'} • {character?.emotionalState || 'Normal'}
-            </Typography>
-          </Box>
-          </Paper>
-        </Box>
+        </motion.div>
 
         {/* Stats Grid - 3 rows x 2 columns, compact cards */}
         <Grid container spacing={{ xs: 2, sm: 3 }}>
@@ -157,7 +174,7 @@ export default function Home() {
                   alignItems: 'center',
                   textAlign: 'center',
                   transition: 'all 0.3s ease',
-                  borderRadius: 2,
+                  borderRadius: 1.5,
                   background: darkPearlGradient,
                   '&:hover': {
                     transform: 'translateY(-2px)',

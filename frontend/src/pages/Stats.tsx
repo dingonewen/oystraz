@@ -248,7 +248,7 @@ export default function Stats() {
               fontWeight: 600,
             }}
           >
-            Your Statistics
+            🧮 Your Statistics
           </Typography>
           <ToggleButtonGroup
             value={timeRange}
@@ -265,7 +265,7 @@ export default function Stats() {
         {/* Summary Cards - 2x2 on mobile */}
         <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }} sx={{ mb: { xs: 2, sm: 3, md: 4 } }}>
           <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)' } }}>
+            <Card sx={{ borderRadius: 2, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)' } }}>
               <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
                 <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Avg Calories/Day
@@ -278,7 +278,7 @@ export default function Stats() {
             </Card>
           </Grid>
           <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(129, 201, 149, 0.15)' } }}>
+            <Card sx={{ borderRadius: 2, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(129, 201, 149, 0.15)' } }}>
               <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
                 <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Avg Exercise/Day
@@ -291,7 +291,7 @@ export default function Stats() {
             </Card>
           </Grid>
           <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(77, 208, 225, 0.15)' } }}>
+            <Card sx={{ borderRadius: 2, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(77, 208, 225, 0.15)' } }}>
               <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
                 <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Avg Sleep/Night
@@ -304,7 +304,7 @@ export default function Stats() {
             </Card>
           </Grid>
           <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(232, 213, 231, 0.15)' } }}>
+            <Card sx={{ borderRadius: 2, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(232, 213, 231, 0.15)' } }}>
               <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
                 <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Total Workouts
@@ -319,7 +319,7 @@ export default function Stats() {
         </Grid>
 
         {/* Time Allocation Pie Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             Daily Time Allocation (24 Hours)
           </Typography>
@@ -348,7 +348,7 @@ export default function Stats() {
         </Paper>
 
         {/* Calories Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             Daily Calorie Intake
           </Typography>
@@ -372,7 +372,7 @@ export default function Stats() {
         </Paper>
 
         {/* Exercise Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             Daily Exercise Activity
           </Typography>
@@ -389,7 +389,7 @@ export default function Stats() {
         </Paper>
 
         {/* Sleep Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, mb: { xs: 2, sm: 2, md: 3 }, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             Sleep Duration & Quality
           </Typography>
@@ -422,7 +422,7 @@ export default function Stats() {
         </Paper>
 
         {/* Net Calories Chart */}
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, borderRadius: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 2, md: 3 }, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             Net Calories (Intake - Exercise)
           </Typography>

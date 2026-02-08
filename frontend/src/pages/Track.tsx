@@ -68,18 +68,18 @@ export default function Track() {
             fontWeight: 600,
           }}
         >
-          Track Your Health
+          🗎 Track Your Health
         </Typography>
         <Typography
           variant="subtitle1"
           color="text.secondary"
           gutterBottom
-          sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+          sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
         >
-          Log your meals, exercise, and sleep to keep your character healthy
+          Maintain the hardware to ruin the system.
         </Typography>
 
-        <Paper sx={{ mt: { xs: 2, sm: 3 }, borderRadius: 3, overflow: 'hidden' }}>
+        <Paper sx={{ mt: { xs: 2, sm: 3 }, borderRadius: 1.5, overflow: 'hidden' }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}

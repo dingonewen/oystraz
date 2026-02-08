@@ -173,7 +173,7 @@ export default function Work() {
             component="img"
             src="/assets/ocean/seal.png"
             alt=""
-            sx={{ width: { xs: 36, sm: 48 }, height: { xs: 36, sm: 48 } }}
+            sx={{ width: { xs: 30, sm: 40 }, height: { xs: 30, sm: 40 } }}
           />
           Ocean Office Simulator
         </Typography>
@@ -183,7 +183,7 @@ export default function Work() {
           gutterBottom
           sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
         >
-          You're a seal employee fishing for work. Beware of the octopus manager!
+          Work like a seal. Revenge like a pro.
         </Typography>
 
         {/* Success/Error Messages */}
@@ -199,15 +199,15 @@ export default function Work() {
         )}
 
         {/* Character Status - Synced with Home */}
-        <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 }, borderRadius: 3, background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.2) 0%, transparent 100%)' }}>
+        <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 }, borderRadius: 2, background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.2) 0%, transparent 100%)' }}>
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Current Status (synced with Home)
+            Current Status - safe house linked
           </Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, md: 3 }}>
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2">💪 Stamina</Typography>
+                  <Typography variant="body2">💪Stamina</Typography>
                   <Typography variant="body2">{Math.round(character.stamina)}/100</Typography>
                 </Box>
                 <LinearProgress
@@ -228,7 +228,7 @@ export default function Work() {
             <Grid size={{ xs: 6, md: 3 }}>
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2">⚡ Energy</Typography>
+                  <Typography variant="body2">🔋Energy</Typography>
                   <Typography variant="body2">{Math.round(character.energy)}/100</Typography>
                 </Box>
                 <LinearProgress
@@ -249,7 +249,7 @@ export default function Work() {
             <Grid size={{ xs: 6, md: 3 }}>
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2">😊 Mood</Typography>
+                  <Typography variant="body2">😊Mood</Typography>
                   <Typography variant="body2">{Math.round(character.mood)}/100</Typography>
                 </Box>
                 <LinearProgress
@@ -270,7 +270,7 @@ export default function Work() {
             <Grid size={{ xs: 6, md: 3 }}>
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2">😰 Stress</Typography>
+                  <Typography variant="body2">🫩Stress</Typography>
                   <Typography variant="body2">{Math.round(character.stress)}/100</Typography>
                 </Box>
                 <LinearProgress
@@ -319,9 +319,9 @@ export default function Work() {
 
         {/* Work Statistics */}
         {workStats && (
-          <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3, borderRadius: 3 }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3, borderRadius: 2 }}>
             <Typography variant="h6" gutterBottom>
-              📊 This Week's Stats
+              🧮 This Week's Stats
             </Typography>
             <Grid container spacing={2}>
               <Grid size={{ xs: 6, sm: 3 }}>
@@ -353,7 +353,7 @@ export default function Work() {
         )}
 
         {/* Recent Work Logs */}
-        <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3, borderRadius: 3 }}>
+        <Paper sx={{ p: { xs: 2, sm: 3 }, mt: 3, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             📜 Recent Work History
           </Typography>

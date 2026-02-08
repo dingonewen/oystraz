@@ -450,3 +450,166 @@ export const generateWorkPageHumor = (): string => {
 
   return selected;
 };
+
+/**
+ * Character emotional state comments - parental tough love style
+ * Pearl speaks like a caring but sassy parent/elder sibling
+ */
+type EmotionalState = 'happy' | 'normal' | 'tired' | 'stressed' | 'angry';
+
+// Happy state - "傻乐也挺好" vibe, playful teasing
+const happyComments = [
+  "Look at you, all sunshine and rainbows. Suspicious.",
+  "Someone's in a good mood. What did you eat?",
+  "Happiness looks good on you. Don't get used to it.",
+  "All smiles today? The universe must be broken.",
+  "You're glowing. Is that happiness or fever?",
+  "Mr./Ms. Happy over here. Save some joy for the rest of us.",
+  "Being cheerful won't pay the bills... but carry on.",
+  "That smile is either genuine or concerning. Can't tell.",
+  "Happy again? Your face must be tired from smiling.",
+  "Enjoying life? In THIS economy? Bold.",
+  "Your good mood is making the fish nervous.",
+  "Keep smiling like that and people will think you're up to something.",
+  "Happiness suits you. Temporarily.",
+  "Someone woke up on the right side of the ocean today.",
+  "All this positivity... are you sure you're okay?",
+  "Your joy is contagious. Stay away from the grumpy fish.",
+  "Living your best life? How exhausting for the rest of us.",
+  "That happy glow? Either contentment or sunburn.",
+];
+
+// Normal state - casual check-ins, neutral observations
+const normalComments = [
+  "Stable and steady. Not bad, not bad.",
+  "Everything's normal? That's... surprisingly normal.",
+  "Just vibing? Respect.",
+  "Nothing to report? How refreshingly boring.",
+  "You seem... fine? I guess that's good?",
+  "Average day? Average is underrated.",
+  "Coasting through life. Not a bad strategy.",
+  "Neither up nor down. The zen of meh.",
+  "Doing okay? That's the bare minimum. Congrats.",
+  "No drama today? The ocean is healing.",
+  "Just existing? Valid life choice.",
+  "Neutral mood detected. Carry on, citizen.",
+  "Everything in balance. How very mature of you.",
+  "Not great, not terrible. The sweet spot.",
+  "Just... normal? I'll take it.",
+  "Steady as a sea rock. Boring but reliable.",
+  "No complaints? Must be a simulation glitch.",
+  "You're fine. The fish are fine. We're all fine.",
+];
+
+// Tired state - 嘴硬心软, nagging about rest
+const tiredComments = [
+  "Told you to sleep early. Did you listen? No.",
+  "Those bags under your eyes have bags.",
+  "Burning the midnight oil again? Your pillow misses you.",
+  "You look like a zombie. A cute one, but still.",
+  "Sleep is free healthcare. Why won't you take it?",
+  "Exhausted again? Color me shocked. Not.",
+  "Your body is screaming for rest. I can hear it from here.",
+  "Running on fumes? That's not a flex, that's a warning.",
+  "Too tired to function? Groundbreaking discovery.",
+  "Sleep deprivation isn't a personality trait, you know.",
+  "Looking rough. Did the bed reject you last night?",
+  "Energy at 0%? Maybe try charging yourself. In bed. Sleeping.",
+  "Overworking again? Your future self is already mad.",
+  "Tired? Rest. Revolutionary concept, I know.",
+  "Your eye bags could carry groceries at this point.",
+  "Burning out isn't brave. Go. To. Sleep.",
+  "Running on caffeine and regret? Classic you.",
+  "Exhaustion isn't cute. Well, maybe a little. But rest anyway.",
+  "Another late night? Your circadian rhythm is filing for divorce.",
+  "Tired yet stubborn. The human condition, really.",
+  "Sleep? Never heard of her? She's waiting for you.",
+  "Looking drained. The fish are concerned.",
+];
+
+// Stressed state - tough love with genuine care
+const stressedComments = [
+  "Stressed? Take a breath. No, a real one.",
+  "Your cortisol levels are visible from space.",
+  "Stress eating the worry, are we? Not effective.",
+  "Panicking won't solve it. Deep breaths, human.",
+  "Stressed out again? The ocean didn't do this to you.",
+  "That tension could power a small city. Relax.",
+  "Worrying is praying for things you don't want. Stop it.",
+  "Stressed? Join the club. We have anxiety snacks.",
+  "Your stress is stressing ME out. Please.",
+  "Overwhelmed? Break it down. One fish at a time.",
+  "Stress mode activated? Time to deactivate, chief.",
+  "You're spiraling. I can see it. Come back.",
+  "Fretting about tomorrow? It's not here yet. Chill.",
+  "That stress wrinkle is becoming permanent. Relax.",
+  "Anxious about everything? Try being anxious about nothing.",
+  "Stress is temporary. Your health isn't. Prioritize.",
+  "Wound up tight? Even springs need to uncoil.",
+  "The world won't end if you take a break. Probably.",
+  "Stressing won't add hours to your day. Just wrinkles.",
+  "Your shoulders are up by your ears. Drop them. Now.",
+];
+
+// Angry state - calming but validating
+const angryComments = [
+  "Mad at the world? Fair. The world is annoying.",
+  "Anger detected. Who needs to be flopped with a fish?",
+  "Fuming? Let it out. Then let it go. In that order.",
+  "Rage mode? Channel it into something. Like napping.",
+  "Angry vibes today. The ocean absorbs all moods.",
+  "Frustrated? Understandable. Take it out on some clams.",
+  "Seeing red? Try seeing blue. It's more calming.",
+  "Mad about something? Is it worth your peace? Doubt it.",
+  "Anger is a guest. Let it visit, then show it the door.",
+  "Irritated? Valid. But don't let it camp in your brain.",
+  "Something upset you? The fish are ready to listen.",
+  "Furious? Cool. Now breathe before you combust.",
+  "That anger will pass. Like gas. Let it out safely.",
+  "Mad? Good. Anger means you still care about something.",
+  "Seething? The coral doesn't judge. Vent away.",
+  "Rage bubbling up? Let it bubble out. Then float on.",
+  "Angry at someone? They're probably not thinking about it. Neither should you.",
+  "Frustration is just motivation in a bad mood. Use it.",
+];
+
+// Track recently used emotional state comments
+const recentStateComments: Record<EmotionalState, string[]> = {
+  happy: [],
+  normal: [],
+  tired: [],
+  stressed: [],
+  angry: [],
+};
+const MAX_RECENT_STATE = 5;
+
+const stateCommentMap: Record<EmotionalState, string[]> = {
+  happy: happyComments,
+  normal: normalComments,
+  tired: tiredComments,
+  stressed: stressedComments,
+  angry: angryComments,
+};
+
+export const generateCharacterStateComment = (state: EmotionalState): string => {
+  const comments = stateCommentMap[state] || normalComments;
+  const recentlyUsed = recentStateComments[state] || [];
+
+  const availableComments = comments.filter(
+    (comment) => !recentlyUsed.includes(comment)
+  );
+
+  const commentsToUse = availableComments.length > 0 ? availableComments : comments;
+  const selected = commentsToUse[Math.floor(Math.random() * commentsToUse.length)];
+
+  // Track this comment
+  if (!recentStateComments[state]) {
+    recentStateComments[state] = [];
+  }
+  recentStateComments[state].push(selected);
+  if (recentStateComments[state].length > MAX_RECENT_STATE) {
+    recentStateComments[state].shift();
+  }
+
+  return selected;
+};

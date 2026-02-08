@@ -390,7 +390,7 @@ const OceanWorkScene: React.FC<Props> = ({
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          borderRadius: 3,
+          borderRadius: 2,
           height: { xs: 380, sm: 450, md: 520 },
           background: 'linear-gradient(180deg, #1a3a5c 0%, #0d2137 50%, #0a192f 100%)',
         }}
@@ -682,7 +682,7 @@ const OceanWorkScene: React.FC<Props> = ({
         <Paper sx={{ p: 3, mt: 2, borderRadius: 3 }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, mb: 3 }}>
             <Box>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">DURATION (supports overtime!)</Typography>
+              <Typography variant="caption" color="text.secondary" fontWeight="bold">DURATION</Typography>
               <Slider value={workHours} onChange={(_, v) => setWorkHours(v as number)} min={1} max={16} marks valueLabelDisplay="auto" valueLabelFormat={(v) => `${v}h`} />
             </Box>
             <Box>
