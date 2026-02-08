@@ -78,7 +78,8 @@ def _recalculate_character_sleep(db: Session, user_id: int, sleep_hours: float):
     stamina_change = hc.calculate_stamina_change(
         exercise_minutes=int(total_exercise_minutes),
         sleep_hours=sleep_hours,
-        work_hours=total_work_hours
+        work_hours=total_work_hours,
+        work_intensity=int(avg_work_intensity)
     )
 
     # Calculate stress relief from sleep

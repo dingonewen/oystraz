@@ -98,7 +98,8 @@ def _recalculate_and_update_character(db: Session, character: Character,
     stamina_change = hc.calculate_stamina_change(
         exercise_minutes=int(total_exercise_minutes),
         sleep_hours=total_sleep_hours,
-        work_hours=total_work_hours
+        work_hours=total_work_hours,
+        work_intensity=int(avg_work_intensity)
     )
 
     stress_change = hc.calculate_stress_change(
@@ -202,10 +203,12 @@ async def log_work(
         stamina_cost = 0
         experience_gain = 50
     else:
-        # Normal work session
-        energy_cost = hours * intensity * 0.5  # From health_calculator formula
-        stress_gain = hours * intensity * 0.8  # From health_calculator formula
-        stamina_cost = hours * 0.5 if hours <= 8 else hours * 0.5 + (hours - 8) * 5
+        # Normal work session - intensity affects ALL metrics
+        energy_cost = hours * intensity * 0.3  # Updated formula
+        stress_gain = hours * intensity * 0.5  # Updated formula
+        stamina_cost = hours * intensity * 0.5  # Intensity now affects stamina!
+        if hours > 8:
+            stamina_cost += (hours - 8) * intensity * 0.5  # Overtime + intensity
         experience_gain = int(hours * intensity * 10)
 
     # Create work log

@@ -190,7 +190,15 @@ function AppNavigation() {
 
   return (
     <>
-      <AppBar position="fixed" elevation={1} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        elevation={1}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          background: 'linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
+          backdropFilter: 'none',
+        }}
+      >
         <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
           {isMobile && (
             <IconButton

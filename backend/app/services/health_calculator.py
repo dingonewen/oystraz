@@ -93,12 +93,13 @@ def calculate_energy_change(
 def calculate_stamina_change(
     exercise_minutes: int,
     sleep_hours: float,
-    work_hours: float
+    work_hours: float,
+    work_intensity: int = 3
 ) -> float:
     """
-    Calculate stamina change based on exercise and rest.
+    Calculate stamina change based on exercise, rest, and work intensity.
 
-    Returns: Change in stamina (-25 to +35)
+    Returns: Change in stamina (-35 to +35)
     """
     change = 0.0
 
@@ -120,14 +121,18 @@ def calculate_stamina_change(
     else:
         change -= 10  # Poor sleep hurts but manageable
 
-    # Work effect (overwork penalty, reduced normal work cost)
-    if work_hours > MAX_WORK_HOURS:
-        overtime = work_hours - MAX_WORK_HOURS
-        change -= overtime * 3  # Reduced from 5, still discourages overwork
-    elif work_hours > 0:
-        change -= work_hours * 0.3  # Reduced from 0.5
+    # Work effect - INTENSITY MATTERS!
+    if work_hours > 0:
+        # Base stamina cost = hours * intensity * 0.5
+        base_cost = work_hours * work_intensity * 0.5
+        change -= base_cost
 
-    return max(-25, min(35, change))
+        # Overwork penalty (>8h is extra bad)
+        if work_hours > MAX_WORK_HOURS:
+            overtime = work_hours - MAX_WORK_HOURS
+            change -= overtime * work_intensity * 0.5  # Overtime hurts more at high intensity
+
+    return max(-35, min(35, change))
 
 
 def calculate_stress_change(
@@ -296,8 +301,8 @@ What affects it:
 - Sleep 7+ hours: +15
 - Sleep 6+ hours: +5
 - Sleep <5h: -10
-- Work: -0.3 per hour
-- Overwork (>8h): -3 per extra hour
+- Work: -(hours x intensity x 0.5) - HIGH INTENSITY DRAINS FASTER!
+- Overwork (>8h): extra -(overtime x intensity x 0.5)
 
 ### Energy (0-100)
 What affects it:
@@ -352,11 +357,11 @@ Level Up Formula: XP needed = current_level x 100
 
 ### Tips
 - SLEEP IS POWERFUL! 8-9 hours gives major stamina/energy boost and stress relief.
+- High work intensity drains stamina fast - lower intensity work is more sustainable.
 - Metrics only update when you log activities! No penalty for taking breaks.
 - Don't overwork! Working >8h/day still hurts, but sleeping well recovers you.
 - Exercise reduces stress AND builds stamina. Win-win.
 - Balanced diet with protein and fiber keeps nutrition high.
 - Good mood = balanced nutrition + good sleep + exercise. Take care of yourself!
 - In the Work game, catching 24+ fish triggers auto-prank on the octopus boss!
-- Easter egg: Eat any food with "oyster" in the name for +50 to ALL stats!
 """
