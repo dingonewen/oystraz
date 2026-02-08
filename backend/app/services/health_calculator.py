@@ -94,18 +94,30 @@ def calculate_stamina_change(
     exercise_minutes: int,
     sleep_hours: float,
     work_hours: float,
-    work_intensity: int = 3
+    work_intensity: int = 3,
+    exercise_type: str = "general"
 ) -> float:
     """
     Calculate stamina change based on exercise and rest.
 
-    Returns: Change in stamina (-25 to +35)
+    Exercise effects:
+    - Yoga: +10 per hour (recovery exercise)
+    - Other exercise: -3 per hour (tiring but good for stress)
+    - Work: costs stamina based on intensity
+
+    Returns: Change in stamina (-50 to +35)
     """
     change = 0.0
 
-    # Exercise effect
+    # Exercise effect - depends on type
     if exercise_minutes > 0:
-        change += min(15, exercise_minutes / 10)  # +1.5 per 10 min, max +15
+        exercise_hours = exercise_minutes / 60
+        if exercise_type.lower() == "yoga":
+            # Yoga restores stamina
+            change += exercise_hours * 10
+        else:
+            # Other exercise costs stamina (tiring)
+            change -= exercise_hours * 3
 
     # Sleep effect (MAJOR recovery)
     if sleep_hours >= 9:
@@ -121,16 +133,16 @@ def calculate_stamina_change(
     else:
         change -= 10  # Poor sleep hurts but manageable
 
-    # Work effect - INTENSITY MATTERS!
+    # Work effect - costs stamina based on intensity
     if work_hours > 0:
-        base_cost = work_hours * work_intensity * 0.5
+        base_cost = work_hours * 3  # 3 stamina per work hour
         change -= base_cost
         # Extra penalty for overtime
         if work_hours > MAX_WORK_HOURS:
             overtime = work_hours - MAX_WORK_HOURS
-            change -= overtime * work_intensity * 0.5
+            change -= overtime * 5  # Extra 5 per overtime hour
 
-    return max(-25, min(35, change))
+    return max(-50, min(35, change))
 
 
 def calculate_stress_change(

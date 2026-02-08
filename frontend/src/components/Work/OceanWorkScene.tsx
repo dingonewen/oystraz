@@ -71,8 +71,8 @@ const OceanWorkScene: React.FC<Props> = ({
   const [hookedFish, setHookedFish] = useState<HookedFishData[]>(session?.hookedFish ?? []);
   const [isPranking, setIsPranking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
-  const [prankCount, setPrankCount] = useState(0);
-  const [showOvertimeVideo, setShowOvertimeVideo] = useState(false);
+  const [showPrankVideo, setShowPrankVideo] = useState(false);
+  const [videoIsPrank, setVideoIsPrank] = useState(false);  // Track if video was from prank button
   const [currentTargetHook, setCurrentTargetHook] = useState(0);
   const [carryingFishId, setCarryingFishId] = useState<number | null>(null);
 
@@ -297,7 +297,8 @@ const OceanWorkScene: React.FC<Props> = ({
   const handleWorkDone = useCallback(() => {
     // If overtime (>8h), show prank video first
     if (workHours > 8) {
-      setShowOvertimeVideo(true);
+      setVideoIsPrank(false);  // This is overtime, not manual prank
+      setShowPrankVideo(true);
       return;
     }
     // Normal completion
@@ -309,16 +310,25 @@ const OceanWorkScene: React.FC<Props> = ({
     setSealPos({ x: 20, y: 55 });
   }, [endSession, onWorkComplete, workHours, workIntensity]);
 
-  // Handle video end - complete work after video
-  const handleOvertimeVideoEnd = useCallback(() => {
-    setShowOvertimeVideo(false);
+  // Handle video end - complete work or prank after video
+  const handleVideoEnd = useCallback(() => {
+    setShowPrankVideo(false);
+    setIsPranking(false);
     setIsWorking(false);
     setSealState('idle');
     endSession();
-    onWorkComplete(workHours, workIntensity);
+
+    if (videoIsPrank) {
+      // Prank completion
+      onWorkComplete(0, 0, true);
+    } else {
+      // Overtime work completion
+      onWorkComplete(workHours, workIntensity);
+    }
+
     sealPosRef.current = { x: 20, y: 55 };
     setSealPos({ x: 20, y: 55 });
-  }, [endSession, onWorkComplete, workHours, workIntensity]);
+  }, [endSession, onWorkComplete, workHours, workIntensity, videoIsPrank]);
 
   const startWorkSession = () => {
     if (characterEnergy < 20) return;
@@ -337,32 +347,13 @@ const OceanWorkScene: React.FC<Props> = ({
     if (isPranking || prankCooldown) return;
     setIsPranking(true);
     setPrankCooldown(true);
-    setPrankCount(0);
 
-    // Move seal near octopus
-    sealPosRef.current = { x: 80, y: 15 };
-    setSealPos({ x: 80, y: 15 });
-
-    // Ink spray animation - 3 times
-    let count = 0;
-    const inkInterval = setInterval(() => {
-      count++;
-      setPrankCount(count);
-      if (count >= 3) {
-        clearInterval(inkInterval);
-        setTimeout(() => {
-          endSession();  // Clear persisted session
-          onWorkComplete(0, 0, true);
-          setIsPranking(false);
-          setPrankCount(0);
-          sealPosRef.current = { x: 20, y: 55 };
-          setSealPos({ x: 20, y: 55 });
-        }, 500);
-      }
-    }, 600);
+    // Show prank video with prank flag
+    setVideoIsPrank(true);
+    setShowPrankVideo(true);
 
     setTimeout(() => setPrankCooldown(false), 30000);
-  }, [isPranking, prankCooldown, endSession, onWorkComplete]);
+  }, [isPranking, prankCooldown]);
 
   const getIntensityLabel = (value: number) => {
     const labels = ['Lazy', 'Casual', 'Normal', 'Fast', 'Turbo'];
@@ -505,44 +496,11 @@ const OceanWorkScene: React.FC<Props> = ({
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Box sx={{ position: 'relative', textAlign: 'center' }}>
-            <img src="/assets/ocean/octopus.png" alt="boss" style={{ width: 90 }} />
-
-            {/* Black Ink Spray Animation - from Octopus */}
-            <AnimatePresence>
-              {isPranking && prankCount > 0 && (
-                <motion.div
-                  key={`ink-${prankCount}`}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{
-                    opacity: [0, 1, 1, 0],
-                    scale: [0.5, 1.5, 2, 2.5],
-                    y: [0, 20, 40, 60],
-                  }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: 40,
-                    filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.8))',
-                  }}
-                >
-                  <Box sx={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(20,20,30,0.9) 0%, rgba(10,10,20,0.7) 50%, transparent 70%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                    <Typography sx={{ fontSize: 24 }}>🖤</Typography>
-                  </Box>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <img
+              src={isPranking ? "/assets/ocean/octopus_angry.png" : "/assets/ocean/octopus.png"}
+              alt="boss"
+              style={{ width: 90 }}
+            />
           </Box>
         </motion.div>
 
@@ -594,9 +552,9 @@ const OceanWorkScene: React.FC<Props> = ({
         )}
       </Paper>
 
-      {/* Overtime Prank Video Overlay */}
+      {/* Prank Video Overlay (for overtime or manual prank) */}
       <AnimatePresence>
-        {showOvertimeVideo && (
+        {showPrankVideo && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -616,11 +574,11 @@ const OceanWorkScene: React.FC<Props> = ({
           >
             <Box sx={{ textAlign: 'center', maxWidth: '90vw', maxHeight: '90vh' }}>
               <Typography variant="h5" sx={{ color: '#f093fb', mb: 2 }}>
-                🦑 Overtime Alert! Seal pranks the boss! 🖤
+                {videoIsPrank ? '🖤 Prank Time! Seal inks the boss!' : '🦑 Overtime Alert! Seal pranks the boss!'} 🖤
               </Typography>
               <video
                 autoPlay
-                onEnded={handleOvertimeVideoEnd}
+                onEnded={handleVideoEnd}
                 style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12 }}
               >
                 <source src="/assets/ocean/Seal_Pokes_Octopus_Ink_Cloud.mp4" type="video/mp4" />
@@ -630,7 +588,7 @@ const OceanWorkScene: React.FC<Props> = ({
               </Typography>
               <Button
                 variant="outlined"
-                onClick={handleOvertimeVideoEnd}
+                onClick={handleVideoEnd}
                 sx={{ mt: 2, color: '#b388ff', borderColor: '#b388ff' }}
               >
                 Skip Video

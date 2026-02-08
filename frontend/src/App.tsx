@@ -33,6 +33,8 @@ import WorkIcon from '@mui/icons-material/Work';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 // Pages
 import Home from './pages/Home';
@@ -45,9 +47,11 @@ import Register from './pages/Register';
 
 // Components
 import PearlAssistant from './components/PearlAssistant';
+import BackgroundMusic from './components/BackgroundMusic';
 
 // Store
 import { useUserStore } from './store/userStore';
+import { useAudioStore } from './store/audioStore';
 
 // Material Design 3 Dark Theme with Google's Dark Mode palette
 const theme = createTheme({
@@ -159,6 +163,7 @@ const theme = createTheme({
 // Navigation component that needs router context
 function AppNavigation() {
   const { isAuthenticated, logout } = useUserStore();
+  const { isMuted, toggleMute } = useAudioStore();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -314,6 +319,25 @@ function AppNavigation() {
         <Divider />
         <List>
           <ListItem disablePadding>
+            <ListItemButton onClick={toggleMute}>
+              <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
+                {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+              </ListItemIcon>
+              <ListItemText
+                primary={isMuted ? 'Unmute' : 'Mute'}
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: 500,
+                  }
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
                 <LogoutIcon />
@@ -367,6 +391,9 @@ function App() {
 
           {/* Pearl AI Assistant - Global floating widget */}
           {isAuthenticated && <PearlAssistant />}
+
+          {/* Background Music - plays after login */}
+          {isAuthenticated && <BackgroundMusic />}
 
           {/* Footer - compact to avoid overlap with Pearl button */}
           <Box
