@@ -21,9 +21,8 @@ import { useUserStore } from '../store/userStore';
 const logoBorderGradient = 'linear-gradient(135deg, #F28B82 0%, #FDD663 25%, #81C995 50%, #8AB4F8 75%, #E8D5E7 100%)';
 
 // Pearl iridescent gradient for title
-const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
+const pearlTitleGradient = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #1f1f3d 50%, #1a1a2e 75%, #0f0f1a 100%)';
 const pearlBorderGradient = 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)';
-
 
 // Pearl purple button gradient
 const pearlPurpleGradient = 'linear-gradient(135deg, #E8D5E7 0%, #D5C4E8 50%, #C4B5E0 100%)';
@@ -84,14 +83,14 @@ export default function Login() {
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontWeight: 800,
+                fontWeight: 1000,
                 WebkitTextStroke: '0.5px #CFACCE',
               }}
             >
-              Welcome to Oystraz
+              Oystraz: Your Personal Shell
             </Typography>
-            <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-              The world is your oyster when your health orchestrates harmony
+            <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}> 
+              Leave the grind outside. Your well-being starts now.
             </Typography>
 
             {error && (
@@ -112,7 +111,7 @@ export default function Login() {
                 autoFocus
                 sx={{
                   '& .MuiInputBase-input': {
-                    color: '#B0B0B0',
+                    color: '#2c234b',
                   },
                 }}
               />
@@ -126,7 +125,7 @@ export default function Login() {
                 required
                 sx={{
                   '& .MuiInputBase-input': {
-                    color: '#B0B0B0',
+                    color: '#2c234b',
                   },
                 }}
               />

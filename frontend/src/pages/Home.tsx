@@ -174,7 +174,7 @@ export default function Home() {
                   alignItems: 'center',
                   textAlign: 'center',
                   transition: 'all 0.3s ease',
-                  borderRadius: 1.5,
+                  borderRadius: 2,
                   background: darkPearlGradient,
                   '&:hover': {
                     transform: 'translateY(-2px)',

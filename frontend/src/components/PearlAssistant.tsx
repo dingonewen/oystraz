@@ -218,7 +218,7 @@ export default function PearlAssistant() {
                 width: { xs: '70%', sm: '75%' },
                 height: { xs: '70%', sm: '75%' },
                 objectFit: 'contain',
-                filter: 'drop-shadow(0 0 4px rgba(248, 232, 238, 0.6))',
+                filter: 'drop-shadow(0 0 4px rgba(152, 43, 83, 0.6))',
               }}
             />
           </Box>
@@ -240,7 +240,7 @@ export default function PearlAssistant() {
             display: isOpen ? 'flex' : 'none',
             flexDirection: 'column',
             // Top-left, top-right, bottom-left rounded; bottom-right sharp
-            borderTopLeftRadius: 16,
+            borderTopLeftRadius: 36,
             borderTopRightRadius: 16,
             borderBottomLeftRadius: 16,
             borderBottomRightRadius: 0,
@@ -267,7 +267,7 @@ export default function PearlAssistant() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Avatar
                 sx={{
-                  bgcolor: 'rgba(255,255,255,0.6)',
+                  bgcolor: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #1f1f3d 50%, #1a1a2e 75%, #0f0f1a 100%)',
                   width: 36,
                   height: 36,
                   p: 0.5,
@@ -280,11 +280,11 @@ export default function PearlAssistant() {
                 alt="Pearl"
               />
               <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600, fontFamily: '"Roboto", sans-serif', color: '#2D2D2D', lineHeight: 1.2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600, fontFamily: '"Montserrat Alternates", sans-serif', color: '#2D2D2D', lineHeight: 1.2 }}>
                   Pearl
                 </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.8, fontFamily: '"Roboto", sans-serif', color: '#5C5C5C', fontSize: '0.7rem' }}>
-                  Your chill health buddy
+                <Typography variant="caption" sx={{ opacity: 0.8, fontFamily: '"Montserrat Alternates", sans-serif', color: '#5C5C5C', fontSize: '0.7rem' }}>
+                  Share your life with Pearl
                 </Typography>
               </Box>
             </Box>
@@ -326,7 +326,7 @@ export default function PearlAssistant() {
                     maxWidth: '88%',
                     bgcolor: message.role === 'user' ? '#E8D5E7' : '#FFFFFF',
                     color: message.role === 'user' ? '#2D2D2D' : '#2C3E50',
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     border: message.role === 'assistant' ? '1px solid #B8D4E8' : '1px solid #D5C4E8',
                     overflow: 'hidden',
                     wordBreak: 'break-word',
@@ -376,7 +376,7 @@ export default function PearlAssistant() {
                   elevation={1}
                   sx={{
                     p: 1.5,
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     bgcolor: '#FFFFFF',
                     border: '1px solid #B8D4E8',
                   }}
