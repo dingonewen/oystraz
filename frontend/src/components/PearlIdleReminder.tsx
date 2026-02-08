@@ -1,47 +1,63 @@
 /**
  * Pearl Idle Reminder Component
- * Shows reminder bubbles when user is inactive (Tide mode)
+ * Shows random reminder bubbles based on activity level
+ * Tide: every 3 minutes, Flow: every 6 minutes
  */
 
 import { useEffect, useRef } from 'react';
 import { usePearlStore } from '../store/pearlStore';
 import { generateIdleReminder } from '../services/pearlBubbleService';
 
-const IDLE_THRESHOLD_MS = 10 * 60 * 1000; // 10 minutes of inactivity
-
 export default function PearlIdleReminder() {
-  const { activityLevel, lastActiveTime, showBubble, updateActiveTime } = usePearlStore();
-  const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { activityLevel, showBubble, updateActiveTime } = usePearlStore();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Schedule next reminder
+  const scheduleNextReminder = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    // Get interval based on activity level
+    let intervalMs: number;
+    if (activityLevel === 'tide') {
+      intervalMs = 3 * 60 * 1000; // 3 minutes
+    } else if (activityLevel === 'flow') {
+      intervalMs = 6 * 60 * 1000; // 6 minutes
+    } else {
+      return; // Calm mode doesn't have idle reminders
+    }
+
+    // Add some randomness (±30 seconds)
+    const randomOffset = (Math.random() - 0.5) * 60 * 1000;
+    const delay = intervalMs + randomOffset;
+
+    timerRef.current = setTimeout(() => {
+      showBubble(generateIdleReminder());
+      scheduleNextReminder(); // Schedule next one
+    }, delay);
+  };
 
   useEffect(() => {
-    // Only active in Tide mode
-    if (activityLevel !== 'tide') {
-      if (checkIntervalRef.current) {
-        clearInterval(checkIntervalRef.current);
-        checkIntervalRef.current = null;
+    // Only for Tide and Flow modes
+    if (activityLevel === 'calm') {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
       }
       return;
     }
 
-    // Check for idle every minute
-    checkIntervalRef.current = setInterval(() => {
-      const now = Date.now();
-      const idleTime = now - lastActiveTime;
-
-      if (idleTime >= IDLE_THRESHOLD_MS) {
-        showBubble(generateIdleReminder());
-        updateActiveTime(); // Reset to avoid spamming
-      }
-    }, 60000); // Check every minute
+    scheduleNextReminder();
 
     return () => {
-      if (checkIntervalRef.current) {
-        clearInterval(checkIntervalRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
     };
-  }, [activityLevel, lastActiveTime, showBubble, updateActiveTime]);
+  }, [activityLevel]);
 
-  // Track user activity (clicks, keypresses)
+  // Track user activity
   useEffect(() => {
     const handleActivity = () => {
       updateActiveTime();
@@ -56,5 +72,5 @@ export default function PearlIdleReminder() {
     };
   }, [updateActiveTime]);
 
-  return null; // No visual component
+  return null;
 }

@@ -1,9 +1,16 @@
 """
 Work log schemas
 """
-from pydantic import BaseModel, ConfigDict, Field
-from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
+from datetime import datetime, timezone
 from typing import Optional
+
+
+def serialize_datetime_utc(dt: datetime) -> str:
+    """Serialize datetime as ISO format with Z suffix for UTC"""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.isoformat().replace('+00:00', 'Z')
 
 
 class WorkLogBase(BaseModel):
@@ -35,6 +42,10 @@ class WorkLogResponse(WorkLogBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('logged_at', 'created_at')
+    def serialize_dt(self, dt: datetime) -> str:
+        return serialize_datetime_utc(dt)
 
 
 class WorkStats(BaseModel):

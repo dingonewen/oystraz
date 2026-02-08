@@ -1,8 +1,15 @@
 """
 Exercise log schemas
 """
-from pydantic import BaseModel, ConfigDict
-from datetime import datetime
+from pydantic import BaseModel, ConfigDict, field_serializer
+from datetime import datetime, timezone
+
+
+def serialize_datetime_utc(dt: datetime) -> str:
+    """Serialize datetime as ISO format with Z suffix for UTC"""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.isoformat().replace('+00:00', 'Z')
 
 
 class ExerciseLogBase(BaseModel):
@@ -46,3 +53,7 @@ class ExerciseLogResponse(ExerciseLogBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('logged_at', 'created_at')
+    def serialize_dt(self, dt: datetime) -> str:
+        return serialize_datetime_utc(dt)

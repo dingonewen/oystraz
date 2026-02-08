@@ -68,7 +68,7 @@ const getGreeting = (ctx: GreetingContext): { opening: string; nudge: string } =
   }
 
   // Morning / Startup (05:00 - 11:00)
-  if (hour >= 5 && hour < 11) {
+  if (hour >= 5 && hour < 9) {
     return {
       opening: "Hey. You're actually awake. I was just thinking... Why don't scientists trust atoms? Because they make up everything.",
       nudge: "Don't rush into the chaos. Rotate your neck a bit. Your spine isn't a question mark, so let's not treat it like one today."
@@ -77,7 +77,7 @@ const getGreeting = (ctx: GreetingContext): { opening: string; nudge: string } =
 
   // Default / Midday
   return {
-    opening: "Hey there, taking a break? Smart move. Did you hear about the claustrophobic astronaut? He just needed a little space.",
+    opening: "Hey there~ Taking a break? Smart move. Did you hear about the claustrophobic astronaut? He just needed a little space.",
     nudge: "Remember: hydration is key. Your body is mostly water, not coffee... unfortunately."
   };
 };
@@ -267,7 +267,7 @@ export default function PearlAssistant() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Avatar
                 sx={{
-                  bgcolor: '#5C5C5C',
+                  bgcolor: 'rgba(255,255,255,0.6)',
                   width: 36,
                   height: 36,
                   p: 0.5,
@@ -284,7 +284,7 @@ export default function PearlAssistant() {
                   Pearl
                 </Typography>
                 <Typography variant="caption" sx={{ opacity: 0.8, fontFamily: '"Roboto", sans-serif', color: '#5C5C5C', fontSize: '0.7rem' }}>
-                  Share your life with Pearl
+                  Your chill health buddy
                 </Typography>
               </Box>
             </Box>
@@ -324,28 +324,33 @@ export default function PearlAssistant() {
                     p: 1.5,
                     px: 2,
                     maxWidth: '88%',
-                    bgcolor: message.role === 'user' ? '#4A90D9' : '#FFFFFF',
-                    color: message.role === 'user' ? '#FFFFFF' : '#2C3E50',
+                    bgcolor: message.role === 'user' ? '#E8D5E7' : '#FFFFFF',
+                    color: message.role === 'user' ? '#2D2D2D' : '#2C3E50',
                     borderRadius: 2,
-                    border: message.role === 'assistant' ? '1px solid #B8D4E8' : 'none',
+                    border: message.role === 'assistant' ? '1px solid #B8D4E8' : '1px solid #D5C4E8',
                     overflow: 'hidden',
                     wordBreak: 'break-word',
                     boxShadow: message.role === 'user'
-                      ? '0 2px 8px rgba(74, 144, 217, 0.3)'
+                      ? '0 2px 8px rgba(232, 213, 231, 0.4)'
                       : '0 2px 8px rgba(0, 0, 0, 0.08)',
                   }}
                 >
                   <Typography
                     variant="body2"
+                    component="div"
                     sx={{
                       whiteSpace: 'pre-wrap',
-                      fontFamily: '"Roboto", "Noto Color Emoji", sans-serif',
+                      fontFamily: '"Montserrat Alternates", "Noto Color Emoji", sans-serif',
                       lineHeight: 1.5,
                       fontSize: '0.85rem',
+                      '& strong': { fontWeight: 600 },
                     }}
-                  >
-                    {message.content}
-                  </Typography>
+                    dangerouslySetInnerHTML={{
+                      __html: message.content
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br/>')
+                    }}
+                  />
                   <Typography
                     variant="caption"
                     sx={{
@@ -353,7 +358,7 @@ export default function PearlAssistant() {
                       display: 'block',
                       mt: 0.5,
                       fontSize: '0.6rem',
-                      color: message.role === 'user' ? 'rgba(255,255,255,0.8)' : '#7F8C9A',
+                      color: message.role === 'user' ? '#5C5C5C' : '#7F8C9A',
                       fontFamily: '"Roboto", sans-serif',
                     }}
                   >

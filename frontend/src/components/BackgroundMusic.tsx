@@ -9,44 +9,36 @@ import { useAudioStore } from '../store/audioStore';
 export default function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { isMuted, volume } = useAudioStore();
+  const hasInteractedRef = useRef(false);
 
+  // Initialize audio element once
   useEffect(() => {
-    // Create audio element
     if (!audioRef.current) {
-      audioRef.current = new Audio('/assets/oystraz_neosoul_bgm.mp3');
-      audioRef.current.loop = true;
-      audioRef.current.volume = volume;
-    }
+      const audio = new Audio('/assets/oystraz_neosoul_bgm.mp3');
+      audio.loop = true;
+      audio.volume = volume;
+      audioRef.current = audio;
 
-    // Try to play (may be blocked by browser autoplay policy)
-    const playAudio = async () => {
-      if (audioRef.current && !isMuted) {
-        try {
-          await audioRef.current.play();
-        } catch (err) {
-          // Autoplay blocked - wait for user interaction
-          const handleInteraction = async () => {
-            if (audioRef.current && !isMuted) {
-              try {
-                await audioRef.current.play();
-                document.removeEventListener('click', handleInteraction);
-              } catch {
-                // Still blocked
-              }
-            }
-          };
-          document.addEventListener('click', handleInteraction);
+      // Handle user interaction to start audio (browser autoplay policy)
+      const handleInteraction = () => {
+        if (!hasInteractedRef.current && audioRef.current && !isMuted) {
+          audioRef.current.play().catch(() => {});
+          hasInteractedRef.current = true;
         }
-      }
-    };
+      };
 
-    playAudio();
+      document.addEventListener('click', handleInteraction);
+      document.addEventListener('keydown', handleInteraction);
 
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
+      return () => {
+        document.removeEventListener('click', handleInteraction);
+        document.removeEventListener('keydown', handleInteraction);
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
+      };
+    }
   }, []);
 
   // Handle mute/unmute
@@ -54,10 +46,8 @@ export default function BackgroundMusic() {
     if (audioRef.current) {
       if (isMuted) {
         audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(() => {
-          // Autoplay blocked
-        });
+      } else if (hasInteractedRef.current) {
+        audioRef.current.play().catch(() => {});
       }
     }
   }, [isMuted]);
@@ -69,5 +59,5 @@ export default function BackgroundMusic() {
     }
   }, [volume]);
 
-  return null;  // No visual component
+  return null;
 }
