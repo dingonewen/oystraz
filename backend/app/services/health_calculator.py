@@ -59,29 +59,33 @@ def calculate_energy_change(
     """
     Calculate energy change based on caloric balance and activities.
 
-    Returns: Change in energy (-50 to +30)
+    Returns: Change in energy (-30 to +40)
     """
     change = 0.0
 
     # Caloric balance effect
     caloric_diff = calories_in - calories_out
     if caloric_diff > 0:
-        change += min(20, caloric_diff / 100)  # Surplus gives energy, max +20
+        change += min(15, caloric_diff / 100)  # Surplus gives energy, max +15
     else:
-        change += max(-20, caloric_diff / 100)  # Deficit costs energy, max -20
+        change += max(-15, caloric_diff / 100)  # Deficit costs energy, max -15
 
-    # Sleep effect
-    if sleep_hours >= 7:
-        change += 10
+    # Sleep effect (MAJOR impact)
+    if sleep_hours >= 8:
+        change += 20  # Great sleep = big energy boost
+    elif sleep_hours >= 7:
+        change += 15
+    elif sleep_hours >= 6:
+        change += 5
     elif sleep_hours >= 5:
         change += 0
     else:
-        change -= 15
+        change -= 10  # Poor sleep hurts but not devastatingly
 
-    # Work effect
+    # Work effect (reduced penalty)
     if work_hours > 0:
-        work_cost = work_hours * work_intensity * 0.5
-        change -= min(30, work_cost)
+        work_cost = work_hours * work_intensity * 0.3  # Reduced from 0.5
+        change -= min(20, work_cost)
 
     return change
 
@@ -94,7 +98,7 @@ def calculate_stamina_change(
     """
     Calculate stamina change based on exercise and rest.
 
-    Returns: Change in stamina (-30 to +20)
+    Returns: Change in stamina (-25 to +35)
     """
     change = 0.0
 
@@ -102,20 +106,28 @@ def calculate_stamina_change(
     if exercise_minutes > 0:
         change += min(15, exercise_minutes / 10)  # +1.5 per 10 min, max +15
 
-    # Sleep effect
-    if sleep_hours >= 7:
-        change += 10
-    elif sleep_hours < 5:
-        change -= 15
+    # Sleep effect (MAJOR recovery)
+    if sleep_hours >= 9:
+        change += 25  # Extended sleep = major stamina recovery
+    elif sleep_hours >= 8:
+        change += 20
+    elif sleep_hours >= 7:
+        change += 15
+    elif sleep_hours >= 6:
+        change += 5
+    elif sleep_hours >= 5:
+        change += 0
+    else:
+        change -= 10  # Poor sleep hurts but manageable
 
-    # Work effect (overwork penalty)
+    # Work effect (overwork penalty, reduced normal work cost)
     if work_hours > MAX_WORK_HOURS:
         overtime = work_hours - MAX_WORK_HOURS
-        change -= overtime * 5  # -5 per hour overtime
+        change -= overtime * 3  # Reduced from 5, still discourages overwork
     elif work_hours > 0:
-        change -= work_hours * 0.5  # Small stamina cost for normal work
+        change -= work_hours * 0.3  # Reduced from 0.5
 
-    return max(-30, min(20, change))
+    return max(-25, min(35, change))
 
 
 def calculate_stress_change(
@@ -128,35 +140,43 @@ def calculate_stress_change(
     """
     Calculate stress change based on work and recovery activities.
 
-    Returns: Change in stress (-25 to +40)
+    Returns: Change in stress (-35 to +30)
     """
     change = 0.0
 
-    # Work increases stress
+    # Work increases stress (reduced from 0.8)
     if work_hours > 0:
-        work_stress = work_hours * work_intensity * 0.8
+        work_stress = work_hours * work_intensity * 0.5  # Reduced from 0.8
         change += work_stress
 
-        # Overwork penalty (>8h is VERY bad)
+        # Overwork penalty (>8h is bad but manageable)
         if work_hours > MAX_WORK_HOURS:
             overtime = work_hours - MAX_WORK_HOURS
-            change += overtime * 8  # Heavy penalty for overtime
+            change += overtime * 5  # Reduced from 8
 
     # Exercise reduces stress
     if exercise_minutes > 0:
-        change -= min(10, exercise_minutes / 6)
+        change -= min(15, exercise_minutes / 5)  # Improved: max -15
 
-    # Sleep reduces stress
-    if sleep_hours >= 7:
+    # Sleep reduces stress (MAJOR impact)
+    if sleep_hours >= 9:
+        change -= 20  # Extended sleep = major stress relief
+    elif sleep_hours >= 8:
+        change -= 15
+    elif sleep_hours >= 7:
+        change -= 10
+    elif sleep_hours >= 6:
         change -= 5
-    elif sleep_hours < 5:
-        change += 10  # Poor sleep increases stress
+    elif sleep_hours >= 5:
+        change -= 0
+    else:
+        change += 5  # Poor sleep adds stress but not too much
 
     # Prank the octopus boss!
     if pranked_boss:
         change -= 20
 
-    return max(-25, min(40, change))
+    return max(-35, min(30, change))
 
 
 def calculate_mood_score(
@@ -259,6 +279,7 @@ METRICS_DOCUMENTATION = """
 
 IMPORTANT: Metrics ONLY change when users LOG activities (diet, exercise, sleep, work).
 The character will NOT decay or change automatically - no penalty for not using the app!
+Daily limit: Sleep + Exercise + Work cannot exceed 24 hours per day.
 
 ### Default Values (New Users)
 - Stamina: 80 (physical endurance)
@@ -270,18 +291,23 @@ The character will NOT decay or change automatically - no penalty for not using 
 ### Stamina (0-100)
 What affects it:
 - Exercise: +1.5 per 10 minutes (max +15)
-- Sleep >=7h: +10
-- Sleep <5h: -15
-- Work: -0.5 per hour
-- Overwork (>8h): -5 per extra hour
+- Sleep 9+ hours: +25 (MAJOR recovery)
+- Sleep 8+ hours: +20
+- Sleep 7+ hours: +15
+- Sleep 6+ hours: +5
+- Sleep <5h: -10
+- Work: -0.3 per hour
+- Overwork (>8h): -3 per extra hour
 
 ### Energy (0-100)
 What affects it:
-- Caloric surplus: +1 per 100 kcal (max +20)
-- Caloric deficit: -1 per 100 kcal (max -20)
-- Sleep >=7h: +10
-- Sleep <5h: -15
-- Work: -(hours x intensity x 0.5)
+- Caloric surplus: +1 per 100 kcal (max +15)
+- Caloric deficit: -1 per 100 kcal (max -15)
+- Sleep 8+ hours: +20 (big boost!)
+- Sleep 7+ hours: +15
+- Sleep 6+ hours: +5
+- Sleep <5h: -10
+- Work: -(hours x intensity x 0.3)
 
 ### Nutrition (0-100)
 Calculated from daily diet:
@@ -292,14 +318,18 @@ Calculated from daily diet:
 
 ### Mood (0-100)
 Composite formula: mood = (stamina + energy + nutrition) / 3 - stress / 2
+Good nutrition + good sleep + exercise = happy character!
 
 ### Stress (0-100, lower is better)
 What affects it:
-- Work: +(hours x intensity x 0.8)
-- Overwork (>8h): +8 per extra hour (VERY BAD)
-- Exercise: -1 per 6 minutes (max -10)
-- Sleep >=7h: -5
-- Sleep <5h: +10
+- Work: +(hours x intensity x 0.5)
+- Overwork (>8h): +5 per extra hour
+- Exercise: -1 per 5 minutes (max -15)
+- Sleep 9+ hours: -20 (MAJOR relief!)
+- Sleep 8+ hours: -15
+- Sleep 7+ hours: -10
+- Sleep 6+ hours: -5
+- Sleep <5h: +5
 - Prank octopus boss: -20
 
 ### Character Emotional States
@@ -321,10 +351,12 @@ XP Sources:
 Level Up Formula: XP needed = current_level x 100
 
 ### Tips
+- SLEEP IS POWERFUL! 8-9 hours gives major stamina/energy boost and stress relief.
 - Metrics only update when you log activities! No penalty for taking breaks.
-- Don't overwork! Working >8h/day severely damages stamina and skyrockets stress.
-- Sleep is crucial. 7+ hours gives bonuses, <5 hours hurts everything.
+- Don't overwork! Working >8h/day still hurts, but sleeping well recovers you.
 - Exercise reduces stress AND builds stamina. Win-win.
 - Balanced diet with protein and fiber keeps nutrition high.
+- Good mood = balanced nutrition + good sleep + exercise. Take care of yourself!
 - In the Work game, catching 24+ fish triggers auto-prank on the octopus boss!
+- Easter egg: Eat any food with "oyster" in the name for +50 to ALL stats!
 """

@@ -83,8 +83,8 @@ export default function Work() {
 
       // Log work session - backend will calculate and update metrics
       await logWork({
-        duration_hours: hours,
-        intensity: isPrank ? 0 : intensity,
+        duration_hours: isPrank ? 0 : hours,  // Prank sessions have 0 hours
+        intensity: isPrank ? 1 : intensity,   // Intensity min is 1 (schema validation)
         energy_cost: 0,  // Backend calculates this
         stress_gain: 0,  // Backend calculates this
         experience_gain: 0,  // Backend calculates this
@@ -344,12 +344,12 @@ export default function Work() {
                       primary={
                         log.pranked_boss > 0
                           ? `💦 Pranked the boss! (${new Date(log.logged_at).toLocaleDateString()})`
-                          : `${log.duration_hours}h work - Intensity ${log.intensity}/5`
+                          : `${log.duration_hours.toFixed(1)}h work - Intensity ${log.intensity}/5`
                       }
                       secondary={
                         log.pranked_boss > 0
-                          ? `Stress -${Math.abs(log.stress_gain)} • Mood boost!`
-                          : `Energy -${log.energy_cost} • Stress +${log.stress_gain} • XP +${log.experience_gain}`
+                          ? `Stress -${Math.abs(log.stress_gain).toFixed(1)} • Mood boost!`
+                          : `Energy -${log.energy_cost.toFixed(1)} • Stress +${log.stress_gain.toFixed(1)} • XP +${log.experience_gain}`
                       }
                     />
                     <Typography variant="caption" color="text.secondary">

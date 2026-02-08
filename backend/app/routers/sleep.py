@@ -3,6 +3,7 @@ Sleep tracking API routes
 """
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from datetime import datetime, timedelta
 
 from app.database import get_db
@@ -12,6 +13,29 @@ from app.services.auth import get_current_user
 from app.services import health_calculator as hc
 
 router = APIRouter(prefix="/api/sleep", tags=["Sleep"])
+
+
+def _get_daily_hours_used(db: Session, user_id: int) -> tuple[float, float, float]:
+    """Get total hours used today for sleep, exercise, and work"""
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    sleep_hours = db.query(func.coalesce(func.sum(SleepLog.duration_hours), 0)).filter(
+        SleepLog.user_id == user_id,
+        SleepLog.logged_at >= today_start
+    ).scalar() or 0
+
+    exercise_minutes = db.query(func.coalesce(func.sum(ExerciseLog.duration_minutes), 0)).filter(
+        ExerciseLog.user_id == user_id,
+        ExerciseLog.logged_at >= today_start
+    ).scalar() or 0
+    exercise_hours = exercise_minutes / 60
+
+    work_hours = db.query(func.coalesce(func.sum(WorkLog.duration_hours), 0)).filter(
+        WorkLog.user_id == user_id,
+        WorkLog.logged_at >= today_start
+    ).scalar() or 0
+
+    return float(sleep_hours), float(exercise_hours), float(work_hours)
 
 
 def _recalculate_character_sleep(db: Session, user_id: int, sleep_hours: float):
@@ -89,6 +113,18 @@ async def create_sleep_log(
     db: Session = Depends(get_db)
 ):
     """Create a new sleep log entry and update character stats"""
+    # Check 24h daily limit
+    existing_sleep, exercise_hours, work_hours = _get_daily_hours_used(db, current_user.id)
+    new_sleep_hours = sleep_log.duration_hours or 0
+    total_hours = existing_sleep + exercise_hours + work_hours + new_sleep_hours
+    if total_hours > 24:
+        remaining = 24 - (existing_sleep + exercise_hours + work_hours)
+        raise HTTPException(
+            status_code=400,
+            detail=f"Daily limit exceeded! You can only log {remaining:.1f} more sleep hours today. "
+                   f"(Sleep: {existing_sleep:.1f}h, Exercise: {exercise_hours:.1f}h, Work: {work_hours:.1f}h)"
+        )
+
     new_log = SleepLog(
         user_id=current_user.id,
         **sleep_log.model_dump()

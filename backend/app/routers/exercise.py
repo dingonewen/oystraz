@@ -3,6 +3,7 @@ Exercise tracking API routes
 """
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from datetime import datetime, timedelta
 
 from app.database import get_db
@@ -12,6 +13,29 @@ from app.services.auth import get_current_user
 from app.services import health_calculator as hc
 
 router = APIRouter(prefix="/api/exercise", tags=["Exercise"])
+
+
+def _get_daily_hours_used(db: Session, user_id: int) -> tuple[float, float, float]:
+    """Get total hours used today for sleep, exercise, and work"""
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    sleep_hours = db.query(func.coalesce(func.sum(SleepLog.duration_hours), 0)).filter(
+        SleepLog.user_id == user_id,
+        SleepLog.logged_at >= today_start
+    ).scalar() or 0
+
+    exercise_minutes = db.query(func.coalesce(func.sum(ExerciseLog.duration_minutes), 0)).filter(
+        ExerciseLog.user_id == user_id,
+        ExerciseLog.logged_at >= today_start
+    ).scalar() or 0
+    exercise_hours = exercise_minutes / 60
+
+    work_hours = db.query(func.coalesce(func.sum(WorkLog.duration_hours), 0)).filter(
+        WorkLog.user_id == user_id,
+        WorkLog.logged_at >= today_start
+    ).scalar() or 0
+
+    return float(sleep_hours), float(exercise_hours), float(work_hours)
 
 
 def _recalculate_character_exercise(db: Session, user_id: int, exercise_minutes: int):
@@ -73,6 +97,19 @@ async def create_exercise_log(
     db: Session = Depends(get_db)
 ):
     """Create a new exercise log entry and update character stats"""
+    # Check 24h daily limit
+    sleep_hours, existing_exercise, work_hours = _get_daily_hours_used(db, current_user.id)
+    new_exercise_hours = (exercise_log.duration_minutes or 0) / 60
+    total_hours = sleep_hours + existing_exercise + work_hours + new_exercise_hours
+    if total_hours > 24:
+        remaining_hours = 24 - (sleep_hours + existing_exercise + work_hours)
+        remaining_minutes = remaining_hours * 60
+        raise HTTPException(
+            status_code=400,
+            detail=f"Daily limit exceeded! You can only log {remaining_minutes:.0f} more exercise minutes today. "
+                   f"(Sleep: {sleep_hours:.1f}h, Exercise: {existing_exercise:.1f}h, Work: {work_hours:.1f}h)"
+        )
+
     new_log = ExerciseLog(
         user_id=current_user.id,
         **exercise_log.model_dump()
