@@ -58,13 +58,13 @@ export default function Home() {
     );
   }
 
-  // Stat card data - values formatted to 1 decimal place
+  // Stat card data - integer values
   const stats = [
-    { label: 'Stamina', emoji: '💪', value: (character?.stamina || 0).toFixed(1), color: 'primary', desc: 'Exercise & sleep' },
-    { label: 'Energy', emoji: '⚡', value: (character?.energy || 0).toFixed(1), color: 'primary', desc: 'Caloric balance' },
-    { label: 'Nutrition', emoji: '🍎', value: (character?.nutrition || 0).toFixed(1), color: 'primary', desc: 'Diet balance' },
-    { label: 'Mood', emoji: '😊', value: (character?.mood || 0).toFixed(1), color: 'primary', desc: 'Overall wellness' },
-    { label: 'Stress', emoji: '😰', value: (character?.stress || 0).toFixed(1), color: 'error', desc: 'Lower is better' },
+    { label: 'Stamina', emoji: '💪', value: Math.round(character?.stamina || 0), color: 'primary', desc: 'Exercise & sleep' },
+    { label: 'Energy', emoji: '⚡', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
+    { label: 'Nutrition', emoji: '🍎', value: Math.round(character?.nutrition || 0), color: 'primary', desc: 'Diet balance' },
+    { label: 'Mood', emoji: '😊', value: Math.round(character?.mood || 0), color: 'primary', desc: 'Overall wellness' },
+    { label: 'Stress', emoji: '😰', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
     { label: 'Level', emoji: '🏆', value: character?.level || 1, color: 'secondary', desc: `XP: ${character?.experience || 0}` },
   ];
 

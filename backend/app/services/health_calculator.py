@@ -93,7 +93,8 @@ def calculate_energy_change(
 def calculate_stamina_change(
     exercise_minutes: int,
     sleep_hours: float,
-    work_hours: float
+    work_hours: float,
+    work_intensity: int = 3
 ) -> float:
     """
     Calculate stamina change based on exercise and rest.
@@ -120,12 +121,14 @@ def calculate_stamina_change(
     else:
         change -= 10  # Poor sleep hurts but manageable
 
-    # Work effect (overwork penalty, reduced normal work cost)
-    if work_hours > MAX_WORK_HOURS:
-        overtime = work_hours - MAX_WORK_HOURS
-        change -= overtime * 3  # Reduced from 5, still discourages overwork
-    elif work_hours > 0:
-        change -= work_hours * 0.3  # Reduced from 0.5
+    # Work effect - INTENSITY MATTERS!
+    if work_hours > 0:
+        base_cost = work_hours * work_intensity * 0.5
+        change -= base_cost
+        # Extra penalty for overtime
+        if work_hours > MAX_WORK_HOURS:
+            overtime = work_hours - MAX_WORK_HOURS
+            change -= overtime * work_intensity * 0.5
 
     return max(-25, min(35, change))
 
