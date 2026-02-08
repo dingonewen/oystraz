@@ -79,12 +79,17 @@ src/
 - Warning (Caution Orange): `#FF9800`
 - Background: Ocean gradients and light backgrounds
 
-### Visual Assets
+### Visual & Audio Assets
 - **Ocean Environment**: Kenney Fish Pack (fish, rocks, seaweed, bubbles, terrain)
-- **Characters**: Google Nano Banana Pro 2 generated (seal employee, octopus boss)
-- **Logo**: Custom designed with AI assistance
+- **Characters & Logo**: Generated with **Nano Banana Pro** (seal employee, octopus boss, Pearl, logo)
+- **Prank Video**: Created with **Google Veo 3.1** (Seal_Pokes_Octopus_Ink_Cloud.mp4)
+- **Background Music**: Created with **Suno AI** - deep sea exploration neo-soul style
 - **Assets Location**: `/public/assets/ocean/` (60+ pixel art assets)
 - **Rendering**: Pixel-perfect with `imageRendering: 'pixelated'` CSS
+
+### Development Tools
+- **Google AI Studio** - Demo design and prototyping
+- **Claude Code** - Frontend development assistance
 
 ## 📝 Available Scripts
 
@@ -139,9 +144,14 @@ VITE_API_URL=http://localhost:8000/api
 ## 🌟 Acknowledgments
 
 - **Kenney Fish Pack** - Ocean environment assets (fish, rocks, seaweed, bubbles, terrain)
-- **Google Nano Banana Pro 2** - AI-generated character assets (seal, octopus, logo)
+- **Nano Banana Pro** - AI-generated character assets (seal, octopus, Pearl, logo)
+- **Google Veo 3.1** - Prank octopus video animation
+- **Suno AI** - Neo-soul background music (deep sea exploration style)
+- **Google AI Studio** - Demo design and prototyping
+- **Claude Code** - Frontend development assistance
 - **Material-UI** - React component library
 - **Recharts** - Data visualization library
+- **Framer Motion** - Animation library
 
 ## 📄 License
 

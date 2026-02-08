@@ -5,11 +5,14 @@
  * Ocean theme with pearl shimmer effects
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Grid, Paper, CircularProgress } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCharacterStore } from '../store/characterStore';
 import { useUserStore } from '../store/userStore';
+import { usePearlStore } from '../store/pearlStore';
 import { getCharacter } from '../services/characterService';
+import { generateWorkCultureRoast } from '../services/pearlBubbleService';
 
 // Pearl iridescent gradients
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
@@ -20,6 +23,8 @@ const darkPearlGradient = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #1f1
 export default function Home() {
   const { character, setCharacter, isLoading, setLoading, setError } = useCharacterStore();
   const { user } = useUserStore();
+  const { showBubble } = usePearlStore();
+  const [isOctopusHovered, setIsOctopusHovered] = useState(false);
 
   // Load character data from backend
   useEffect(() => {
@@ -139,7 +144,7 @@ export default function Home() {
         </Box>
 
         {/* Stats Grid - 3 rows x 2 columns, compact cards */}
-        <Grid container spacing={{ xs: 1, sm: 1.5 }}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
           {stats.map((stat) => (
             <Grid key={stat.label} size={{ xs: 6 }}>
               <Paper
@@ -149,8 +154,10 @@ export default function Home() {
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
                   transition: 'all 0.3s ease',
-                  borderRadius: 3,
+                  borderRadius: 2,
                   background: darkPearlGradient,
                   '&:hover': {
                     transform: 'translateY(-2px)',
@@ -158,7 +165,7 @@ export default function Home() {
                   },
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 0.5 }}>
                   <Typography sx={{ fontSize: { xs: '1rem', sm: '1.1rem' } }}>{stat.emoji}</Typography>
                   <Typography
                     variant="body2"
@@ -185,6 +192,90 @@ export default function Home() {
             </Grid>
           ))}
         </Grid>
+
+        {/* Interactive Octopus Boss */}
+        <Box
+          sx={{
+            mt: { xs: 4, sm: 5 },
+            mb: { xs: 2, sm: 3 },
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+          }}
+        >
+          <motion.div
+            onMouseEnter={() => {
+              setIsOctopusHovered(true);
+              showBubble(generateWorkCultureRoast());
+            }}
+            onMouseLeave={() => setIsOctopusHovered(false)}
+            animate={isOctopusHovered ? {
+              scale: [1, 1.05, 1],
+              rotate: [0, -3, 3, 0],
+            } : {}}
+            transition={{ duration: 0.5 }}
+            style={{ cursor: 'pointer', position: 'relative' }}
+          >
+            {/* Pearl shimmer glow effect on hover */}
+            <AnimatePresence>
+              {isOctopusHovered && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.2 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '120%',
+                    height: '120%',
+                    background: 'radial-gradient(ellipse at center, rgba(232, 213, 231, 0.4) 0%, rgba(213, 229, 240, 0.3) 30%, rgba(248, 232, 238, 0.2) 50%, transparent 70%)',
+                    borderRadius: '50%',
+                    filter: 'blur(15px)',
+                    zIndex: 0,
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            <Box
+              component="img"
+              src="/assets/ocean/octopus.png"
+              alt="Octopus Boss"
+              sx={{
+                width: { xs: 80, sm: 100 },
+                height: { xs: 80, sm: 100 },
+                objectFit: 'contain',
+                imageRendering: 'pixelated',
+                position: 'relative',
+                zIndex: 1,
+                filter: isOctopusHovered
+                  ? 'drop-shadow(0 0 12px rgba(232, 213, 231, 0.8)) drop-shadow(0 0 20px rgba(213, 229, 240, 0.5))'
+                  : 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                transition: 'filter 0.3s ease',
+              }}
+            />
+          </motion.div>
+
+          {/* Subtle label */}
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{
+              position: 'absolute',
+              bottom: { xs: -20, sm: -24 },
+              fontSize: { xs: '0.6rem', sm: '0.7rem' },
+              opacity: 0.6,
+              fontStyle: 'italic',
+            }}
+          >
+            {isOctopusHovered ? '' : '🐙 Boss has thoughts...'}
+          </Typography>
+        </Box>
       </Box>
     </Container>
   );

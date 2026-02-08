@@ -351,8 +351,15 @@ export default function Profile() {
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     Health Goal
                   </Typography>
-                  <Typography variant="body1">
-                    {user?.goal?.replace('_', ' ') || 'Not set'}
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      wordBreak: 'break-word',
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                    }}
+                  >
+                    {goalOptions.find(opt => opt.value === user?.goal)?.label || user?.goal?.replace(/_/g, ' ') || 'Not set'}
                   </Typography>
                 </>
               )}

@@ -4,7 +4,7 @@
  * Ocean theme with pearl shimmer effects
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Typography,
@@ -40,6 +40,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { getDietLogs, getExerciseLogs, getSleepLogs } from '../services/healthService';
+import { generateStatsSummary } from '../services/pearlBubbleService';
+import { usePearlStore } from '../store/pearlStore';
 import type { DietLog, ExerciseLog, SleepLog } from '../types';
 
 interface DailyStats {
@@ -68,10 +70,34 @@ export default function Stats() {
     totalWorkouts: 0,
   });
   const [timeAllocation, setTimeAllocation] = useState<TimeAllocation[]>([]);
+  const { showBubble } = usePearlStore();
+  const summaryShownRef = useRef(false);
 
   useEffect(() => {
     loadStats();
   }, [timeRange]);
+
+  // Show Pearl summary bubbles after stats load (only once per page visit)
+  useEffect(() => {
+    if (!loading && !summaryShownRef.current) {
+      summaryShownRef.current = true;
+      const days = parseInt(timeRange);
+      const summaries = generateStatsSummary({
+        avgCalories: totalStats.avgCalories,
+        avgExercise: totalStats.avgExercise,
+        avgSleep: totalStats.avgSleep,
+        totalWorkouts: totalStats.totalWorkouts,
+        days,
+      });
+
+      // Show bubbles sequentially with delays
+      summaries.forEach((message, index) => {
+        setTimeout(() => {
+          showBubble(message);
+        }, index * 3500); // 3.5 seconds between each bubble
+      });
+    }
+  }, [loading, totalStats, timeRange, showBubble]);
 
   const loadStats = async () => {
     try {

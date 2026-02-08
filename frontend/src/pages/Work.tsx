@@ -26,18 +26,29 @@ import DeleteIcon from '@mui/icons-material/Delete';
 // Pearl iridescent gradient for title
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import { useCharacterStore } from '../store/characterStore';
+import { usePearlStore } from '../store/pearlStore';
 import { getCharacter } from '../services/characterService';
 import { logWork, getWorkLogs, getWorkStats, deleteWorkLog } from '../services/workService';
+import { generateWorkPageHumor } from '../services/pearlBubbleService';
 import type { WorkLog, WorkStats } from '../services/workService';
 import OceanWorkScene from '../components/Work/OceanWorkScene';
 
 export default function Work() {
   const { character, setCharacter } = useCharacterStore();
+  const { showBubble } = usePearlStore();
   const [_isLoading, setIsLoading] = useState(false);
   const [workLogs, setWorkLogs] = useState<WorkLog[]>([]);
   const [workStats, setWorkStats] = useState<WorkStats | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Show Pearl humor bubble on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      showBubble(generateWorkPageHumor());
+    }, 800); // Small delay for better UX
+    return () => clearTimeout(timer);
+  }, [showBubble]);
 
   useEffect(() => {
     loadCharacter();

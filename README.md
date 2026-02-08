@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/public/assets/logo.png" alt="Oystraz Logo" width="200"/>
+  <img src="frontend/public/assets/oystraz_final_logo.png" alt="Oystraz Logo" width="200"/>
 </p>
 
 <h1 align="center">Oystraz - Life Orchestration Through Health</h1>
@@ -232,7 +232,7 @@ exercise for 30 mins (-6 stress), or catch 24 fish in Work to prank your boss (-
 
 **Backend**
 - FastAPI (Python 3.11+)
-- PostgreSQL
+- PostgreSQL (hosted on **Supabase**)
 - SQLAlchemy 2.0 (ORM)
 - JWT Authentication (python-jose)
 - bcrypt (Password Hashing)
@@ -241,6 +241,12 @@ exercise for 30 mins (-6 stress), or catch 24 fish in Work to prank your boss (-
 - **Google Gemini 2.0 Flash** (Pearl AI)
 - USDA FoodData Central API (600k+ foods)
 - Custom health calculation algorithms
+
+**Creative Assets**
+- **Suno AI** - Neo-soul BGM (deep sea exploration style)
+- **Nano Banana Pro** - Character images and logo
+- **Google Veo 3.1** - Prank octopus video animation
+- **Google AI Studio & Claude Code** - Demo and frontend development
 
 ### System Architecture
 
@@ -357,21 +363,25 @@ A unique stress-relief game where you play as a seal employee!
 - Mobile optimization
 - Additional character states
 - Performance improvements
+- Deep optimization and bug fixes
 
 ### Phase 2: Enhanced Features
 - Achievement system
 - Daily/weekly challenges
 - Advanced analytics
+- Pearl activity level refinements
 
-### Phase 3: Mobile App
-- iOS/Android deployment
-- Push notifications
-- Health app integrations
+### Phase 3: App Store Deployment
+- **iTunes (App Store) deployment** after deep optimization
+- iOS native app with full feature parity
+- Push notifications for health reminders
+- Apple Health integrations
 
-### Phase 4: Social
+### Phase 4: Social & Expansion
 - Friend system
 - Group challenges
 - Community scenarios
+- Android deployment
 
 ---
 
@@ -385,11 +395,37 @@ A unique stress-relief game where you play as a seal employee!
 
 ---
 
+## About This Project
+
+**Oystraz is an independently developed personal project.** This product was conceptualized, designed, and built as a solo endeavor, combining personal vision with cutting-edge AI tools.
+
+### Development Stack & Tools
+
+| Component | Tool/Service |
+|-----------|--------------|
+| **Backend Database** | PostgreSQL deployed on **Supabase** |
+| **Background Music** | Created with **Suno AI** - deep sea exploration neo-soul style |
+| **Character & Logo** | Generated with **Nano Banana Pro** |
+| **Prank Video** | Created with **Google Veo 3.1** |
+| **Development** | **Google AI Studio** + **Claude Code** for demo and frontend |
+| **AI Companion** | **Google Gemini 2.0 Flash** powers Pearl |
+
+### Future Plans
+
+After thorough optimization and testing, Oystraz is planned for deployment on the **iTunes App Store** as a native iOS application, bringing gamified health tracking to mobile users worldwide.
+
+---
+
 ## Acknowledgments
 
-- **USDA FoodData Central** - Nutritional database
+- **USDA FoodData Central** - Nutritional database (600k+ foods)
 - **Google Gemini 2.0 Flash** - AI capabilities for Pearl
-- **Google Nano Banana Pro 2** - AI-generated character assets
+- **Nano Banana Pro** - AI-generated character images and logo
+- **Google Veo 3.1** - Prank octopus video animation
+- **Suno AI** - Neo-soul background music
+- **Supabase** - PostgreSQL database hosting
+- **Google AI Studio** - Development assistance
+- **Claude Code** - Frontend and demo development
 - **Kenney Fish Pack** - Ocean environment assets
 - **Material-UI** - React components
 - **Recharts** - Data visualization
@@ -408,5 +444,5 @@ A unique stress-relief game where you play as a seal employee!
 </p>
 
 <p align="center">
-  <em>Built for the Google Gemini Hackathon</em>
+  <em>An independent personal project - built with passion, AI, and a love for gamified wellness.</em>
 </p>

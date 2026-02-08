@@ -18,9 +18,9 @@ FastAPI backend for the Oystraz health tracking application with Google Gemini A
 ## Tech Stack
 
 - **Framework**: FastAPI 0.104+
-- **Database**: PostgreSQL with SQLAlchemy ORM
+- **Database**: PostgreSQL with SQLAlchemy ORM (hosted on **Supabase**)
 - **Authentication**: JWT tokens with bcrypt password hashing
-- **AI**: Google Gemini API
+- **AI**: Google Gemini 2.0 Flash API
 - **External APIs**: USDA FoodData Central
 - **Python**: 3.11+
 
@@ -288,6 +288,18 @@ alembic upgrade head
 
 ## Deployment
 
+### Database Hosting (Supabase)
+
+The production database is hosted on **Supabase**, providing:
+- Managed PostgreSQL with automatic backups
+- Connection pooling for scalability
+- Real-time capabilities (if needed)
+
+**Supabase Connection:**
+```env
+DATABASE_URL=postgresql://postgres:[password]@[project-ref].supabase.co:5432/postgres
+```
+
 ### Docker (Recommended)
 
 ```dockerfile
@@ -305,7 +317,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```env
 DEBUG=False
 SECRET_KEY=<use strong random key>
-DATABASE_URL=<production database URL>
+DATABASE_URL=<Supabase PostgreSQL connection string>
 CORS_ORIGINS=https://yourdomain.com
 ```
 
@@ -330,12 +342,13 @@ CORS_ORIGINS=https://yourdomain.com
 
 ## 🌟 Acknowledgments
 
-- **Google Gemini 2.5 Flash** - AI-powered health assistant (Pearl)
+- **Google Gemini 2.0 Flash** - AI-powered health assistant (Pearl)
 - **USDA FoodData Central** - Nutritional database (600k+ foods)
+- **Supabase** - PostgreSQL database hosting
 - **FastAPI** - High-performance Python web framework
 - **SQLAlchemy** - Database ORM
 
-Note: Visual assets (ocean theme, characters) are handled on the frontend and credited separately in frontend/README.md.
+Note: Visual assets (ocean theme, characters, BGM) are handled on the frontend and credited separately in frontend/README.md.
 
 ## License
 
