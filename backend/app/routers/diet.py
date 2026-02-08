@@ -77,6 +77,29 @@ def _recalculate_character_nutrition(db: Session, user_id: int):
     db.commit()
 
 
+def _apply_oyster_bonus(db: Session, user_id: int) -> bool:
+    """Easter egg: eating oyster boosts all stats by 50!"""
+    character = db.query(Character).filter(Character.user_id == user_id).first()
+    if not character:
+        return False
+
+    # Boost all stats by 50 (capped at 100 for positive stats, 0 for stress)
+    character.stamina = min(100, character.stamina + 50)
+    character.energy = min(100, character.energy + 50)
+    character.nutrition = min(100, character.nutrition + 50)
+    character.mood = min(100, character.mood + 50)
+    character.stress = max(0, character.stress - 50)  # Stress goes DOWN
+    character.experience += 100  # Bonus XP for finding the easter egg!
+
+    # Check for level up
+    if character.experience >= hc.get_level_up_threshold(character.level):
+        character.experience -= hc.get_level_up_threshold(character.level)
+        character.level += 1
+
+    db.commit()
+    return True
+
+
 @router.post("/", response_model=DietLogResponse, status_code=status.HTTP_201_CREATED)
 async def create_diet_log(
     diet_log: DietLogCreate,
@@ -92,8 +115,12 @@ async def create_diet_log(
     db.commit()
     db.refresh(new_log)
 
-    # Recalculate character nutrition
-    _recalculate_character_nutrition(db, current_user.id)
+    # Easter egg: check for oyster in food name
+    if "oyster" in diet_log.food_name.lower():
+        _apply_oyster_bonus(db, current_user.id)
+    else:
+        # Normal recalculation for non-oyster foods
+        _recalculate_character_nutrition(db, current_user.id)
 
     return new_log
 

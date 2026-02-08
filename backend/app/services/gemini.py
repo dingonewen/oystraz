@@ -243,12 +243,19 @@ Provide personalized, actionable advice based on this data. Focus on:
         # Build context with health data if available
         context = ""
         if character_state:
-            context += f"\n[User's current health metrics - use this to give relevant advice:\n"
-            context += f"Stamina: {character_state.get('stamina', 0)}/100, "
-            context += f"Energy: {character_state.get('energy', 0)}/100, "
-            context += f"Nutrition: {character_state.get('nutrition', 0)}/100, "
-            context += f"Mood: {character_state.get('mood', 0)}/100, "
-            context += f"Stress: {character_state.get('stress', 0)}/100]\n"
+            stamina = character_state.get('stamina', 0)
+            energy = character_state.get('energy', 0)
+            nutrition = character_state.get('nutrition', 0)
+            mood = character_state.get('mood', 0)
+            stress = character_state.get('stress', 0)
+
+            context += f"\n=== USER'S CURRENT STATUS (IMPORTANT - reference these when answering!) ===\n"
+            context += f"Stamina: {stamina:.1f}/100 {'(LOW!)' if stamina < 40 else '(good)' if stamina >= 70 else ''}\n"
+            context += f"Energy: {energy:.1f}/100 {'(LOW!)' if energy < 40 else '(good)' if energy >= 70 else ''}\n"
+            context += f"Nutrition: {nutrition:.1f}/100 {'(needs work)' if nutrition < 60 else '(good)' if nutrition >= 80 else ''}\n"
+            context += f"Mood: {mood:.1f}/100 {'(LOW!)' if mood < 40 else '(great!)' if mood >= 80 else ''}\n"
+            context += f"Stress: {stress:.1f}/100 {'(HIGH! needs attention)' if stress >= 60 else '(low, good!)' if stress < 30 else ''}\n"
+            context += "=== When user asks about their stats, mood, stress, etc. - USE THESE VALUES! ===\n"
 
         if recent_logs:
             context += f"\n[Recent activity:\n{self._format_recent_logs(recent_logs)}]\n"

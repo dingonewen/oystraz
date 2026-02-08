@@ -140,7 +140,7 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#1E1F20',
+          background: 'linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
           backgroundImage: 'none',
         },
       },
@@ -251,14 +251,14 @@ function AppNavigation() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer - 20% narrower */}
+      {/* Mobile Drawer - narrower */}
       <Drawer
         anchor="left"
         open={drawerOpen}
         onClose={handleDrawerToggle}
         sx={{
           '& .MuiDrawer-paper': {
-            width: 200,
+            width: 160,
           },
         }}
       >
@@ -286,13 +286,7 @@ function AppNavigation() {
           {menuItems.map((item) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton onClick={() => handleNavigation(item.path)}>
-                <ListItemIcon sx={{
-                  color: 'transparent',
-                  background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  '& svg': { fill: 'url(#pearlGradient)' }
-                }}>{item.icon}</ListItemIcon>
+                <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>{item.icon}</ListItemIcon>
                 <ListItemText
                   primary={item.text}
                   sx={{
@@ -313,12 +307,7 @@ function AppNavigation() {
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
-              <ListItemIcon sx={{
-                color: 'transparent',
-                background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-              }}>
+              <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
                 <LogoutIcon />
               </ListItemIcon>
               <ListItemText
