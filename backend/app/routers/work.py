@@ -307,7 +307,7 @@ async def delete_work_log(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Delete a work log"""
+    """Delete a work log and recalculate character stats"""
     log = db.query(WorkLog).filter(
         WorkLog.id == log_id,
         WorkLog.user_id == current_user.id
@@ -317,6 +317,14 @@ async def delete_work_log(
 
     db.delete(log)
     db.commit()
+
+    # Recalculate character stats after deletion
+    character = db.query(Character).filter(Character.user_id == current_user.id).first()
+    if character:
+        diet_logs, exercise_logs, sleep_logs, work_logs = _get_today_logs(db, current_user.id)
+        _recalculate_and_update_character(
+            db, character, diet_logs, exercise_logs, sleep_logs, work_logs
+        )
 
 
 @router.post("/recalculate", response_model=HealthRecalculateResponse)

@@ -19,13 +19,15 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  IconButton,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // Pearl iridescent gradient for title
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import { useCharacterStore } from '../store/characterStore';
 import { getCharacter } from '../services/characterService';
-import { logWork, getWorkLogs, getWorkStats } from '../services/workService';
+import { logWork, getWorkLogs, getWorkStats, deleteWorkLog } from '../services/workService';
 import type { WorkLog, WorkStats } from '../services/workService';
 import OceanWorkScene from '../components/Work/OceanWorkScene';
 
@@ -111,6 +113,19 @@ export default function Work() {
       console.error('Work error:', err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteLog = async (logId: number) => {
+    try {
+      await deleteWorkLog(logId);
+      setSuccess('Work log deleted! Stats recalculated.');
+      await loadCharacter();
+      await loadWorkData();
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError('Failed to delete work log.');
+      console.error('Delete error:', err);
     }
   };
 
@@ -339,7 +354,13 @@ export default function Work() {
             <List>
               {workLogs.slice(0, 10).map((log, index) => (
                 <Box key={log.id}>
-                  <ListItem>
+                  <ListItem
+                    secondaryAction={
+                      <IconButton edge="end" onClick={() => handleDeleteLog(log.id)} size="small">
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                  >
                     <ListItemText
                       primary={
                         log.pranked_boss > 0
@@ -352,7 +373,7 @@ export default function Work() {
                           : `Energy -${log.energy_cost.toFixed(1)} • Stress +${log.stress_gain.toFixed(1)} • XP +${log.experience_gain}`
                       }
                     />
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ mr: 2 }}>
                       {new Date(log.logged_at).toLocaleTimeString([], {
                         hour: '2-digit',
                         minute: '2-digit',
