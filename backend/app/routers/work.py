@@ -43,6 +43,29 @@ def _get_today_logs(db: Session, user_id: int):
     return diet_logs, exercise_logs, sleep_logs, work_logs
 
 
+def _get_daily_hours_used(db: Session, user_id: int) -> tuple[float, float, float]:
+    """Get total hours used today for sleep, exercise, and work"""
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    sleep_hours = db.query(func.coalesce(func.sum(SleepLog.duration_hours), 0)).filter(
+        SleepLog.user_id == user_id,
+        SleepLog.logged_at >= today_start
+    ).scalar() or 0
+
+    exercise_minutes = db.query(func.coalesce(func.sum(ExerciseLog.duration_minutes), 0)).filter(
+        ExerciseLog.user_id == user_id,
+        ExerciseLog.logged_at >= today_start
+    ).scalar() or 0
+    exercise_hours = exercise_minutes / 60
+
+    work_hours = db.query(func.coalesce(func.sum(WorkLog.duration_hours), 0)).filter(
+        WorkLog.user_id == user_id,
+        WorkLog.logged_at >= today_start
+    ).scalar() or 0
+
+    return float(sleep_hours), float(exercise_hours), float(work_hours)
+
+
 def _recalculate_and_update_character(db: Session, character: Character,
                                        diet_logs, exercise_logs, sleep_logs, work_logs,
                                        pranked_boss: bool = False):
@@ -154,6 +177,18 @@ async def log_work(
     character = db.query(Character).filter(Character.user_id == current_user.id).first()
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
+
+    # Check 24h daily limit (skip for prank sessions)
+    if work_data.duration_hours > 0:
+        sleep_hours, exercise_hours, existing_work_hours = _get_daily_hours_used(db, current_user.id)
+        total_hours = sleep_hours + exercise_hours + existing_work_hours + work_data.duration_hours
+        if total_hours > 24:
+            remaining = 24 - (sleep_hours + exercise_hours + existing_work_hours)
+            raise HTTPException(
+                status_code=400,
+                detail=f"Daily limit exceeded! You can only log {remaining:.1f} more work hours today. "
+                       f"(Sleep: {sleep_hours:.1f}h, Exercise: {exercise_hours:.1f}h, Work: {existing_work_hours:.1f}h)"
+            )
 
     # Calculate work impact using health_calculator formulas
     hours = work_data.duration_hours

@@ -14,6 +14,8 @@ import { getCharacter } from '../services/characterService';
 // Pearl iridescent gradients
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 const pearlBorderGradient = 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)';
+// Dark pearl gradient - black pearl with subtle iridescent sheen
+const darkPearlGradient = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #1f1f3d 50%, #1a1a2e 75%, #0f0f1a 100%)';
 
 export default function Home() {
   const { character, setCharacter, isLoading, setLoading, setError } = useCharacterStore();
@@ -56,13 +58,13 @@ export default function Home() {
     );
   }
 
-  // Stat card data
+  // Stat card data - values formatted to 1 decimal place
   const stats = [
-    { label: 'Stamina', emoji: '💪', value: character?.stamina || 0, color: 'primary', desc: 'Exercise & sleep' },
-    { label: 'Energy', emoji: '⚡', value: character?.energy || 0, color: 'primary', desc: 'Caloric balance' },
-    { label: 'Nutrition', emoji: '🍎', value: character?.nutrition || 0, color: 'primary', desc: 'Diet balance' },
-    { label: 'Mood', emoji: '😊', value: character?.mood || 0, color: 'primary', desc: 'Overall wellness' },
-    { label: 'Stress', emoji: '😰', value: character?.stress || 0, color: 'error', desc: 'Lower is better' },
+    { label: 'Stamina', emoji: '💪', value: (character?.stamina || 0).toFixed(1), color: 'primary', desc: 'Exercise & sleep' },
+    { label: 'Energy', emoji: '⚡', value: (character?.energy || 0).toFixed(1), color: 'primary', desc: 'Caloric balance' },
+    { label: 'Nutrition', emoji: '🍎', value: (character?.nutrition || 0).toFixed(1), color: 'primary', desc: 'Diet balance' },
+    { label: 'Mood', emoji: '😊', value: (character?.mood || 0).toFixed(1), color: 'primary', desc: 'Overall wellness' },
+    { label: 'Stress', emoji: '😰', value: (character?.stress || 0).toFixed(1), color: 'error', desc: 'Lower is better' },
     { label: 'Level', emoji: '🏆', value: character?.level || 1, color: 'secondary', desc: `XP: ${character?.experience || 0}` },
   ];
 
@@ -112,7 +114,7 @@ export default function Home() {
               display: 'flex',
               alignItems: 'center',
               gap: { xs: 2, sm: 3 },
-              background: 'linear-gradient(135deg, #1E1F20 0%, #1a2a3c 100%)',
+              background: darkPearlGradient,
             }}
           >
           {/* Character emoji */}
@@ -149,6 +151,7 @@ export default function Home() {
                   flexDirection: 'column',
                   transition: 'all 0.3s ease',
                   borderRadius: 3,
+                  background: darkPearlGradient,
                   '&:hover': {
                     transform: 'translateY(-2px)',
                     boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)',

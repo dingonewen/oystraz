@@ -140,7 +140,7 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#1E1F20',
+          background: 'linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
           backgroundImage: 'none',
         },
       },
@@ -148,7 +148,7 @@ const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#1E1F20',
+          background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
           borderRadius: 0,
         },
       },
@@ -251,7 +251,7 @@ function AppNavigation() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer - 20% narrower */}
+      {/* Mobile Drawer - narrower */}
       <Drawer
         anchor="left"
         open={drawerOpen}
@@ -278,7 +278,7 @@ function AppNavigation() {
               backgroundClip: 'text',
             }}
           >
-            Oystraz
+          
           </Typography>
         </Box>
         <Divider />
@@ -286,8 +286,19 @@ function AppNavigation() {
           {menuItems.map((item) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton onClick={() => handleNavigation(item.path)}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.text}
+                  sx={{
+                    '& .MuiListItemText-primary': {
+                      background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      fontWeight: 500,
+                    }
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
@@ -296,10 +307,21 @@ function AppNavigation() {
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText
+                primary="Logout"
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: 500,
+                  }
+                }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
@@ -345,7 +367,7 @@ function App() {
               py: 1.5,
               px: 2,
               mt: 'auto',
-              backgroundColor: '#1E1F20',
+              backgroundColor: 'linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
               borderTop: '1px solid',
               borderColor: 'divider',
             }}

@@ -20,6 +20,8 @@ import {
 
 // Pearl iridescent gradient for title
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
+// Dark pearl gradient
+const darkPearlGradient = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #1f1f3d 50%, #1a1a2e 75%, #0f0f1a 100%)';
 import {
   LineChart,
   Line,
@@ -234,55 +236,55 @@ export default function Stats() {
           </ToggleButtonGroup>
         </Box>
 
-        {/* Summary Cards */}
-        <Grid container spacing={{ xs: 2, sm: 2, md: 3 }} sx={{ mb: { xs: 2, sm: 3, md: 4 } }}>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)' } }}>
-              <CardContent>
-                <Typography color="text.secondary" gutterBottom>
+        {/* Summary Cards - 2x2 on mobile */}
+        <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }} sx={{ mb: { xs: 2, sm: 3, md: 4 } }}>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(138, 180, 248, 0.15)' } }}>
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
+                <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Avg Calories/Day
                 </Typography>
-                <Typography variant="h4" sx={{ color: '#8AB4F8' }}>{totalStats.avgCalories}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" sx={{ color: '#8AB4F8', fontSize: { xs: '1.5rem', sm: '2rem' } }}>{totalStats.avgCalories}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   kcal
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(129, 201, 149, 0.15)' } }}>
-              <CardContent>
-                <Typography color="text.secondary" gutterBottom>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(129, 201, 149, 0.15)' } }}>
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
+                <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Avg Exercise/Day
                 </Typography>
-                <Typography variant="h4" sx={{ color: '#81C995' }}>{totalStats.avgExercise}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" sx={{ color: '#81C995', fontSize: { xs: '1.5rem', sm: '2rem' } }}>{totalStats.avgExercise}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   kcal burned
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(77, 208, 225, 0.15)' } }}>
-              <CardContent>
-                <Typography color="text.secondary" gutterBottom>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(77, 208, 225, 0.15)' } }}>
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
+                <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Avg Sleep/Night
                 </Typography>
-                <Typography variant="h4" sx={{ color: '#4dd0e1' }}>{totalStats.avgSleep}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" sx={{ color: '#4dd0e1', fontSize: { xs: '1.5rem', sm: '2rem' } }}>{totalStats.avgSleep}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   hours
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 3, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(232, 213, 231, 0.15)' } }}>
-              <CardContent>
-                <Typography color="text.secondary" gutterBottom>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 3, background: darkPearlGradient, transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 20px rgba(232, 213, 231, 0.15)' } }}>
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
+                <Typography color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }} gutterBottom>
                   Total Workouts
                 </Typography>
-                <Typography variant="h4" sx={{ color: '#E8D5E7' }}>{totalStats.totalWorkouts}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h4" sx={{ color: '#E8D5E7', fontSize: { xs: '1.5rem', sm: '2rem' } }}>{totalStats.totalWorkouts}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   sessions
                 </Typography>
               </CardContent>
