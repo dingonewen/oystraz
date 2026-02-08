@@ -5,10 +5,12 @@
  * - Fish are hooked on the hook with fewest fish
  * - Octopus boss sprays black ink when pranked (3 times)
  * - Supports up to 16h work duration for overtime
+ * - Persists session state when navigating away
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Typography, Slider, Button, Alert, Paper } from '@mui/material';
+import { useWorkSessionStore } from '../../store/workSessionStore';
 
 // Fish color types matching actual file names
 const FISH_COLORS = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'red'];
@@ -50,20 +52,23 @@ const OceanWorkScene: React.FC<Props> = ({
   onWorkComplete,
   characterStress,
   characterEnergy,
-  characterStamina = 100,
+  characterStamina: _characterStamina = 100,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Work session store for persistence
+  const { session, startSession, updateSession, endSession } = useWorkSessionStore();
+
   // Work parameters
-  const [workHours, setWorkHours] = useState(4);
-  const [workIntensity, setWorkIntensity] = useState(3);
-  const [isWorking, setIsWorking] = useState(false);
+  const [workHours, setWorkHours] = useState(session?.workHours ?? 4);
+  const [workIntensity, setWorkIntensity] = useState(session?.workIntensity ?? 3);
+  const [isWorking, setIsWorking] = useState(session?.isActive ?? false);
 
   // Scene state
-  const [sealState, setSealState] = useState<SealState>('idle');
-  const [fishCaught, setFishCaught] = useState(0);
+  const [sealState, setSealState] = useState<SealState>(session?.isActive ? 'patrolling' : 'idle');
+  const [fishCaught, setFishCaught] = useState(session?.fishCaught ?? 0);
   const [fishList, setFishList] = useState<Fish[]>([]);
-  const [hookedFish, setHookedFish] = useState<HookedFishData[]>([]);
+  const [hookedFish, setHookedFish] = useState<HookedFishData[]>(session?.hookedFish ?? []);
   const [isPranking, setIsPranking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
   const [prankCount, setPrankCount] = useState(0);
@@ -71,12 +76,12 @@ const OceanWorkScene: React.FC<Props> = ({
   const [carryingFishId, setCarryingFishId] = useState<number | null>(null);
 
   // Seal position
-  const [sealPos, setSealPos] = useState({ x: 20, y: 55 });
-  const [sealDirection, setSealDirection] = useState(1);
-  const sealPosRef = useRef({ x: 20, y: 55 });
+  const [sealPos, setSealPos] = useState(session?.sealPos ?? { x: 20, y: 55 });
+  const [sealDirection, setSealDirection] = useState(session?.sealDirection ?? 1);
+  const sealPosRef = useRef(session?.sealPos ?? { x: 20, y: 55 });
 
   // Use ref to track hooked fish IDs to avoid duplicate hooks
-  const hookedFishIdsRef = useRef<Set<number>>(new Set());
+  const hookedFishIdsRef = useRef<Set<number>>(new Set(session?.hookedFish?.map(f => f.id) ?? []));
 
   // Estimated impacts
   const estimatedStressIncrease = (workHours * workIntensity * 0.8).toFixed(1);
@@ -122,9 +127,30 @@ const OceanWorkScene: React.FC<Props> = ({
     }));
   };
 
+  // Initialize fish and restore session on mount
   useEffect(() => {
-    setFishList(initFish(10));
+    if (session?.isActive) {
+      // Restore session state
+      setFishList(initFish(session.totalFishGoal + 5));
+    } else {
+      setFishList(initFish(10));
+    }
   }, []);
+
+  // Save session state periodically when working
+  useEffect(() => {
+    if (isWorking && !isPranking) {
+      const saveInterval = setInterval(() => {
+        updateSession({
+          fishCaught,
+          hookedFish,
+          sealPos: sealPosRef.current,
+          sealDirection,
+        });
+      }, 1000);
+      return () => clearInterval(saveInterval);
+    }
+  }, [isWorking, isPranking, fishCaught, hookedFish, sealDirection, updateSession]);
 
   // Fish swimming animation
   useEffect(() => {
@@ -267,16 +293,19 @@ const OceanWorkScene: React.FC<Props> = ({
     }
   }, [hookedFish.length, isPranking, isWorking, prankCooldown]);
 
-  const handleWorkDone = () => {
+  const handleWorkDone = useCallback(() => {
     setIsWorking(false);
     setSealState('idle');
+    endSession();  // Clear persisted session
     onWorkComplete(workHours, workIntensity);
     sealPosRef.current = { x: 20, y: 55 };
     setSealPos({ x: 20, y: 55 });
-  };
+  }, [endSession, onWorkComplete, workHours, workIntensity]);
 
-  const startSession = () => {
+  const startWorkSession = () => {
     if (characterEnergy < 20) return;
+    // Start new session in store
+    startSession(workHours, workIntensity, totalFishGoal);
     setIsWorking(true);
     setFishCaught(0);
     setHookedFish([]);
@@ -286,7 +315,7 @@ const OceanWorkScene: React.FC<Props> = ({
     setSealState('patrolling');
   };
 
-  const triggerPrank = () => {
+  const triggerPrank = useCallback(() => {
     if (isPranking || prankCooldown) return;
     setIsPranking(true);
     setPrankCooldown(true);
@@ -304,6 +333,7 @@ const OceanWorkScene: React.FC<Props> = ({
       if (count >= 3) {
         clearInterval(inkInterval);
         setTimeout(() => {
+          endSession();  // Clear persisted session
           onWorkComplete(0, 0, true);
           setIsPranking(false);
           setPrankCount(0);
@@ -314,7 +344,7 @@ const OceanWorkScene: React.FC<Props> = ({
     }, 600);
 
     setTimeout(() => setPrankCooldown(false), 30000);
-  };
+  }, [isPranking, prankCooldown, endSession, onWorkComplete]);
 
   const getIntensityLabel = (value: number) => {
     const labels = ['Lazy', 'Casual', 'Normal', 'Fast', 'Turbo'];
@@ -577,7 +607,7 @@ const OceanWorkScene: React.FC<Props> = ({
               variant="contained"
               fullWidth
               size="large"
-              onClick={startSession}
+              onClick={startWorkSession}
               disabled={characterEnergy < 20}
               sx={{
                 py: 1.5,

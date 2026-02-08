@@ -24,14 +24,14 @@ import {
 // Pearl iridescent gradient for title
 const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
 import { useCharacterStore } from '../store/characterStore';
-import { getCharacter, updateCharacter } from '../services/characterService';
+import { getCharacter } from '../services/characterService';
 import { logWork, getWorkLogs, getWorkStats } from '../services/workService';
 import type { WorkLog, WorkStats } from '../services/workService';
 import OceanWorkScene from '../components/Work/OceanWorkScene';
 
 export default function Work() {
   const { character, setCharacter } = useCharacterStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const [_isLoading, setIsLoading] = useState(false);
   const [workLogs, setWorkLogs] = useState<WorkLog[]>([]);
   const [workStats, setWorkStats] = useState<WorkStats | null>(null);
   const [success, setSuccess] = useState<string | null>(null);

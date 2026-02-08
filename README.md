@@ -1,222 +1,250 @@
-# Oystraz - Life Orchestration Through Health
+<p align="center">
+  <img src="frontend/public/assets/oystraz_final_logo.png" alt="Oystraz Logo" width="200"/>
+</p>
 
-> **"The world is your oyster; Orchestrate your life through wellness."**
->
-> A gamified health tracking and life simulation app where your real-world choices (diet, sleep, exercise) directly influence your virtual character's performance at work and in life.
+<h1 align="center">Oystraz - Life Orchestration Through Health</h1>
 
-**Google Gemini 3 Hackathon Project**
+<p align="center">
+  <strong>"The world is your oyster; Orchestrate your life through wellness."</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Google%20Gemini-Powered-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini Powered"/>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19"/>
+  <img src="https://img.shields.io/badge/FastAPI-Python-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"/>
+</p>
+
+<p align="center">
+  A gamified health tracking and life simulation app where your real-world choices (diet, sleep, exercise) directly influence your virtual character's performance at work and in life.
+</p>
 
 ---
 
-## 🎮 Project Vision
+## Feature Highlights
+
+| Feature | Powered By | Why It Matters |
+|---------|-----------|----------------|
+| **Pearl AI Companion** | Gemini 2.0 Flash | Personalized, witty health coaching with food science expertise and anti-hustle philosophy |
+| **Ocean Work Simulator** | Dynamic Health Logic | Correlates real-world health with virtual work performance - catch fish, prank your boss! |
+| **Nutritional Intelligence** | USDA FoodData API | Access to 600k+ food records for 100% data-driven tracking |
+| **Smart Health Metrics** | Custom Algorithms | Sleep, exercise, and work intensity affect your character in realistic ways |
+| **24h Daily Limit** | Backend Validation | Realistic time constraints - sleep + exercise + work can't exceed 24 hours |
+
+---
+
+## Why Gemini?
+
+This project leverages **Google Gemini 2.0 Flash** for its core AI functionality, specifically chosen for:
+
+### 1. Long Context Memory
+Pearl, our AI health companion, maintains conversational context to provide personalized advice based on your health history. Gemini's extended context window allows Pearl to remember your past conversations and health trends.
+
+### 2. Advanced Reasoning for Health Insights
+Gemini's reasoning capabilities enable Pearl to:
+- Analyze complex USDA nutritional data and explain it in plain English
+- Generate personalized workplace coping strategies based on your current stress/energy levels
+- Provide food science-backed advice that connects your diet to how you feel
+
+### 3. Personality-Driven Prompt Engineering
+We extensively used **System Instructions** to create Pearl's unique personality:
+- **Anti-hustle culture advocate** - Work-life balance is sacred
+- **Food science enthusiast** - Gets genuinely excited about nutrition
+- **Dry humor** - Drops dad jokes and puns naturally
+- **Direct communicator** - No wellness BS, just practical advice
+
+```python
+# Example: Pearl's System Instruction (excerpt)
+"""You are Pearl, a Food Science major who lives inside the Oystraz app.
+Your beliefs:
+- Anti-hustle culture. Working smart, not grinding yourself into dust.
+- Work-life balance is sacred. Taking breaks is normal, not lazy.
+Your style:
+- Dry humor and dad jokes, dropped casually without announcing.
+- PASSIONATE about food. Light up when discussing nutrition.
+- Direct and concise. No filler words. 2-3 sentences max."""
+```
+
+---
+
+## Project Vision
 
 **Oystraz** merges two powerful metaphors:
-- **Oyster** - "The world is your oyster" - life is full of opportunities waiting to be seized
-- **Orchestra** - The art of coordinating complex elements into harmonious performance
+- **Oyster** - "The world is your oyster" - life is full of opportunities
+- **Orchestra** - Coordinating complex elements into harmony
 
-The core philosophy: **By orchestrating your physical wellness, you gain control over your work and life.**
-
-Oystraz is not just another health tracker - it's a **stress-relief simulator** that gamifies wellness while providing a safe space to express workplace frustrations. Your virtual character mirrors your real health data, and its workplace behavior reflects your physical and mental state.
-
-### Core Principles
-- 🍎 **Data-Driven Wellness** - Powered by USDA FoodData Central (600,000+ foods)
-- 🏃 **Scientific Activity Tracking** - Accurate calorie expenditure calculations
-- 😊 **Emotional Intelligence** - Dynamic workplace scenarios based on health metrics
-- 💼 **Work-Life Balance** - Anti-hustle culture, pro-taking-breaks philosophy
-- 🤖 **AI Companion (Pearl)** - Gemini-powered assistant with personality and food science expertise
+**Core philosophy: By orchestrating your physical wellness, you gain control over your work and life.**
 
 ---
 
-## ✅ Current Implementation Status
+## Health Metrics System
 
-### Completed Features (MVP Ready)
+**IMPORTANT:** Metrics ONLY change when you LOG activities. Your character won't decay if you don't use the app!
 
-#### 1. **Health Tracking System** ✅
-- ✅ **Diet Logging** - USDA food search (600k+ items), serving size customization, calorie tracking
-- ✅ **Exercise Recording** - 13 activity types, 4 intensity levels, automatic calorie burn calculation
-- ✅ **Sleep Tracking** - Duration logging, 5-star quality rating, 7-day history
+**Daily Limit:** Sleep + Exercise + Work cannot exceed 24 hours per day.
 
-#### 2. **Character System** ✅
-- ✅ Character state management (stamina, energy, nutrition, mood, stress)
-- ✅ **Metrics only update when user logs activities** (diet, exercise, sleep, work)
-- ✅ Character won't "decay" or "starve" if user doesn't use the app for days
-- ✅ Level and experience progression system
-- ✅ Body type and emotional state tracking
-- ✅ See [Health Metrics System](#-health-metrics-system) for detailed formulas
+### Default Values (New Users)
+| Metric | Default | Description |
+|--------|---------|-------------|
+| Stamina | 80 | Physical endurance |
+| Energy | 80 | Daily energy level |
+| Nutrition | 60 | Diet quality (starts lower to encourage logging) |
+| Mood | 60 | Composite emotional state |
+| Stress | 40 | Stress level (lower is better) |
 
-#### 3. **Work Simulator** ✅
-- ✅ Interactive workplace scenario engine
-- ✅ Health-based event triggering
-- ✅ 4-choice decision system with stat impacts
-- ✅ Fallback scenarios for varied gameplay
+### Stamina (0-100)
+Physical endurance - **HIGH WORK INTENSITY DRAINS IT FAST!**
 
-#### 4. **Data Visualization** ✅
-- ✅ Interactive statistics dashboard
-- ✅ 7-day and 30-day trend analysis
-- ✅ Multiple chart types (area, bar, line, pie)
-- ✅ Summary cards (avg calories, exercise, sleep, workouts)
-- ✅ Time allocation pie chart (sleep/work/exercise/leisure)
+| Action | Effect |
+|--------|--------|
+| Exercise | +1.5 per 10 minutes (max +15) |
+| Sleep 9+ hours | **+25** (MAJOR recovery) |
+| Sleep 8+ hours | +20 |
+| Sleep 7+ hours | +15 |
+| Sleep 6+ hours | +5 |
+| Sleep <5 hours | -10 |
+| Work | **-(hours × intensity × 0.5)** |
+| Overwork (>8h) | Extra -(overtime × intensity × 0.5) |
 
-#### 5. **Profile Management** ✅
-- ✅ User information editing (height, weight, age, gender, health goals)
-- ✅ Form validation and error handling
-- ✅ Real-time updates to user store
+### Energy (0-100)
+Daily energy for activities.
 
-#### 6. **AI Assistant (Pearl)** ✅
-- ✅ Gemini 2.5 Flash integration
-- ✅ Contextual health advice
-- ✅ Personality-driven responses (humorous, reliable, food-passionate)
-- ✅ Conversation history support
+| Action | Effect |
+|--------|--------|
+| Caloric surplus | +1 per 100 kcal (max +15) |
+| Caloric deficit | -1 per 100 kcal (max -15) |
+| Sleep 8+ hours | **+20** (big boost!) |
+| Sleep 7+ hours | +15 |
+| Sleep 6+ hours | +5 |
+| Sleep <5 hours | -10 |
+| Work | -(hours × intensity × 0.3) |
 
-#### 7. **Authentication & Security** ✅
-- ✅ JWT-based authentication
-- ✅ User registration and login
-- ✅ Password hashing with bcrypt
-- ✅ Protected API routes
+### Nutrition (0-100)
+Calculated from daily diet quality.
+
+| Component | Target | Max Score |
+|-----------|--------|-----------|
+| Protein | 50g/day | 33.3 |
+| Fiber | 25g/day | 33.3 |
+| Fat | ≤65g/day | 33.3 |
+
+**Formula:** `nutrition = protein_score + fiber_score + fat_score`
+
+### Mood (0-100)
+Composite emotional state.
+
+**Formula:** `mood = (stamina + energy + nutrition) / 3 - stress / 2`
+
+**Key insight:** Good nutrition + good sleep + exercise = happy character!
+
+### Stress (0-100)
+Lower is better!
+
+| Action | Effect |
+|--------|--------|
+| Work | +(hours × intensity × 0.5) |
+| Overwork (>8h) | +5 per extra hour |
+| Exercise | -1 per 5 minutes (max -15) |
+| Sleep 9+ hours | **-20** (MAJOR relief!) |
+| Sleep 8+ hours | -15 |
+| Sleep 7+ hours | -10 |
+| Sleep 6+ hours | -5 |
+| Sleep <5 hours | +5 |
+| Prank octopus boss | -20 |
+
+### Recovery Tips
+- **SLEEP IS POWERFUL!** 8-9 hours gives major stamina/energy boost and stress relief
+- **Lower work intensity** is more sustainable than high intensity
+- **Exercise** reduces stress AND builds stamina - win-win!
+- **Balanced diet** with protein and fiber keeps nutrition high
+- **In the Work game**, catch 24+ fish to auto-prank the boss!
+
+### Level & Experience System
+
+| Action | XP Gained |
+|--------|-----------|
+| Log diet | +10 |
+| Log exercise | +15 |
+| Log sleep | +10 |
+| Work session | +(hours × intensity × 10) |
+| Nutrition ≥80 | +20 |
+| Prank boss | +50 |
+
+**Level Up:** XP needed = current_level × 100
+
+### Character Emotional States
+
+| State | Condition |
+|-------|-----------|
+| Happy | mood ≥ 80 AND stress < 30 |
+| Tired | mood < 40 OR energy < 30 |
+| Stressed | stress ≥ 70 |
+| Angry | stress ≥ 85 |
+| Normal | Default state |
 
 ---
 
-## 🤖 Meet Pearl - Your AI Health Companion
+## Meet Pearl - Your AI Health Companion
 
-**Pearl (珍珠)** is not your typical wellness coach. She's a Food Science major who genuinely loves food and has a dry sense of humor.
+**Pearl (珍珠)** is not your typical wellness coach. She's a Food Science major with dry humor and zero tolerance for hustle culture BS.
 
-### Pearl's Personality:
-- **Reliable but Chill** - Gives solid, researched advice without the corporate wellness BS
-- **Food Enthusiast** - Lights up when discussing nutrition, gets excited about ingredients and food chemistry
-- **Witty & Deadpan** - Drops dad jokes and puns naturally, sometimes you're not sure if she's joking
-- **Anti-Hustle Culture** - Believes in work-life balance, taking real breaks, and logging off at 5pm
-- **Direct Communicator** - No filler words, gets straight to the point in 2-3 sentences
+### Pearl's Personality
+- **Reliable but Chill** - Solid advice without corporate wellness fluff
+- **Food Enthusiast** - Gets excited about ingredients and food chemistry
+- **Witty & Deadpan** - Dad jokes and puns, sometimes you're not sure if she's joking
+- **Anti-Hustle** - Believes in work-life balance and real breaks
+- **Direct** - 2-3 sentences, no filler words
 
-### Example Interactions:
+### Example Interactions
 ```
 User: "I'm so stressed from work"
 Pearl: "Your stress is at 80/100. That's not sustainable - unless you're
-trying to speedrun burnout. Take a real break, not just scrolling Twitter
-for 5 minutes."
+trying to speedrun burnout. Take a real break, not just scrolling Twitter."
 
 User: "Just had some rice for lunch"
 Pearl: "Rice! Great choice. White or brown? Fun fact: cooling cooked rice
-creates resistant starch - feeds your gut bacteria. Meal prep enthusiasts
-figured that out by accident."
+creates resistant starch - feeds your gut bacteria."
 
-User: "Haven't eaten all day"
-Pearl: "Can't run on empty. Your body's not a startup that runs on vibes
-and cold brew. What's the fastest thing you can grab right now?"
+User: "How do I decrease my stress?"
+Pearl: "Your stress is at 65/100. Here's what works: sleep 8+ hours (-15 stress),
+exercise for 30 mins (-6 stress), or catch 24 fish in Work to prank your boss (-20)."
 ```
 
 ---
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ### Technology Stack
 
-#### Frontend
-```
-├─ React 19 + TypeScript
-├─ Material-UI v6 (MUI)
-├─ State Management: Zustand
-├─ Routing: React Router v7
-├─ Charts: Recharts
-├─ Build Tool: Vite
-└─ Icons: @mui/icons-material
-```
+**Frontend**
+- React 19 + TypeScript
+- Material-UI v6 (MUI)
+- Zustand (State Management)
+- React Router v7
+- Recharts (Data Visualization)
+- Framer Motion (Animations)
+- Vite (Build Tool)
 
-#### Backend
-```
-├─ FastAPI (Python 3.11+)
-├─ Database: PostgreSQL
-├─ ORM: SQLAlchemy 2.0
-├─ Authentication: JWT (python-jose)
-├─ Password Hashing: passlib with bcrypt
-└─ API Docs: Auto-generated (FastAPI/Swagger)
-```
+**Backend**
+- FastAPI (Python 3.11+)
+- PostgreSQL
+- SQLAlchemy 2.0 (ORM)
+- JWT Authentication (python-jose)
+- bcrypt (Password Hashing)
 
-#### AI & Data Sources
-```
-├─ Google Gemini 2.5 Flash (chat & advice)
-├─ USDA FoodData Central API (nutritional database)
-├─ Custom calorie calculation algorithms
-└─ Food science-based nutrition parsing
-```
+**AI & Data**
+- **Google Gemini 2.0 Flash** (Pearl AI)
+- USDA FoodData Central API (600k+ foods)
+- Custom health calculation algorithms
 
-### Project Structure (Actual)
-
-```
-oystraz/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Track/
-│   │   │   │   ├── DietLog.tsx       # USDA food search & logging
-│   │   │   │   ├── ExerciseLog.tsx   # Exercise tracking
-│   │   │   │   └── SleepLog.tsx      # Sleep tracking
-│   │   │   └── Work/
-│   │   │       └── WorkScenario.tsx  # Workplace simulator
-│   │   ├── pages/
-│   │   │   ├── Home.tsx              # Character dashboard
-│   │   │   ├── Track.tsx             # Health tracking hub
-│   │   │   ├── Work.tsx              # Work simulation
-│   │   │   ├── Stats.tsx             # Data visualization ⭐
-│   │   │   └── Profile.tsx           # User settings
-│   │   ├── services/
-│   │   │   ├── api.ts                # Axios client
-│   │   │   ├── authService.ts        # Auth APIs
-│   │   │   ├── characterService.ts   # Character APIs
-│   │   │   ├── healthService.ts      # Health tracking APIs
-│   │   │   ├── aiService.ts          # Pearl chat API
-│   │   │   └── pearlService.ts       # Pearl helpers
-│   │   ├── store/
-│   │   │   ├── userStore.ts          # User state
-│   │   │   └── characterStore.ts     # Character state
-│   │   └── types/
-│   │       └── index.ts              # TypeScript definitions
-│   └── package.json
-│
-├── backend/
-│   ├── app/
-│   │   ├── main.py                   # FastAPI app entry
-│   │   ├── config.py                 # Environment config
-│   │   ├── database.py               # DB connection
-│   │   ├── models/                   # SQLAlchemy models
-│   │   │   ├── __init__.py
-│   │   │   ├── user.py
-│   │   │   ├── character.py
-│   │   │   ├── diet_log.py
-│   │   │   ├── exercise_log.py
-│   │   │   └── sleep_log.py
-│   │   ├── schemas/                  # Pydantic schemas
-│   │   │   ├── __init__.py
-│   │   │   ├── auth.py
-│   │   │   ├── user.py
-│   │   │   ├── character.py
-│   │   │   ├── diet.py
-│   │   │   ├── exercise.py
-│   │   │   └── sleep.py
-│   │   ├── routers/                  # API routes
-│   │   │   ├── auth.py               # Register/login
-│   │   │   ├── user.py               # User management
-│   │   │   ├── character.py          # Character endpoints
-│   │   │   ├── diet.py               # Diet logging
-│   │   │   ├── exercise.py           # Exercise logging
-│   │   │   ├── sleep.py              # Sleep logging
-│   │   │   └── assistant.py          # Pearl chat & USDA search ⭐
-│   │   └── services/
-│   │       ├── auth.py               # JWT logic
-│   │       ├── gemini.py             # Gemini API client ⭐
-│   │       └── usda.py               # USDA API client ⭐
-│   └── requirements.txt
-│
-└── README.md
-```
-
-### System Flow
+### System Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
 │              User Interface (React)              │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
 │  │  Track   │  │   Work   │  │  Stats   │      │
-│  │ (Health) │  │ (Simulate│  │(Visualize│      │
+│  │ (Health) │  │(Simulate)│  │(Visualize│      │
 │  └──────────┘  └──────────┘  └──────────┘      │
 └───────────────────┬─────────────────────────────┘
                     │ HTTP/REST
@@ -224,67 +252,28 @@ oystraz/
 ┌─────────────────────────────────────────────────┐
 │           FastAPI Backend (Python)               │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
-│  │   Auth   │  │ Character│  │   AI     │      │
-│  │  Routes  │  │  Routes  │  │ Assistant│      │
+│  │   Auth   │  │ Character│  │  Pearl   │      │
+│  │  Routes  │  │  Routes  │  │ (Gemini) │      │
 │  └──────────┘  └──────────┘  └──────────┘      │
 └───────┬─────────────┬───────────────┬───────────┘
         │             │               │
         ▼             ▼               ▼
 ┌──────────┐  ┌──────────┐  ┌──────────────────┐
 │PostgreSQL│  │  Gemini  │  │  USDA FoodData   │
-│ Database │  │   API    │  │  Central API     │
+│ Database │  │ 2.0 Flash│  │  Central API     │
 └──────────┘  └──────────┘  └──────────────────┘
 ```
 
----
+### Scalability
 
-## 📊 Database Schema
-
-```sql
--- Users
-users:
-  id, username, email, hashed_password,
-  full_name, age, gender, height, weight, goal,
-  created_at, updated_at
-
--- Characters (one per user)
-characters:
-  id, user_id,
-  stamina, energy, nutrition, mood, stress,
-  level, experience,
-  body_type, emotional_state,
-  created_at, updated_at
-
--- Diet Logs
-diet_logs:
-  id, user_id,
-  food_name, meal_type,
-  calories, protein, carbs, fat, fiber,
-  serving_size, serving_unit,
-  notes, logged_at
-
--- Exercise Logs
-exercise_logs:
-  id, user_id,
-  activity_name, activity_type,
-  duration_minutes, intensity,
-  calories_burned, distance, distance_unit,
-  heart_rate_avg, steps,
-  notes, logged_at
-
--- Sleep Logs
-sleep_logs:
-  id, user_id,
-  sleep_start, sleep_end, duration_hours,
-  quality, quality_score,
-  deep_sleep_minutes, light_sleep_minutes,
-  rem_sleep_minutes, awake_minutes,
-  interruptions, notes, logged_at
-```
+- **FastAPI** - High-performance async Python framework, production-ready
+- **PostgreSQL** - Enterprise-grade database with connection pooling
+- **Stateless Backend** - Horizontally scalable API design
+- **JWT Auth** - No server-side session storage required
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+
@@ -326,330 +315,90 @@ npm run dev
 
 ---
 
-## 🎨 Key Features Showcase
+## Ocean Work Simulator
 
-### 1. USDA Food Search
-- 600,000+ food items from USDA FoodData Central
-- Real-time search with calorie preview
-- Smart deduplication and formatting
-- Brand name cleaning (removes Inc, LLC, etc.)
+A unique stress-relief game where you play as a seal employee!
 
-### 2. Interactive Stats Dashboard
-- 4 summary cards with key metrics
-- Time allocation pie chart (24-hour breakdown)
-- Calorie intake area chart
-- Exercise bar chart
-- Sleep duration & quality dual-axis chart
-- Net calories comparison
+### Gameplay
+- **Catch fish** = Complete work tasks
+- **Multiple hooks** = Different work priorities
+- **Octopus boss** = Your manager (can be pranked!)
+- **Work intensity** = How much stamina you spend
 
-### 3. Workplace Scenarios
-- Dynamic events based on character health
-- 4 choices per scenario with stat impacts
-- Leveling and experience system
-- Fallback scenarios for variety
-
-### 4. Pearl AI Chat
-- Context-aware responses
-- Food science expertise
-- Dry humor and puns
-- Gets excited about food discussions
-- Anti-hustle culture advice
+### Health Connection
+- High energy = Faster catch speed
+- Low energy = Slower work
+- High stress = Time to prank the boss!
+- Catch 24+ fish = Auto-prank for stress relief
 
 ---
 
-## 🔮 Future Development Roadmap
+## Innovation Highlights
 
-### Phase 1: Mobile Optimization & Visual Polish (In Progress)
-```
-📱 Responsive Design
-├─ Optimize all pages for mobile screens
-├─ Touch-friendly button sizes
-├─ Mobile navigation improvements
-└─ Ensure charts are readable on small screens
+1. **Health → Work Performance Link** - Shows consequences of health choices through simulation
+2. **Stress Relief Through Play** - Safe outlet for workplace frustrations
+3. **Food Science-Backed AI** - Pearl has real nutritional knowledge
+4. **Anti-Productivity Culture** - Encourages rest and work-life balance
+5. **USDA Integration** - 600k+ foods with accurate data
 
-🎨 Visual Enhancement ✅ (Mostly Complete)
-├─ ✅ Ocean work simulator with pixel art assets
-├─ ✅ Seal employee character with chase mechanics
-├─ ✅ Octopus boss with mood states (normal/angry)
-├─ ✅ Rich ocean environment (fish, rocks, seaweed, bubbles)
-├─ ✅ Animated character movements and swimming fish
-├─ 🚧 Additional character states for other pages
-└─ ✅ Unified ocean/blue color palette
-```
+---
+
+## Future Roadmap
+
+### Phase 1: Polish (Current)
+- Mobile optimization
+- Additional character states
+- Performance improvements
 
 ### Phase 2: Enhanced Features
-```
-🎮 Gamification Improvements
-├─ Achievement system
-├─ Daily/weekly challenges
-├─ Streak tracking
-├─ Unlockable character accessories
-└─ Leaderboards (optional social)
+- Achievement system
+- Daily/weekly challenges
+- Advanced analytics
 
-📊 Advanced Analytics
-├─ Weight tracking over time
-├─ BMI calculator and trends
-├─ Macro balance analysis
-├─ Correlation insights (sleep vs mood, etc.)
-└─ Weekly/monthly reports
+### Phase 3: Mobile App
+- iOS/Android deployment
+- Push notifications
+- Health app integrations
 
-🍔 Enhanced Food Logging
-├─ Recent foods quick-add
-├─ Favorite foods list
-├─ Meal templates (breakfast combos)
-├─ Photo recognition (Gemini Vision)
-└─ Barcode scanner
-```
-
-### Phase 3: Mobile App Deployment
-```
-📱 Cross-Platform App
-├─ Capacitor/Ionic integration
-├─ iOS App Store deployment
-├─ Google Play Store deployment
-├─ Push notifications
-├─ Offline mode with sync
-└─ Native device features (camera, health data)
-
-🔄 Data Sync & Integration
-├─ Apple Health integration
-├─ Google Fit integration
-├─ Fitbit/smartwatch sync
-├─ Cloud backup
-└─ Multi-device sync
-```
-
-### Phase 4: Community & Social
-```
-👥 Social Features
-├─ Friend system
-├─ Share progress/achievements
-├─ Group challenges
-├─ Community scenario library (user-created)
-└─ Support/accountability partners
-
-🎭 Expanded Work Scenarios
-├─ Multiple career paths (programmer, designer, etc.)
-├─ Branching storylines
-├─ Long-term consequences
-├─ Career progression system
-└─ AI-generated personalized scenarios
-```
-
-### Phase 5: Advanced AI Features
-```
-🤖 Enhanced Pearl
-├─ Voice chat support
-├─ Proactive check-ins
-├─ Trend prediction and warnings
-├─ Personalized meal planning
-├─ Recipe suggestions based on preferences
-└─ Workout routine generation
-
-🧠 Smart Insights
-├─ Pattern recognition (e.g., "You sleep poorly after late dinners")
-├─ Predictive mood tracking
-├─ Optimal timing suggestions
-└─ Personalized goal recommendations
-```
+### Phase 4: Social
+- Friend system
+- Group challenges
+- Community scenarios
 
 ---
 
-## 🎯 Design Philosophy
+## Design Philosophy
 
-### User Experience Principles
 1. **No Guilt Trips** - Focus on progress, not perfection
 2. **Make It Easy** - Minimize steps to log activities
 3. **Make It Fun** - Gamification without feeling childish
-4. **Be Honest** - Pearl tells it like it is, no sugar-coating
-5. **Respect Boundaries** - Anti-hustle, pro-rest mentality
-
-### Visual Design Goals
-- **Minimalist** - Clean, uncluttered interface
-- **Playful** - Stickman character, ocean theme, light animations
-- **Data-Rich** - Charts and stats without overwhelming
-- **Mobile-First** - Designed for on-the-go logging
-- **Accessible** - High contrast, readable fonts, clear icons
-
-### Ocean Work Simulator Theme (Implemented)
-```
-🦭 Seal Employee in Ocean Workplace:
-├─ Fishing hook hanging from above = work assignments
-├─ Seal chases fish across screen = completing tasks
-├─ Multiple swimming fish = ambient ocean life
-├─ Octopus boss assigns work and can be pranked
-├─ Character's health affects work performance:
-│   ├─ High energy = faster chase speed (higher intensity)
-│   ├─ Low energy = slower work, more fatigue
-│   ├─ High stress = need for stress relief (prank boss)
-│   └─ Work hours/intensity affects stamina and stress
-└─ Rich ocean environment with rocks, seaweed, bubbles
-
-🎨 Visual Assets:
-├─ Environment: Kenney Fish Pack (rocks, seaweed, fish, bubbles)
-├─ Characters: Google Nano Banana Pro 2 generated (seal, octopus)
-└─ Logo: Custom designed with AI assistance
-```
+4. **Be Honest** - Pearl tells it like it is
+5. **Respect Boundaries** - Anti-hustle, pro-rest
 
 ---
 
-## 📈 Health Metrics System
-
-This section documents how character stats are calculated and updated. **Important: Metrics only change when users log activities (diet, exercise, sleep, work). The character won't decay or change if users don't use the app for days.**
-
-### Default Values (New Users)
-| Metric | Default | Description |
-|--------|---------|-------------|
-| Stamina | 80 | Physical endurance |
-| Energy | 80 | Energy level |
-| Nutrition | 60 | Nutritional status |
-| Mood | 60 | Emotional state (composite) |
-| Stress | 40 | Stress level (lower is better) |
-
-### Stamina (0-100)
-Physical endurance that affects work capacity.
-
-| Action | Effect |
-|--------|--------|
-| Exercise | +1.5 per 10 minutes (max +15) |
-| Sleep ≥7 hours | +10 |
-| Sleep <5 hours | -15 |
-| Normal work | -0.5 per hour |
-| Overwork (>8h) | -5 per extra hour ⚠️ |
-
-### Energy (0-100)
-Daily energy level for activities.
-
-| Action | Effect |
-|--------|--------|
-| Caloric surplus | +1 per 100 kcal (max +20) |
-| Caloric deficit | -1 per 100 kcal (max -20) |
-| Sleep ≥7 hours | +10 |
-| Sleep <5 hours | -15 |
-| Work | -(hours × intensity × 0.5) |
-
-### Nutrition (0-100)
-Calculated from daily diet quality.
-
-| Component | Target | Max Score |
-|-----------|--------|-----------|
-| Protein | 50g/day | 33.3 |
-| Fiber | 25g/day | 33.3 |
-| Fat | ≤65g/day | 33.3 |
-
-**Formula:** `nutrition_score = protein_score + fiber_score + fat_score`
-
-### Mood (0-100)
-Composite emotional state.
-
-**Formula:** `mood = (stamina + energy + nutrition) / 3 - stress / 2`
-
-### Stress (0-100)
-Stress level - lower is better!
-
-| Action | Effect |
-|--------|--------|
-| Work | +(hours × intensity × 0.8) |
-| Overwork (>8h) | +8 per extra hour ⚠️⚠️ |
-| Exercise | -1 per 6 minutes (max -10) |
-| Sleep ≥7 hours | -5 |
-| Sleep <5 hours | +10 |
-| Prank octopus boss | -20 🎉 |
-
-### Level & Experience System
-
-**XP Sources:**
-| Action | XP Gained |
-|--------|-----------|
-| Log diet | +10 |
-| Log exercise | +15 |
-| Log sleep | +10 |
-| Work session | +(hours × intensity × 10) |
-| Nutrition target met (≥80) | +20 |
-| Prank boss | +50 |
-
-**Level Up Formula:** `XP needed = current_level × 100`
-
-### Character Emotional States
-The character's appearance changes based on stats:
-
-| State | Condition |
-|-------|-----------|
-| Happy | mood ≥ 80 AND stress < 30 |
-| Tired | mood < 40 OR energy < 30 |
-| Stressed | stress ≥ 70 |
-| Angry | stress ≥ 85 |
-| Normal | Default state |
-
-### Overwork Protection 🦭
-In the Ocean Work Simulator, if the seal catches more than 24 fish (representing excessive work), the seal automatically pranks the octopus boss to relieve stress! This is a built-in mechanic to discourage overworking.
-
----
-
-## 💡 Innovation Highlights
-
-### What Makes Oystraz Different?
-
-1. **Health → Work Performance Link**
-   - Unlike fitness apps that just track data, Oystraz shows the *consequences* of your health choices through workplace simulation
-   - Makes abstract health metrics concrete and relatable
-
-2. **Stress Relief Through Simulation**
-   - Safe outlet for workplace frustrations
-   - Cathartic "confront boss" or "take nap at work" options
-   - Reduces real-world stress by gamifying it
-
-3. **Food Science-Backed AI**
-   - Pearl has actual food science knowledge, not generic wellness advice
-   - Gets genuinely excited about nutrition, making learning fun
-   - Combines humor with expertise
-
-4. **Anti-Productivity Culture**
-   - Refreshing stance against hustle culture
-   - Encourages real breaks, work-life balance
-   - Validates rest as productive
-
-5. **Comprehensive USDA Integration**
-   - 600,000+ foods with accurate nutrition data
-   - Smart search with deduplication
-   - Scientific accuracy for calorie tracking
-
----
-
-## 🤝 Contributing
-
-Contributions welcome! Especially interested in:
-- New workplace scenario ideas
-- Food science facts for Pearl
-- UI/UX improvements
-- Mobile optimization suggestions
-
----
-
-## 📝 License
-
-MIT License - Free to use and modify
-
----
-
-## 🌟 Acknowledgments
+## Acknowledgments
 
 - **USDA FoodData Central** - Nutritional database
-- **Google Gemini 2.5 Flash** - AI capabilities for Pearl assistant
-- **Google Nano Banana Pro 2** - AI-generated character assets (seal, octopus, logo)
-- **Kenney Fish Pack** - Ocean environment assets (fish, rocks, seaweed, bubbles, terrain)
-- **Material-UI** - React component library
+- **Google Gemini 2.0 Flash** - AI capabilities for Pearl
+- **Google Nano Banana Pro 2** - AI-generated character assets
+- **Kenney Fish Pack** - Ocean environment assets
+- **Material-UI** - React components
 - **Recharts** - Data visualization
 
 ---
 
-## 📞 Contact
+## Contact
 
-- GitHub: www.github.com/dingonewen
+- GitHub: [github.com/dingonewen](https://github.com/dingonewen)
 - Email: dingywn@seas.upenn.edu
 
 ---
 
-**Make wellness fun. Give workplace stress a safe outlet. The world is your oyster.** 🎮💪🦪
+<p align="center">
+  <strong>Make wellness fun. Give workplace stress a safe outlet. The world is your oyster.</strong>
+</p>
 
-**Built for the Google Gemini 3 Hackathon** ✨
+<p align="center">
+  <em>Built for the Google Gemini Hackathon</em>
+</p>
