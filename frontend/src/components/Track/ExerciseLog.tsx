@@ -27,6 +27,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { logExercise, getTodayExerciseLogs, deleteExerciseLog } from '../../services/healthService';
+import { usePearlBubble } from '../../hooks/usePearlBubble';
 
 interface ExerciseLogItem {
   id: number;
@@ -74,6 +75,7 @@ export default function ExerciseLog() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const { triggerActivityBubble } = usePearlBubble();
 
   useEffect(() => {
     loadTodayLogs();
@@ -109,6 +111,7 @@ export default function ExerciseLog() {
       setError(null);
       await logExercise({
         activity_name: exerciseType,
+        activity_type: exerciseType.toLowerCase(),  // For yoga detection
         duration_minutes: durationNum,
         intensity: intensity.toLowerCase(),
         calories_burned: calculateCalories(),
@@ -118,6 +121,10 @@ export default function ExerciseLog() {
       setDuration('30');
       setIntensity('Moderate');
       await loadTodayLogs();
+
+      // Trigger Pearl bubble
+      triggerActivityBubble('exercise', { exerciseMinutes: durationNum });
+
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError('Failed to log exercise. Please try again.');

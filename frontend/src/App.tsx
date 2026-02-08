@@ -33,6 +33,9 @@ import WorkIcon from '@mui/icons-material/Work';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 // Pages
 import Home from './pages/Home';
@@ -45,9 +48,14 @@ import Register from './pages/Register';
 
 // Components
 import PearlAssistant from './components/PearlAssistant';
+import BackgroundMusic from './components/BackgroundMusic';
+import PearlBubble from './components/PearlBubble';
+import PearlIdleReminder from './components/PearlIdleReminder';
 
 // Store
 import { useUserStore } from './store/userStore';
+import { useAudioStore } from './store/audioStore';
+import { usePearlStore, type PearlActivityLevel } from './store/pearlStore';
 
 // Material Design 3 Dark Theme with Google's Dark Mode palette
 const theme = createTheme({
@@ -159,10 +167,27 @@ const theme = createTheme({
 // Navigation component that needs router context
 function AppNavigation() {
   const { isAuthenticated, logout } = useUserStore();
+  const { isMuted, toggleMute } = useAudioStore();
+  const { activityLevel, setActivityLevel } = usePearlStore();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const cycleActivityLevel = () => {
+    const levels: PearlActivityLevel[] = ['calm', 'flow', 'tide'];
+    const currentIndex = levels.indexOf(activityLevel);
+    const nextIndex = (currentIndex + 1) % levels.length;
+    setActivityLevel(levels[nextIndex]);
+  };
+
+  const getActivityLabel = () => {
+    switch (activityLevel) {
+      case 'calm': return '🌊 Calm';
+      case 'flow': return '🌊🌊 Flow';
+      case 'tide': return '🌊🌊🌊 Tide';
+    }
+  };
 
   const menuItems = [
     { text: 'Home', icon: <HomeIcon />, path: '/' },
@@ -314,6 +339,50 @@ function AppNavigation() {
         <Divider />
         <List>
           <ListItem disablePadding>
+            <ListItemButton onClick={cycleActivityLevel}>
+              <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
+                <AutoAwesomeIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={getActivityLabel()}
+                secondary="Pearl Mode"
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: 500,
+                    fontSize: '0.85rem',
+                  },
+                  '& .MuiListItemText-secondary': {
+                    color: 'rgba(255,255,255,0.5)',
+                    fontSize: '0.65rem',
+                  }
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={toggleMute}>
+              <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
+                {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+              </ListItemIcon>
+              <ListItemText
+                primary={isMuted ? 'Unmute' : 'Mute'}
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: 500,
+                  }
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon sx={{ color: '#E8D5E7', minWidth: 36 }}>
                 <LogoutIcon />
@@ -367,6 +436,15 @@ function App() {
 
           {/* Pearl AI Assistant - Global floating widget */}
           {isAuthenticated && <PearlAssistant />}
+
+          {/* Background Music - plays after login */}
+          {isAuthenticated && <BackgroundMusic />}
+
+          {/* Pearl Bubble - quick comments */}
+          {isAuthenticated && <PearlBubble />}
+
+          {/* Pearl Idle Reminder - for Tide mode */}
+          {isAuthenticated && <PearlIdleReminder />}
 
           {/* Footer - compact to avoid overlap with Pearl button */}
           <Box

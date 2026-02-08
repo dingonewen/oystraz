@@ -25,6 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { searchFoods, logDiet, getTodayDietLogs, deleteDietLog } from '../../services/healthService';
+import { usePearlBubble } from '../../hooks/usePearlBubble';
 
 interface FoodItem {
   fdcId: number;
@@ -53,6 +54,7 @@ export default function DietLog() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const { triggerActivityBubble } = usePearlBubble();
 
   useEffect(() => {
     loadTodayLogs();
@@ -99,9 +101,10 @@ export default function DietLog() {
       setIsLoading(true);
       setError(null);
       const servingSizeNum = parseFloat(servingSize) || 100;
+      const calories = Math.round((selectedFood.calories || 0) * servingSizeNum / 100);
       await logDiet({
         food_name: selectedFood.description,
-        calories: Math.round((selectedFood.calories || 0) * servingSizeNum / 100),
+        calories,
         protein: 0, // Will be enhanced with actual nutrition data
         carbs: 0,
         fat: 0,
@@ -111,6 +114,10 @@ export default function DietLog() {
       setSelectedFood(null);
       setServingSize('100');
       await loadTodayLogs();
+
+      // Trigger Pearl bubble
+      triggerActivityBubble('diet', { calories });
+
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError('Failed to log meal. Please try again.');

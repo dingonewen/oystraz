@@ -29,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BedtimeIcon from '@mui/icons-material/Bedtime';
 import { logSleep, getRecentSleepLogs, deleteSleepLog } from '../../services/healthService';
+import { usePearlBubble } from '../../hooks/usePearlBubble';
 
 interface SleepLogItem {
   id: number;
@@ -54,6 +55,7 @@ export default function SleepLog() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const { triggerActivityBubble } = usePearlBubble();
 
   useEffect(() => {
     loadRecentLogs();
@@ -99,6 +101,10 @@ export default function SleepLog() {
       setQuality('good');
       setNotes('');
       await loadRecentLogs();
+
+      // Trigger Pearl bubble
+      triggerActivityBubble('sleep');
+
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError('Failed to log sleep. Please try again.');

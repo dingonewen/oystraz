@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/public/assets/oystraz_final_logo.png" alt="Oystraz Logo" width="200"/>
+  <img src="frontend/public/assets/logo.png" alt="Oystraz Logo" width="200"/>
 </p>
 
 <h1 align="center">Oystraz - Life Orchestration Through Health</h1>
@@ -30,6 +30,8 @@
 | **Nutritional Intelligence** | USDA FoodData API | Access to 600k+ food records for 100% data-driven tracking |
 | **Smart Health Metrics** | Custom Algorithms | Sleep, exercise, and work intensity affect your character in realistic ways |
 | **24h Daily Limit** | Backend Validation | Realistic time constraints - sleep + exercise + work can't exceed 24 hours |
+| **Neo-Soul BGM** | Custom Audio | Relaxing background music that plays after login - mute option in sidebar |
+| **Prank Video** | Animation | Fun seal-pokes-octopus video plays for overtime work or manual prank |
 
 ---
 
@@ -93,18 +95,19 @@ Your style:
 | Stress | 40 | Stress level (lower is better) |
 
 ### Stamina (0-100)
-Physical endurance - **HIGH WORK INTENSITY DRAINS IT FAST!**
+Physical endurance - **WORK AND EXERCISE COST STAMINA! YOGA RESTORES IT!**
 
 | Action | Effect |
 |--------|--------|
-| Exercise | +1.5 per 10 minutes (max +15) |
+| **Yoga** | **+10 per hour** (recovery exercise!) |
+| Other Exercise | **-3 per hour** (tiring but good for stress) |
 | Sleep 9+ hours | **+25** (MAJOR recovery) |
 | Sleep 8+ hours | +20 |
 | Sleep 7+ hours | +15 |
 | Sleep 6+ hours | +5 |
 | Sleep <5 hours | -10 |
-| Work | **-(hours × intensity × 0.5)** |
-| Overwork (>8h) | Extra -(overtime × intensity × 0.5) |
+| Work | **-3 per hour** |
+| Overwork (>8h) | Extra **-5 per overtime hour** |
 
 ### Energy (0-100)
 Daily energy for activities.
@@ -154,10 +157,12 @@ Lower is better!
 
 ### Recovery Tips
 - **SLEEP IS POWERFUL!** 8-9 hours gives major stamina/energy boost and stress relief
+- **YOGA RESTORES STAMINA!** +10 per hour - perfect recovery exercise
+- **Other exercise** costs stamina (-3/h) but reduces stress - trade-off!
 - **Lower work intensity** is more sustainable than high intensity
-- **Exercise** reduces stress AND builds stamina - win-win!
 - **Balanced diet** with protein and fiber keeps nutrition high
 - **In the Work game**, catch 24+ fish to auto-prank the boss!
+- **Work overtime (>8h)?** Get rewarded with a fun prank video!
 
 ### Level & Experience System
 
@@ -324,12 +329,15 @@ A unique stress-relief game where you play as a seal employee!
 - **Multiple hooks** = Different work priorities
 - **Octopus boss** = Your manager (can be pranked!)
 - **Work intensity** = How much stamina you spend
+- **Prank button** = Click to trigger prank video animation!
+- **Overtime (>8h)** = Auto-prank video plays after catching all fish
 
 ### Health Connection
 - High energy = Faster catch speed
 - Low energy = Slower work
 - High stress = Time to prank the boss!
 - Catch 24+ fish = Auto-prank for stress relief
+- Work and exercise cost stamina - **Yoga restores it!**
 
 ---
 

@@ -15,6 +15,8 @@ from app.services import health_calculator as hc
 
 router = APIRouter(prefix="/api/work", tags=["Work"])
 
+MAX_WORK_HOURS = 8  # Hours per day before overtime penalties
+
 
 def _get_today_logs(db: Session, user_id: int):
     """Get today's activity logs for health calculation"""
@@ -87,6 +89,11 @@ def _recalculate_and_update_character(db: Session, character: Character,
     total_work_hours = sum(w.duration_hours or 0 for w in work_logs)
     avg_work_intensity = (sum(w.intensity or 3 for w in work_logs) / len(work_logs)) if work_logs else 3
 
+    # Separate yoga from other exercises for stamina calculation
+    yoga_minutes = sum(e.duration_minutes or 0 for e in exercise_logs
+                       if e.activity_type and 'yoga' in e.activity_type.lower())
+    other_exercise_minutes = total_exercise_minutes - yoga_minutes
+
     # Calculate nutrition score
     new_nutrition = hc.calculate_nutrition_score(diet_data) if diet_logs else 60
 
@@ -99,12 +106,30 @@ def _recalculate_and_update_character(db: Session, character: Character,
         work_intensity=int(avg_work_intensity)
     )
 
-    stamina_change = hc.calculate_stamina_change(
-        exercise_minutes=int(total_exercise_minutes),
-        sleep_hours=total_sleep_hours if total_sleep_hours > 0 else 7,
-        work_hours=total_work_hours,
-        work_intensity=int(avg_work_intensity)
-    )
+    # Calculate stamina change manually:
+    # - Yoga: +10 per hour
+    # - Other exercise: -3 per hour
+    # - Work: -3 per hour
+    # - Sleep gives recovery
+    stamina_change = 0.0
+    stamina_change += (yoga_minutes / 60) * 10  # Yoga restores
+    stamina_change -= (other_exercise_minutes / 60) * 3  # Other exercise costs
+    stamina_change -= total_work_hours * 3  # Work costs stamina
+    if total_work_hours > MAX_WORK_HOURS:
+        stamina_change -= (total_work_hours - MAX_WORK_HOURS) * 5  # Overtime penalty
+
+    # Sleep recovery
+    sleep_hours = total_sleep_hours if total_sleep_hours > 0 else 7
+    if sleep_hours >= 9:
+        stamina_change += 25
+    elif sleep_hours >= 8:
+        stamina_change += 20
+    elif sleep_hours >= 7:
+        stamina_change += 15
+    elif sleep_hours >= 6:
+        stamina_change += 5
+    elif sleep_hours < 5:
+        stamina_change -= 10
 
     stress_change = hc.calculate_stress_change(
         work_hours=total_work_hours,
