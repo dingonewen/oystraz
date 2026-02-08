@@ -148,7 +148,7 @@ const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#1E1F20',
+          background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
           borderRadius: 0,
         },
       },
@@ -286,8 +286,25 @@ function AppNavigation() {
           {menuItems.map((item) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton onClick={() => handleNavigation(item.path)}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemIcon sx={{
+                  color: 'transparent',
+                  background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  '& svg': { fill: 'url(#pearlGradient)' }
+                }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.text}
+                  sx={{
+                    '& .MuiListItemText-primary': {
+                      background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      fontWeight: 500,
+                    }
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
@@ -296,10 +313,26 @@ function AppNavigation() {
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
-              <ListItemIcon>
+              <ListItemIcon sx={{
+                color: 'transparent',
+                background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+              }}>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText
+                primary="Logout"
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: 500,
+                  }
+                }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
