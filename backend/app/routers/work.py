@@ -69,7 +69,11 @@ def _get_daily_hours_used(db: Session, user_id: int) -> tuple[float, float, floa
 def _recalculate_and_update_character(db: Session, character: Character,
                                        diet_logs, exercise_logs, sleep_logs, work_logs,
                                        pranked_boss: bool = False):
-    """Recalculate all health metrics and update character"""
+    """Recalculate all health metrics and update character based on today's activities.
+
+    IMPORTANT: This calculates the FINAL state from a baseline, not incremental changes.
+    Baseline values: stamina=80, energy=80, nutrition=60, stress=40
+    """
 
     # Convert logs to dicts for health_calculator
     diet_data = [{"protein": d.protein or 0, "fiber": d.fiber or 0, "fat": d.fat or 0,
@@ -79,25 +83,25 @@ def _recalculate_and_update_character(db: Session, character: Character,
     total_calories_in = sum(d.calories or 0 for d in diet_logs)
     total_calories_out = sum(e.calories_burned or 0 for e in exercise_logs) + 500  # Base metabolic
     total_exercise_minutes = sum(e.duration_minutes or 0 for e in exercise_logs)
-    total_sleep_hours = sum(s.duration_hours or 0 for s in sleep_logs) if sleep_logs else 7  # Default
+    total_sleep_hours = sum(s.duration_hours or 0 for s in sleep_logs) if sleep_logs else 0
     total_work_hours = sum(w.duration_hours or 0 for w in work_logs)
     avg_work_intensity = (sum(w.intensity or 3 for w in work_logs) / len(work_logs)) if work_logs else 3
 
     # Calculate nutrition score
-    new_nutrition = hc.calculate_nutrition_score(diet_data)
+    new_nutrition = hc.calculate_nutrition_score(diet_data) if diet_logs else 60
 
     # Calculate changes from activities
     energy_change = hc.calculate_energy_change(
         calories_in=total_calories_in,
         calories_out=total_calories_out,
-        sleep_hours=total_sleep_hours,
+        sleep_hours=total_sleep_hours if total_sleep_hours > 0 else 7,  # Default 7h if not logged
         work_hours=total_work_hours,
         work_intensity=int(avg_work_intensity)
     )
 
     stamina_change = hc.calculate_stamina_change(
         exercise_minutes=int(total_exercise_minutes),
-        sleep_hours=total_sleep_hours,
+        sleep_hours=total_sleep_hours if total_sleep_hours > 0 else 7,
         work_hours=total_work_hours,
         work_intensity=int(avg_work_intensity)
     )
@@ -106,20 +110,24 @@ def _recalculate_and_update_character(db: Session, character: Character,
         work_hours=total_work_hours,
         work_intensity=int(avg_work_intensity),
         exercise_minutes=int(total_exercise_minutes),
-        sleep_hours=total_sleep_hours,
+        sleep_hours=total_sleep_hours if total_sleep_hours > 0 else 7,
         pranked_boss=pranked_boss
     )
 
-    # Apply changes (but start from a base that considers recent activity)
-    # For now, apply changes to current values with bounds
-    new_energy = max(0, min(100, character.energy + energy_change))
-    new_stamina = max(0, min(100, character.stamina + stamina_change))
-    new_stress = max(0, min(100, character.stress + stress_change))
+    # CRITICAL FIX: Calculate from BASELINE values, not current values
+    # This ensures each work session doesn't double-count previous sessions
+    BASELINE_STAMINA = 80
+    BASELINE_ENERGY = 80
+    BASELINE_STRESS = 40
+
+    new_energy = max(0, min(100, BASELINE_ENERGY + energy_change))
+    new_stamina = max(0, min(100, BASELINE_STAMINA + stamina_change))
+    new_stress = max(0, min(100, BASELINE_STRESS + stress_change))
 
     # Mood is a composite
     new_mood = hc.calculate_mood_score(new_stamina, new_energy, new_nutrition, new_stress)
 
-    # Calculate XP
+    # Calculate XP gain from today's activities
     xp_gain = hc.calculate_xp_gain(
         diet_logged=len(diet_logs) > 0,
         exercise_logged=len(exercise_logs) > 0,
@@ -211,7 +219,7 @@ async def log_work(
             stamina_cost += (hours - 8) * intensity * 0.5  # Overtime + intensity
         experience_gain = int(hours * intensity * 10)
 
-    # Create work log
+    # Create work log - use client timestamp if provided (for timezone sync)
     new_log = WorkLog(
         user_id=current_user.id,
         duration_hours=hours,
@@ -221,7 +229,8 @@ async def log_work(
         stamina_cost=stamina_cost,
         experience_gain=experience_gain,
         pranked_boss=work_data.pranked_boss,
-        notes=work_data.notes
+        notes=work_data.notes,
+        logged_at=work_data.logged_at or datetime.utcnow()
     )
     db.add(new_log)
     db.commit()

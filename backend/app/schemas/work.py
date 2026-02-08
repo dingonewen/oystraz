@@ -24,6 +24,7 @@ class WorkLogCreate(BaseModel):
     intensity: int = Field(ge=1, le=5)
     pranked_boss: int = Field(ge=0, le=1, default=0)
     notes: Optional[str] = None
+    logged_at: Optional[datetime] = None  # Client can send local time
 
 
 class WorkLogResponse(WorkLogBase):

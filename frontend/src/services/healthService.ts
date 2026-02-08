@@ -22,7 +22,11 @@ export interface DietLogCreate {
 }
 
 export const createDietLog = async (data: DietLogCreate): Promise<DietLog> => {
-  const response = await api.post<DietLog>(API_ENDPOINTS.diet, data);
+  // Include local timestamp for timezone sync
+  const response = await api.post<DietLog>(API_ENDPOINTS.diet, {
+    ...data,
+    logged_at: data.logged_at || new Date().toISOString(),
+  });
   return response.data;
 };
 
@@ -52,7 +56,11 @@ export interface ExerciseLogCreate {
 }
 
 export const createExerciseLog = async (data: ExerciseLogCreate): Promise<ExerciseLog> => {
-  const response = await api.post<ExerciseLog>(API_ENDPOINTS.exercise, data);
+  // Include local timestamp for timezone sync
+  const response = await api.post<ExerciseLog>(API_ENDPOINTS.exercise, {
+    ...data,
+    logged_at: data.logged_at || new Date().toISOString(),
+  });
   return response.data;
 };
 
@@ -83,7 +91,11 @@ export interface SleepLogCreate {
 }
 
 export const createSleepLog = async (data: SleepLogCreate): Promise<SleepLog> => {
-  const response = await api.post<SleepLog>(API_ENDPOINTS.sleep, data);
+  // Include local timestamp for timezone sync
+  const response = await api.post<SleepLog>(API_ENDPOINTS.sleep, {
+    ...data,
+    logged_at: data.logged_at || new Date().toISOString(),
+  });
   return response.data;
 };
 
