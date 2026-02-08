@@ -72,6 +72,7 @@ const OceanWorkScene: React.FC<Props> = ({
   const [isPranking, setIsPranking] = useState(false);
   const [prankCooldown, setPrankCooldown] = useState(false);
   const [prankCount, setPrankCount] = useState(0);
+  const [showOvertimeVideo, setShowOvertimeVideo] = useState(false);
   const [currentTargetHook, setCurrentTargetHook] = useState(0);
   const [carryingFishId, setCarryingFishId] = useState<number | null>(null);
 
@@ -294,9 +295,26 @@ const OceanWorkScene: React.FC<Props> = ({
   }, [hookedFish.length, isPranking, isWorking, prankCooldown]);
 
   const handleWorkDone = useCallback(() => {
+    // If overtime (>8h), show prank video first
+    if (workHours > 8) {
+      setShowOvertimeVideo(true);
+      return;
+    }
+    // Normal completion
     setIsWorking(false);
     setSealState('idle');
     endSession();  // Clear persisted session
+    onWorkComplete(workHours, workIntensity);
+    sealPosRef.current = { x: 20, y: 55 };
+    setSealPos({ x: 20, y: 55 });
+  }, [endSession, onWorkComplete, workHours, workIntensity]);
+
+  // Handle video end - complete work after video
+  const handleOvertimeVideoEnd = useCallback(() => {
+    setShowOvertimeVideo(false);
+    setIsWorking(false);
+    setSealState('idle');
+    endSession();
     onWorkComplete(workHours, workIntensity);
     sealPosRef.current = { x: 20, y: 55 };
     setSealPos({ x: 20, y: 55 });
@@ -575,6 +593,52 @@ const OceanWorkScene: React.FC<Props> = ({
           </Box>
         )}
       </Paper>
+
+      {/* Overtime Prank Video Overlay */}
+      <AnimatePresence>
+        {showOvertimeVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.9)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999,
+            }}
+          >
+            <Box sx={{ textAlign: 'center', maxWidth: '90vw', maxHeight: '90vh' }}>
+              <Typography variant="h5" sx={{ color: '#f093fb', mb: 2 }}>
+                🦑 Overtime Alert! Seal pranks the boss! 🖤
+              </Typography>
+              <video
+                autoPlay
+                onEnded={handleOvertimeVideoEnd}
+                style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12 }}
+              >
+                <source src="/assets/ocean/Seal_Pokes_Octopus_Ink_Cloud.mp4" type="video/mp4" />
+              </video>
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', mt: 2 }}>
+                Video will auto-close when finished...
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={handleOvertimeVideoEnd}
+                sx={{ mt: 2, color: '#b388ff', borderColor: '#b388ff' }}
+              >
+                Skip Video
+              </Button>
+            </Box>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Controls */}
       {!isWorking && (
