@@ -197,7 +197,7 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">💪 Stamina</Typography>
-                  <Typography variant="body2">{character.stamina.toFixed(1)}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.stamina)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -218,7 +218,7 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">⚡ Energy</Typography>
-                  <Typography variant="body2">{character.energy.toFixed(1)}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.energy)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -239,7 +239,7 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😊 Mood</Typography>
-                  <Typography variant="body2">{character.mood.toFixed(1)}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.mood)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -260,7 +260,7 @@ export default function Work() {
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                   <Typography variant="body2">😰 Stress</Typography>
-                  <Typography variant="body2">{character.stress.toFixed(1)}/100</Typography>
+                  <Typography variant="body2">{Math.round(character.stress)}/100</Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
@@ -365,12 +365,12 @@ export default function Work() {
                       primary={
                         log.pranked_boss > 0
                           ? `💦 Pranked the boss! (${new Date(log.logged_at).toLocaleDateString()})`
-                          : `${log.duration_hours.toFixed(1)}h work - Intensity ${log.intensity}/5`
+                          : `${Math.round(log.duration_hours)}h work - Intensity ${log.intensity}/5`
                       }
                       secondary={
                         log.pranked_boss > 0
-                          ? `Stress -${Math.abs(log.stress_gain).toFixed(1)} • Mood boost!`
-                          : `Energy -${log.energy_cost.toFixed(1)} • Stress +${log.stress_gain.toFixed(1)} • XP +${log.experience_gain}`
+                          ? `Stress -${Math.round(Math.abs(log.stress_gain))} • Mood boost!`
+                          : `Energy -${Math.round(log.energy_cost)} • Stress +${Math.round(log.stress_gain)} • XP +${log.experience_gain}`
                       }
                     />
                     <Typography variant="caption" color="text.secondary" sx={{ mr: 2 }}>

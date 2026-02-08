@@ -120,12 +120,14 @@ def _recalculate_and_update_character(db: Session, character: Character,
     BASELINE_ENERGY = 80
     BASELINE_STRESS = 40
 
-    new_energy = max(0, min(100, BASELINE_ENERGY + energy_change))
-    new_stamina = max(0, min(100, BASELINE_STAMINA + stamina_change))
-    new_stress = max(0, min(100, BASELINE_STRESS + stress_change))
+    # All stats as integers (no decimals)
+    new_energy = int(max(0, min(100, BASELINE_ENERGY + energy_change)))
+    new_stamina = int(max(0, min(100, BASELINE_STAMINA + stamina_change)))
+    new_stress = int(max(0, min(100, BASELINE_STRESS + stress_change)))
+    new_nutrition = int(new_nutrition)
 
     # Mood is a composite
-    new_mood = hc.calculate_mood_score(new_stamina, new_energy, new_nutrition, new_stress)
+    new_mood = int(hc.calculate_mood_score(new_stamina, new_energy, new_nutrition, new_stress))
 
     # Calculate XP gain from today's activities
     xp_gain = hc.calculate_xp_gain(
