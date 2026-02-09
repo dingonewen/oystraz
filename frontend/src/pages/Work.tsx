@@ -183,7 +183,7 @@ export default function Work() {
           gutterBottom
           sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
         >
-          Work like a seal. Revenge like a pro.
+          Orchestrate a life the Octopus can't micromanage.
         </Typography>
 
         {/* Success/Error Messages */}
@@ -200,10 +200,10 @@ export default function Work() {
 
         {/* Character Status - Synced with Home */}
         <Paper sx={{ p: { xs: 2, sm: 2, md: 3 }, mt: { xs: 2, sm: 3 }, mb: { xs: 2, sm: 3 }, borderRadius: 2, background: 'linear-gradient(180deg, rgba(26, 58, 92, 0.2) 0%, transparent 100%)' }}>
-          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ mb: 1.5 }}>
             Current Status - safe house linked
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={2.5}>
             <Grid size={{ xs: 6, md: 3 }}>
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>

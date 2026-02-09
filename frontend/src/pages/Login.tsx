@@ -60,111 +60,136 @@ export default function Login() {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 8 }}>
-        {/* Outer border with logo gradient */}
-        <Box sx={{ p: '3px', borderRadius: '28px', background: logoBorderGradient }}>
-          <Paper sx={{ p: 4, borderRadius: 3, background: pearlBorderGradient }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <Box
-                component="img"
-                src="/assets/pearl.png"
-                alt="Oystraz"
-                sx={{ width: 64, height: 64, filter: 'drop-shadow(0 0 8px rgba(232, 213, 231, 0.6))' }}
-              />
-            </Box>
-            {/* Title with pearl gradient */}
-            <Typography
-              variant="h4"
-              align="center"
-              gutterBottom
+    <Container maxWidth="sm" sx={{ height: 'calc(100vh - 56px)', display: 'flex', flexDirection: 'column', py: 1 }}>
+      {/* Outer border with logo gradient - stretches to fill available space */}
+      <Box sx={{ p: '3px', borderRadius: '28px', background: logoBorderGradient, flex: 1, display: 'flex' }}>
+        <Paper sx={{
+          p: { xs: 2, sm: 3 },
+          borderRadius: 3,
+          background: pearlBorderGradient,
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <Box
+              component="img"
+              src="/assets/pearl.png"
+              alt="Oystraz"
+              sx={{ width: 64, height: 64, filter: 'drop-shadow(0 0 8px rgba(232, 213, 231, 0.6))' }}
+            />
+          </Box>
+          {/* Title with pearl gradient - Oystraz on first line */}
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              background: pearlTitleGradient,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 1000,
+              WebkitTextStroke: '0.5px #CFACCE',
+            }}
+          >
+            Oystraz:
+          </Typography>
+          {/* Subtitle - Your Personal Shell */}
+          <Typography
+            variant="h5"
+            align="center"
+            gutterBottom
+            sx={{
+              background: pearlTitleGradient,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 600,
+              mb: 2,
+            }}
+          >
+            Your Personal Shell
+          </Typography>
+          {/* Taglines - each on separate line */}
+          <Typography variant="body2" align="center" color="text.secondary">
+            Leave the grind outside.
+          </Typography>
+          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
+            Your well-being starts now.
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            {/* TextField with dark gray input text */}
+            <TextField
+              fullWidth
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              margin="normal"
+              required
+              autoFocus
               sx={{
-                background: pearlTitleGradient,
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontWeight: 1000,
-                WebkitTextStroke: '0.5px #CFACCE',
+                '& .MuiInputBase-input': {
+                  color: '#2c234b',
+                },
+              }}
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              margin="normal"
+              required
+              sx={{
+                '& .MuiInputBase-input': {
+                  color: '#2c234b',
+                },
+              }}
+            />
+            {/* Pearl purple button */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={loading}
+              sx={{
+                mt: 3,
+                mb: 2,
+                background: pearlPurpleGradient,
+                color: '#2D2D2D',
+                fontWeight: 600,
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #D5C4E8 0%, #C4B5E0 50%, #B5A6D8 100%)',
+                },
+                '&:disabled': {
+                  background: '#555',
+                  color: '#888',
+                },
               }}
             >
-              Oystraz: Your Personal Shell
+              {loading ? 'Diving in...' : 'Divein'}
+            </Button>
+          </form>
+
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              Don't have an account?{' '}
+              <Link href="/register" sx={{ cursor: 'pointer', color: '#CFACCE' }}>
+                Register here
+              </Link>
             </Typography>
-            <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}> 
-              Leave the grind outside. Your well-being starts now.
-            </Typography>
-
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-
-            <form onSubmit={handleSubmit}>
-              {/* TextField with dark gray input text */}
-              <TextField
-                fullWidth
-                label="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                margin="normal"
-                required
-                autoFocus
-                sx={{
-                  '& .MuiInputBase-input': {
-                    color: '#2c234b',
-                  },
-                }}
-              />
-              <TextField
-                fullWidth
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                margin="normal"
-                required
-                sx={{
-                  '& .MuiInputBase-input': {
-                    color: '#2c234b',
-                  },
-                }}
-              />
-              {/* Pearl purple button */}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={loading}
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  background: pearlPurpleGradient,
-                  color: '#2D2D2D',
-                  fontWeight: 600,
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #D5C4E8 0%, #C4B5E0 50%, #B5A6D8 100%)',
-                  },
-                  '&:disabled': {
-                    background: '#555',
-                    color: '#888',
-                  },
-                }}
-              >
-                {loading ? 'Logging in...' : 'Login'}
-              </Button>
-            </form>
-
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Typography variant="body2">
-                Don't have an account?{' '}
-                <Link href="/register" sx={{ cursor: 'pointer', color: '#CFACCE' }}>
-                  Register here
-                </Link>
-              </Typography>
-            </Box>
-          </Paper>
-        </Box>
+          </Box>
+        </Paper>
       </Box>
     </Container>
   );

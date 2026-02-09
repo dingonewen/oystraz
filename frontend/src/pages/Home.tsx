@@ -67,10 +67,10 @@ export default function Home() {
   // Stat card data - integer values
   const stats = [
     { label: 'Stamina', emoji: '💪', value: Math.round(character?.stamina || 0), color: 'primary', desc: 'Exercise & sleep' },
-    { label: 'Energy', emoji: '🔋', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
+    { label: 'Energy', emoji: '⚡', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
     { label: 'Nutrition', emoji: '🍎', value: Math.round(character?.nutrition || 0), color: 'primary', desc: 'Diet balance' },
     { label: 'Mood', emoji: '😊', value: Math.round(character?.mood || 0), color: 'primary', desc: 'Overall wellness' },
-    { label: 'Stress', emoji: '🫩', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
+    { label: 'Stress', emoji: '😰', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
     { label: 'Level', emoji: '🏆', value: character?.level || 1, color: 'secondary', desc: `XP: ${character?.experience || 0}` },
   ];
 
@@ -143,7 +143,7 @@ export default function Home() {
                 {character?.emotionalState === 'happy' && '😊'}
                 {character?.emotionalState === 'normal' && '🙂'}
                 {character?.emotionalState === 'tired' && '😴'}
-                {character?.emotionalState === 'stressed' && '🫩'}
+                {character?.emotionalState === 'stressed' && '😰'}
                 {character?.emotionalState === 'angry' && '😠'}
                 {!character?.emotionalState && '🙂'}
               </Box>
@@ -232,26 +232,26 @@ export default function Home() {
               rotate: [0, -3, 3, 0],
             } : {}}
             transition={{ duration: 0.5 }}
-            style={{ cursor: 'pointer', position: 'relative' }}
+            style={{ cursor: 'pointer', position: 'relative', overflow: 'visible' }}
           >
-            {/* Pearl shimmer glow effect on hover */}
+            {/* Pearl shimmer glow effect on hover - contained around octopus */}
             <AnimatePresence>
               {isOctopusHovered && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1.2 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   style={{
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: '120%',
-                    height: '120%',
-                    background: 'radial-gradient(ellipse at center, rgba(232, 213, 231, 0.4) 0%, rgba(213, 229, 240, 0.3) 30%, rgba(248, 232, 238, 0.2) 50%, transparent 70%)',
+                    width: '100%',
+                    height: '100%',
+                    background: 'radial-gradient(ellipse at center, rgba(232, 213, 231, 0.5) 0%, rgba(213, 229, 240, 0.3) 40%, transparent 70%)',
                     borderRadius: '50%',
-                    filter: 'blur(15px)',
+                    filter: 'blur(10px)',
                     zIndex: 0,
                     pointerEvents: 'none',
                   }}
@@ -264,8 +264,8 @@ export default function Home() {
               src="/assets/ocean/octopus.png"
               alt="Octopus Boss"
               sx={{
-                width: { xs: 80, sm: 100 },
-                height: { xs: 80, sm: 100 },
+                width: { xs: 120, sm: 100 },
+                height: { xs: 120, sm: 100 },
                 objectFit: 'contain',
                 imageRendering: 'pixelated',
                 position: 'relative',
@@ -284,13 +284,13 @@ export default function Home() {
             color="text.secondary"
             sx={{
               position: 'absolute',
-              bottom: { xs: -20, sm: -24 },
+              bottom: { xs: -10, sm: -24 },
               fontSize: { xs: '0.6rem', sm: '0.7rem' },
               opacity: 0.6,
               fontStyle: 'italic',
             }}
           >
-            {isOctopusHovered ? '' : '🐙 Boss has thoughts...'}
+            {isOctopusHovered ? '🐙 The Boss has thoughts...' : '🐙 I am watching you...'}
           </Typography>
         </Box>
       </Box>

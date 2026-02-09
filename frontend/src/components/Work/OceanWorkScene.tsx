@@ -515,7 +515,7 @@ const OceanWorkScene: React.FC<Props> = ({
             <img
               src={isPranking ? "/assets/ocean/octopus_angry.png" : "/assets/ocean/octopus.png"}
               alt="boss"
-              style={{ width: 90 }}
+              style={{ width: 100 }}
             />
           </Box>
         </motion.div>
@@ -565,7 +565,7 @@ const OceanWorkScene: React.FC<Props> = ({
                 src="/assets/ocean/seal.png"
                 alt="seal"
                 style={{
-                  width: 55,
+                  width: 60,
                   filter: isWorking ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' : 'none',
                 }}
               />
