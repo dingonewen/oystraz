@@ -154,7 +154,7 @@ export default function ExerciseLog() {
         gutterBottom
         sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
       >
-        Log Your Exercise
+        🏊🏽 Log Your Exercise
       </Typography>
       <Typography
         variant="body2"
@@ -162,7 +162,7 @@ export default function ExerciseLog() {
         gutterBottom
         sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
       >
-        Track your physical activities to boost your character's stamina and energy
+        Cardio for the Great Escape.
       </Typography>
 
       {error && (

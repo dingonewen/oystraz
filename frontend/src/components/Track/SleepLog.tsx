@@ -23,7 +23,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Rating,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -40,12 +39,33 @@ interface SleepLogItem {
 }
 
 const QUALITY_LEVELS = [
-  { value: 'poor', label: 'Poor', stars: 1 },
-  { value: 'fair', label: 'Fair', stars: 2 },
-  { value: 'good', label: 'Good', stars: 3 },
-  { value: 'very_good', label: 'Very Good', stars: 4 },
-  { value: 'excellent', label: 'Excellent', stars: 5 },
+  { value: 'poor', label: 'High Latency', fish: 1 },
+  { value: 'fair', label: 'Weak Connection', fish: 2 },
+  { value: 'good', label: 'Optimized Standby', fish: 3 },
+  { value: 'very_good', label: 'Fully Encrypted', fish: 4 },
+  { value: 'excellent', label: 'Offline Perfection', fish: 5 },
 ];
+
+// Custom Fish Rating component
+const FishRating = ({ value, size = 'medium' }: { value: number; size?: 'small' | 'medium' }) => {
+  const fishSize = size === 'small' ? '0.9rem' : '1.1rem';
+  return (
+    <Box sx={{ display: 'flex', gap: 0.3 }}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Typography
+          key={i}
+          sx={{
+            fontSize: fishSize,
+            opacity: i <= value ? 1 : 0.25,
+            filter: i <= value ? 'none' : 'grayscale(1)',
+          }}
+        >
+          🐟
+        </Typography>
+      ))}
+    </Box>
+  );
+};
 
 export default function SleepLog() {
   const [duration, setDuration] = useState('8');
@@ -124,8 +144,8 @@ export default function SleepLog() {
     }
   };
 
-  const getQualityStars = (qualityValue: string): number => {
-    return QUALITY_LEVELS.find((q) => q.value === qualityValue)?.stars || 3;
+  const getQualityFish = (qualityValue: string): number => {
+    return QUALITY_LEVELS.find((q) => q.value === qualityValue)?.fish || 3;
   };
 
   const averageSleep =
@@ -140,7 +160,7 @@ export default function SleepLog() {
         gutterBottom
         sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
       >
-        Log Your Sleep
+        🛌🏽 Log Your Sleep
       </Typography>
       <Typography
         variant="body2"
@@ -148,7 +168,7 @@ export default function SleepLog() {
         gutterBottom
         sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
       >
-        Track your sleep to maintain your character's energy and mood
+        Initiating professional hibernation.
       </Typography>
 
       {error && (
@@ -190,7 +210,7 @@ export default function SleepLog() {
                   <MenuItem key={level.value} value={level.value}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       {level.label}
-                      <Rating value={level.stars} size="small" readOnly />
+                      <FishRating value={level.fish} size="small" />
                     </Box>
                   </MenuItem>
                 ))}
@@ -276,7 +296,7 @@ export default function SleepLog() {
                         <Typography variant="subtitle1">
                           {log.duration_hours} hours
                         </Typography>
-                        <Rating value={getQualityStars(log.quality)} size="small" readOnly />
+                        <FishRating value={getQualityFish(log.quality)} size="small" />
                       </Box>
                     }
                     secondary={

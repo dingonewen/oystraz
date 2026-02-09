@@ -146,7 +146,7 @@ export default function DietLog() {
         gutterBottom
         sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
       >
-        Log Your Meals
+        🦪 Log Your Meals
       </Typography>
       <Typography
         variant="body2"
@@ -154,7 +154,7 @@ export default function DietLog() {
         gutterBottom
         sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
       >
-        Search for foods in the USDA database (600,000+ items)
+        USDA database tells you what to eat.
       </Typography>
 
       {error && (
@@ -175,7 +175,7 @@ export default function DietLog() {
           <Grid size={{ xs: 12, sm: 9 }}>
             <TextField
               fullWidth
-              placeholder="Search for food (e.g., chicken breast, apple, rice)"
+              placeholder="e.g., Salmon"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}

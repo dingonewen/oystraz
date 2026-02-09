@@ -76,7 +76,7 @@ export default function Track() {
           gutterBottom
           sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
         >
-          Maintain the hardware to ruin the system.
+          Maintain your organic hardware. Feed it, move it, and reboot it.
         </Typography>
 
         <Paper sx={{ mt: { xs: 2, sm: 3 }, borderRadius: 1.5, overflow: 'hidden' }}>
