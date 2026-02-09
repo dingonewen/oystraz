@@ -67,10 +67,10 @@ export default function Home() {
   // Stat card data - integer values
   const stats = [
     { label: 'Stamina', emoji: '💪', value: Math.round(character?.stamina || 0), color: 'primary', desc: 'Exercise & sleep' },
-    { label: 'Energy', emoji: '⚡', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
+    { label: 'Energy', emoji: '🔋', value: Math.round(character?.energy || 0), color: 'primary', desc: 'Caloric balance' },
     { label: 'Nutrition', emoji: '🍎', value: Math.round(character?.nutrition || 0), color: 'primary', desc: 'Diet balance' },
     { label: 'Mood', emoji: '😊', value: Math.round(character?.mood || 0), color: 'primary', desc: 'Overall wellness' },
-    { label: 'Stress', emoji: '😰', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
+    { label: 'Stress', emoji: '🫩', value: Math.round(character?.stress || 0), color: 'error', desc: 'Lower is better' },
     { label: 'Level', emoji: '🏆', value: character?.level || 1, color: 'secondary', desc: `XP: ${character?.experience || 0}` },
   ];
 
@@ -143,14 +143,14 @@ export default function Home() {
                 {character?.emotionalState === 'happy' && '😊'}
                 {character?.emotionalState === 'normal' && '🙂'}
                 {character?.emotionalState === 'tired' && '😴'}
-                {character?.emotionalState === 'stressed' && '😰'}
+                {character?.emotionalState === 'stressed' && '🫩'}
                 {character?.emotionalState === 'angry' && '😠'}
                 {!character?.emotionalState && '🙂'}
               </Box>
               {/* Character info */}
               <Box sx={{ flex: 1 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
-                  Your Character
+                  Your Character Seal
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.85rem' } }}>
                   {character?.bodyType || 'Normal'} • {character?.emotionalState || 'Normal'}

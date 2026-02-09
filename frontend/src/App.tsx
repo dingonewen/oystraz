@@ -277,7 +277,7 @@ function AppNavigation() {
                 Profile
               </Button>
               <Button color="inherit" onClick={logout}>
-                Logout
+                Surface
               </Button>
             </>
           )}
@@ -388,7 +388,7 @@ function AppNavigation() {
                 <LogoutIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Logout"
+                primary="Surface"
                 sx={{
                   '& .MuiListItemText-primary': {
                     background: 'linear-gradient(135deg, #FEFEFE 0%, #F8E8EE 20%, #E8D5E7 40%, #D5E5F0 60%, #F0EDE8 80%, #FFFEF8 100%)',

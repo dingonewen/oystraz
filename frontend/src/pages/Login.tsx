@@ -177,7 +177,7 @@ export default function Login() {
                 },
               }}
             >
-              {loading ? 'Diving in...' : 'Divein'}
+              {loading ? 'Diving in...' : 'Dive In'}
             </Button>
           </form>
 
