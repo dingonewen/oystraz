@@ -1,309 +1,198 @@
 # Oystraz Backend API
 
-FastAPI backend for the Oystraz health tracking application with Google Gemini AI integration.
-
-## Features
-
-- 🔐 **JWT Authentication** - Secure user registration and login
-- 👤 **User Management** - Profile management with health metrics
-- 🎮 **Character System** - Virtual character reflecting health state
-- 🍽️ **Diet Tracking** - Log meals with USDA nutrition data
-- 🏃 **Exercise Tracking** - Record workouts and activities
-- 😴 **Sleep Tracking** - Monitor sleep quality and duration
-- 💼 **Work Logging** - Track work sessions with intensity and stress impacts
-- 🤖 **Gemini AI Assistant (Pearl)** - Personalized health insights with personality
-- 🏢 **Ocean Work Simulator** - Interactive work tracking with visual feedback
-- 📊 **USDA API Integration** - 600k+ foods nutrition database
+FastAPI backend for the Oystraz gamified health tracking application with Google Gemini AI integration.
 
 ## Tech Stack
 
-- **Framework**: FastAPI 0.104+
-- **Database**: PostgreSQL with SQLAlchemy ORM (hosted on **Supabase**)
-- **Authentication**: JWT tokens with bcrypt password hashing
-- **AI**: Google Gemini 2.0 Flash API
-- **External APIs**: USDA FoodData Central
-- **Python**: 3.11+
+| Technology | Purpose |
+|------------|---------|
+| **FastAPI** | High-performance async web framework |
+| **Python 3.11+** | Runtime |
+| **PostgreSQL** | Database (hosted on **Supabase**) |
+| **SQLAlchemy 2.0** | ORM |
+| **JWT + bcrypt** | Authentication |
+| **Google Gemini 2.0 Flash** | Pearl AI companion |
+| **USDA FoodData API** | Nutrition database (600k+ foods) |
+
+## Quick Start
+
+```bash
+# Install dependencies
+cd backend
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+
+# Run server (auto-creates tables)
+uvicorn app.main:app --reload --port 8000
+```
+
+### Required Environment Variables
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/oystraz
+SECRET_KEY=<generate with: openssl rand -hex 32>
+GEMINI_API_KEY=<from Google AI Studio>
+USDA_API_KEY=<from USDA FoodData Central>
+```
 
 ## Project Structure
 
 ```
-backend/
-├── app/
-│   ├── models/          # SQLAlchemy database models
-│   │   ├── user.py
-│   │   ├── character.py
-│   │   ├── diet_log.py
-│   │   ├── exercise_log.py
-│   │   ├── sleep_log.py
-│   │   └── work_log.py
-│   ├── routers/         # API endpoints
-│   │   ├── auth.py      # Register/Login
-│   │   ├── user.py      # User profile
-│   │   ├── character.py # Character management
-│   │   ├── diet.py      # Diet logging
-│   │   ├── exercise.py  # Exercise logging
-│   │   ├── sleep.py     # Sleep logging
-│   │   ├── work.py      # Work session logging
-│   │   └── assistant.py # AI & USDA APIs
-│   ├── schemas/         # Pydantic schemas
-│   │   ├── auth.py
-│   │   ├── user.py
-│   │   ├── character.py
-│   │   ├── diet.py
-│   │   ├── exercise.py
-│   │   ├── sleep.py
-│   │   └── work.py
-│   ├── services/        # Business logic
-│   │   ├── auth.py      # JWT & password utils
-│   │   ├── gemini.py    # Gemini AI integration
-│   │   └── usda.py      # USDA API integration
-│   ├── config.py        # Configuration settings
-│   ├── database.py      # Database connection
-│   └── main.py          # FastAPI app entry point
-├── requirements.txt
-├── .env.example
-└── README.md
+app/
+├── models/           # SQLAlchemy models
+│   ├── user.py
+│   ├── character.py
+│   ├── diet_log.py
+│   ├── exercise_log.py
+│   ├── sleep_log.py
+│   └── work_log.py   # Includes pranked_boss tracking
+├── routers/          # API endpoints
+│   ├── auth.py       # Register/Login (JWT)
+│   ├── user.py       # Profile management
+│   ├── character.py  # Character stats & state
+│   ├── diet.py       # Diet logging
+│   ├── exercise.py   # Exercise logging
+│   ├── sleep.py      # Sleep logging
+│   ├── work.py       # Work sessions & prank tracking
+│   └── assistant.py  # Gemini AI & USDA integration
+├── schemas/          # Pydantic request/response models
+├── services/
+│   ├── auth.py       # JWT & password utilities
+│   ├── gemini.py     # Gemini 2.0 Flash integration
+│   └── usda.py       # USDA API client
+├── config.py         # Settings
+├── database.py       # DB connection
+└── main.py           # FastAPI app entry
 ```
-
-## Setup Instructions
-
-### 1. Prerequisites
-
-- Python 3.11 or higher
-- PostgreSQL 14 or higher
-- pip (Python package manager)
-
-### 2. Install Dependencies
-
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-### 3. Database Setup
-
-**Create PostgreSQL database:**
-
-```bash
-# Linux/Mac
-sudo -u postgres psql
-CREATE DATABASE oystraz;
-CREATE USER oystraz_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE oystraz TO oystraz_user;
-\q
-
-# Windows (using psql)
-psql -U postgres
-CREATE DATABASE oystraz;
-```
-
-### 4. Environment Configuration
-
-```bash
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env with your settings
-nano .env  # or use any text editor
-```
-
-**Required environment variables:**
-
-```env
-DATABASE_URL=postgresql://oystraz_user:your_password@localhost:5432/oystraz
-SECRET_KEY=<generate using: openssl rand -hex 32>
-GEMINI_API_KEY=<your Google AI Studio API key>
-USDA_API_KEY=<your USDA FoodData Central API key>
-```
-
-**Get API Keys:**
-
-- **Gemini API**: https://makersuite.google.com/app/apikey
-- **USDA API**: https://fdc.nal.usda.gov/api-key-signup.html (free)
-
-### 5. Initialize Database
-
-The database tables will be automatically created when you first run the application.
-
-```bash
-# Run the application (tables auto-create)
-python -m app.main
-```
-
-Alternatively, you can create tables manually:
-
-```python
-from app.database import engine, Base
-from app.models import *  # Import all models
-Base.metadata.create_all(bind=engine)
-```
-
-### 6. Run the Server
-
-**Development mode (with auto-reload):**
-
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-**Production mode:**
-
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
-
-### 7. Access API Documentation
-
-FastAPI provides automatic interactive API documentation:
-
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
 
 ## API Endpoints
 
 ### Authentication
-
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login and get JWT token
-
-### User Management
-
-- `GET /api/users/me` - Get current user info
-- `PUT /api/users/me` - Update user profile
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login, get JWT token |
 
 ### Character
-
-- `GET /api/character` - Get user's character
-- `PUT /api/character` - Update character stats
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/character` | Get character stats |
+| PUT | `/api/character` | Update character |
 
 ### Health Tracking
-
-- `POST /api/diet` - Create diet log
-- `GET /api/diet` - Get diet logs (last N days)
-- `PUT /api/diet/{log_id}` - Update diet log
-- `DELETE /api/diet/{log_id}` - Delete diet log
-
-*(Similar endpoints for `/api/exercise` and `/api/sleep`)*
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/diet` | Log meal |
+| GET | `/api/diet` | Get diet logs |
+| POST | `/api/exercise` | Log exercise |
+| GET | `/api/exercise` | Get exercise logs |
+| POST | `/api/sleep` | Log sleep |
+| GET | `/api/sleep` | Get sleep logs |
 
 ### Work Tracking
-
-- `POST /api/work/log` - Log a work session
-- `GET /api/work/logs` - Get work logs (last N days)
-- `GET /api/work/stats` - Get work statistics (hours, pranks, etc.)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/work/log` | Log work session |
+| GET | `/api/work/logs` | Get work history |
+| GET | `/api/work/stats` | Get stats (hours, pranks) |
+| DELETE | `/api/work/{id}` | Delete work log |
 
 ### AI Assistant
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/assistant/advice` | Get Pearl health advice |
+| POST | `/api/assistant/food-search` | Search USDA foods |
+| GET | `/api/assistant/food/{fdc_id}` | Get food nutrition |
 
-- `POST /api/assistant/advice` - Get personalized health advice from Gemini
-- `POST /api/assistant/workplace-scenario` - Generate workplace scenario
-- `POST /api/assistant/food-search` - Search USDA food database
-- `GET /api/assistant/food/{fdc_id}` - Get food nutrition details
+## Health Calculation Logic
 
-## Usage Examples
+### Character Stats Update (on activity log)
 
-### Register a new user
+```python
+# Sleep effects
+if duration >= 9: stamina += 25, stress -= 20
+elif duration >= 8: stamina += 20, stress -= 15
+elif duration >= 7: stamina += 15, stress -= 10
+elif duration < 5: stamina -= 10, stress += 5
 
-```bash
-curl -X POST "http://localhost:8000/api/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "username": "testuser",
-    "password": "securepass123",
-    "full_name": "Test User"
-  }'
+# Work effects
+stress += hours * intensity * 0.5
+energy -= hours * intensity * 0.3
+stamina -= hours * 3
+if hours > 8:  # Overtime penalty
+    stamina -= (hours - 8) * 5
+
+# Exercise effects
+stress -= minutes / 5  # Max -15
+if exercise_type == 'yoga':
+    stamina += 10 * hours  # Recovery!
+else:
+    stamina -= 3 * hours   # Tiring but good
+
+# Boss prank effect
+if pranked_boss: stress -= 20, mood += 10
 ```
 
-### Login and get token
+### Emotional State Calculation
 
-```bash
-curl -X POST "http://localhost:8000/api/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=testuser&password=securepass123"
+```python
+if mood >= 80 and stress < 30: state = 'happy'
+elif mood < 40 or energy < 30: state = 'tired'
+elif stress >= 85: state = 'angry'
+elif stress >= 70: state = 'stressed'
+else: state = 'normal'
 ```
 
-### Get character (with authentication)
+## Pearl AI (Gemini Integration)
 
-```bash
-curl -X GET "http://localhost:8000/api/character" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+### System Prompt Highlights
+
+```python
+"""You are Pearl, a Food Science major in the Oystraz app.
+Beliefs:
+- Anti-hustle culture. Work smart, not grind.
+- Work-life balance is sacred.
+Style:
+- Dry humor, dad jokes dropped naturally.
+- PASSIONATE about food and nutrition.
+- Direct: 2-3 sentences max, no filler."""
 ```
 
-### Log a meal
+### API Integration
 
-```bash
-curl -X POST "http://localhost:8000/api/diet" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "food_name": "Chicken Breast",
-    "meal_type": "lunch",
-    "calories": 165,
-    "protein": 31,
-    "carbs": 0,
-    "fat": 3.6,
-    "serving_size": 100,
-    "serving_unit": "g"
-  }'
+```python
+# gemini.py
+model = genai.GenerativeModel('gemini-2.0-flash-exp')
+response = model.generate_content([system_prompt, user_message])
 ```
 
-### Get AI health advice
+## Database (Supabase)
 
-```bash
-curl -X POST "http://localhost:8000/api/assistant/advice" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "How can I improve my energy levels?",
-    "days": 7
-  }'
+Production database hosted on **Supabase**:
+
+```env
+DATABASE_URL=postgresql://postgres:[password]@[project].supabase.co:5432/postgres
 ```
 
-## Development
+Features:
+- Managed PostgreSQL with auto-backups
+- Connection pooling
+- Real-time capabilities (optional)
 
-### Running Tests
+## API Documentation
 
-```bash
-pytest
-```
-
-### Code Style
-
-This project follows PEP 8 style guidelines. Format code with:
-
-```bash
-black app/
-```
-
-### Database Migrations (Optional)
-
-For production, consider using Alembic for database migrations:
-
-```bash
-pip install alembic
-alembic init alembic
-# Configure alembic.ini and env.py
-alembic revision --autogenerate -m "Initial migration"
-alembic upgrade head
-```
+FastAPI auto-generates interactive docs:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
 ## Deployment
 
-### Database Hosting (Supabase)
-
-The production database is hosted on **Supabase**, providing:
-- Managed PostgreSQL with automatic backups
-- Connection pooling for scalability
-- Real-time capabilities (if needed)
-
-**Supabase Connection:**
-```env
-DATABASE_URL=postgresql://postgres:[password]@[project-ref].supabase.co:5432/postgres
-```
-
-### Docker (Recommended)
+### Docker
 
 ```dockerfile
-# Dockerfile example
 FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .
@@ -312,48 +201,23 @@ COPY . .
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-### Environment Variables for Production
+### Production Environment
 
 ```env
 DEBUG=False
-SECRET_KEY=<use strong random key>
-DATABASE_URL=<Supabase PostgreSQL connection string>
+SECRET_KEY=<strong random key>
+DATABASE_URL=<Supabase connection string>
 CORS_ORIGINS=https://yourdomain.com
 ```
 
-## Troubleshooting
+## Acknowledgments
 
-### Database connection errors
-
-- Check PostgreSQL is running: `sudo systemctl status postgresql`
-- Verify database credentials in `.env`
-- Ensure database exists: `psql -U postgres -l`
-
-### Import errors
-
-- Make sure you're in the `backend/` directory
-- Activate virtual environment if using one
-- Reinstall dependencies: `pip install -r requirements.txt`
-
-### API key errors
-
-- Verify API keys are correctly set in `.env`
-- Check API key quotas (USDA: 3,600 requests/hour)
-
-## 🌟 Acknowledgments
-
-- **Google Gemini 2.0 Flash** - AI-powered health assistant (Pearl)
-- **USDA FoodData Central** - Nutritional database (600k+ foods)
-- **Supabase** - PostgreSQL database hosting
-- **FastAPI** - High-performance Python web framework
-- **SQLAlchemy** - Database ORM
-
-Note: Visual assets (ocean theme, characters, BGM) are handled on the frontend and credited separately in frontend/README.md.
+- **Google Gemini 2.0 Flash** - Pearl AI companion
+- **USDA FoodData Central** - Nutrition database
+- **Supabase** - PostgreSQL hosting
+- **FastAPI** - Web framework
+- **SQLAlchemy** - ORM
 
 ## License
 
-This project is part of the Oystraz health tracking application.
-
-## Support
-
-For issues and questions, please open an issue on the project repository.
+MIT - Part of the Oystraz health tracking application.
