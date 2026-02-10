@@ -31,8 +31,9 @@
 
 | Field | Value |
 |-------|-------|
+| **Email** | `judges@oystraz.com` |
 | **Username** | `oystrazjudge` |
-| **Password** | `judges@oystraz.com` |
+| **Password** | `oystraz2026` |
 
 ### Demo Details
 
