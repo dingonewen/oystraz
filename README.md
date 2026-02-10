@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/public/assets/logo.png" alt="Oystraz Logo" width="200"/>
+  <img src="frontend/public/assets/oystraz_final_logo.png" alt="Oystraz Logo" width="200"/>
 </p>
 
 <h1 align="center">Oystraz - Life Orchestration Through Health</h1>
@@ -23,10 +23,25 @@
 
 ## Demo
 
-> **Demo video coming soon!** Check back after the hackathon submission.
+[![Oystraz Demo](https://img.youtube.com/vi/DRbhOWUHf2o/maxresdefault.jpg)](https://youtu.be/DRbhOWUHf2o)
 
-<!-- TODO: Add demo video link here -->
-<!-- [![Oystraz Demo](thumbnail.png)](https://youtube.com/your-demo-link) -->
+**Watch the full demo:** [https://youtu.be/DRbhOWUHf2o](https://youtu.be/DRbhOWUHf2o)
+
+### Test Account for Judges
+
+| Field | Value |
+|-------|-------|
+| **Username** | `oystrazjudge` |
+| **Password** | `judges@oystraz.com` |
+
+### Demo Details
+
+| Component | Tool Used |
+|-----------|-----------|
+| **Test Device** | Google Pixel 7 |
+| **Background Music** | Suno AI |
+| **Video Assets** | Google Veo 3.1 |
+| **Character Images** | Nano Banana Pro |
 
 ---
 
