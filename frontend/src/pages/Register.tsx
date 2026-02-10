@@ -1,0 +1,189 @@
+/**
+ * Registration Page
+ * Ocean theme with pearl shimmer effects
+ */
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Alert,
+  Link,
+} from '@mui/material';
+import { register, getCurrentUser } from '../services/authService';
+import { useUserStore } from '../store/userStore';
+
+// Logo-style gradient (red to green like the Oystraz logo)
+const logoBorderGradient = 'linear-gradient(135deg, #F28B82 0%, #FDD663 25%, #81C995 50%, #8AB4F8 75%, #E8D5E7 100%)';
+
+// Pearl iridescent gradient for title
+const pearlTitleGradient = 'linear-gradient(135deg, #F5E6E8 0%, #E8E0F0 25%, #E0EBF5 50%, #F0EDE5 75%, #F8F0E8 100%)';
+
+// Pearl purple button gradient
+const pearlPurpleGradient = 'linear-gradient(135deg, #E8D5E7 0%, #D5C4E8 50%, #C4B5E0 100%)';
+
+export default function Register() {
+  const navigate = useNavigate();
+  const { setUser, setToken } = useUserStore();
+
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: '',
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      // Register and get token
+      const authResponse = await register(formData);
+      setToken(authResponse.access_token);
+
+      // Get user info
+      const userResponse = await getCurrentUser();
+      setUser(userResponse);
+
+      // Redirect to home
+      navigate('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Container maxWidth="sm" sx={{ height: 'calc(100vh - 56px)', display: 'flex', flexDirection: 'column', py: 1 }}>
+      {/* Outer border with logo gradient - stretches to fill available space */}
+      <Box sx={{ p: '3px', borderRadius: '28px', background: logoBorderGradient, flex: 1, display: 'flex' }}>
+        <Paper sx={{
+          p: { xs: 2, sm: 3 },
+          borderRadius: 3,
+          background: '#1E1F20',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <Box
+              component="img"
+              src="/assets/pearl.png"
+              alt="Oystraz"
+              sx={{ width: 64, height: 64, filter: 'drop-shadow(0 0 8px rgba(232, 213, 231, 0.6))' }}
+            />
+          </Box>
+          {/* Title with pearl gradient */}
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{
+              background: pearlTitleGradient,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 600,
+            }}
+          >
+            Join Oystraz
+          </Typography>
+          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
+            Start your health journey today
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              margin="normal"
+              required
+              autoFocus
+              sx={{ '& .MuiInputBase-input': { color: '#B0B0B0' } }}
+            />
+            <TextField
+              fullWidth
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              margin="normal"
+              required
+              sx={{ '& .MuiInputBase-input': { color: '#B0B0B0' } }}
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              margin="normal"
+              required
+              sx={{ '& .MuiInputBase-input': { color: '#B0B0B0' } }}
+            />
+            {/* Pearl purple button */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={loading}
+              sx={{
+                mt: 3,
+                mb: 2,
+                background: pearlPurpleGradient,
+                color: '#2D2D2D',
+                fontWeight: 600,
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #D5C4E8 0%, #C4B5E0 50%, #B5A6D8 100%)',
+                },
+                '&:disabled': {
+                  background: '#555',
+                  color: '#888',
+                },
+              }}
+            >
+              {loading ? 'Creating account...' : 'Register'}
+            </Button>
+          </form>
+
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <Typography variant="body2">
+              Already have an account?{' '}
+              <Link href="/login" sx={{ cursor: 'pointer', color: '#E8D5E7' }}>
+                Login here
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Box>
+    </Container>
+  );
+}
