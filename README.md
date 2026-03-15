@@ -2,7 +2,9 @@
   <img src="frontend/public/assets/oystraz_final_logo.png" alt="Oystraz Logo" width="200"/>
 </p>
 
-<h1 align="center">Oystraz - Life Orchestration Through Health</h1>
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=250&section=header&text=Oystraz%20:%20Life%20Orchestration%20Through%20Health&fontSize=35&animation=fadeIn&fontAlignY=35" />
+</div>
 
 <p align="center">
   <strong>"The world is your oyster; Orchestrate your life through wellness."</strong>
