@@ -9,7 +9,7 @@
 <p align="center">
   <strong>"The world is your oyster; Orchestrate your life through wellness."</strong>
 </p>
-
+  
 <p align="center">
   <img src="https://img.shields.io/badge/Google%20Gemini%202.0-Powered-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini Powered"/>
   <img src="https://img.shields.io/badge/Google%20Veo%203.1-Video-EA4335?style=for-the-badge&logo=google&logoColor=white" alt="Veo 3.1"/>
