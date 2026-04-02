@@ -9,10 +9,10 @@ from app.models import User, Character
 from app.schemas import CharacterResponse, CharacterUpdate
 from app.services.auth import get_current_user
 
-router = APIRouter(prefix="/api/character", tags=["Character"])
+router = APIRouter(prefix="/api", tags=["Character"])
 
 
-@router.get("/", response_model=CharacterResponse)
+@router.get("/character", response_model=CharacterResponse)
 async def get_character(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -27,7 +27,7 @@ async def get_character(
     return character
 
 
-@router.put("/", response_model=CharacterResponse)
+@router.put("/character", response_model=CharacterResponse)
 async def update_character(
     character_update: CharacterUpdate,
     current_user: User = Depends(get_current_user),
