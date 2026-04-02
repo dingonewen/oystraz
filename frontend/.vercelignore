@@ -1,0 +1,15 @@
+# Exclude large files from deployment
+public/assets/oystraz_neosoul_bgm.mp3
+public/assets/oystraz_graident_logo.png
+public/assets/oystraz_final_logo.png
+
+# Exclude large demos/videos if any
+*.mp4
+*.mov
+*.avi
+
+# Development files
+.git
+node_modules
+.env*
+*.log
