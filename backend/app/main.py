@@ -8,14 +8,19 @@ from app.database import Base, engine
 from app.routers import auth, user, character, diet, exercise, sleep, assistant
 from app.routers.work import router as work_router
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Create database tables (skip if DATABASE_URL not configured)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Warning: Could not connect to database: {e}")
+    print("App will start but database operations will fail")
 
 # Initialize FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    debug=settings.DEBUG
+    debug=settings.DEBUG,
+    redirect_slashes=False  # Disable automatic trailing slash redirects
 )
 
 # Configure CORS
