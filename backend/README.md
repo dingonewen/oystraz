@@ -190,7 +190,40 @@ FastAPI auto-generates interactive docs:
 
 ## Deployment
 
-### Docker
+### Production (Railway)
+
+**Live API:** https://oystraz-production.up.railway.app
+
+Railway deployment configuration:
+- **Root Directory:** `backend`
+- **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- **Python Version:** 3.11.9 (via `runtime.txt`)
+- **Build:** Auto-detected from `requirements.txt`
+
+**Required Files:**
+- `Procfile` - Defines start command
+- `runtime.txt` - Specifies Python version
+- `railway.toml` - Build configuration
+
+### Environment Variables (Production)
+
+```env
+# Database (Supabase Pooler - required for Railway)
+DATABASE_URL=postgresql://postgres.PROJECT_ID:PASSWORD@aws-0-us-west-2.pooler.supabase.com:6543/postgres
+
+# Security
+SECRET_KEY=<generate with: openssl rand -hex 32>
+DEBUG=False
+
+# AI APIs
+GEMINI_API_KEY=<from Google AI Studio>
+USDA_API_KEY=<from USDA FoodData Central>
+
+# CORS - automatically configured in code for Vercel
+# Supports: localhost, oystraz.vercel.app, and all preview deployments
+```
+
+### Docker (Alternative Deployment)
 
 ```dockerfile
 FROM python:3.11-slim
@@ -201,14 +234,19 @@ COPY . .
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-### Production Environment
+### CORS Configuration
 
-```env
-DEBUG=False
-SECRET_KEY=<strong random key>
-DATABASE_URL=<Supabase connection string>
-CORS_ORIGINS=https://yourdomain.com
-```
+Configured to allow:
+- `http://localhost:5173` (Local Vite dev)
+- `https://oystraz.vercel.app` (Production)
+- `https://*.vercel.app` (Preview deployments via regex)
+
+### Important Notes
+
+1. **Database Connection:** Must use Supabase **Pooler** (port 6543), not direct connection (port 5432)
+2. **Bcrypt Version:** Pinned to 4.0.1 to avoid 72-byte password errors
+3. **Password Truncation:** Auth service auto-truncates passwords to 72 bytes for bcrypt compatibility
+4. **Trailing Slashes:** FastAPI configured with `redirect_slashes=False` to prevent 307 redirects that break CORS
 
 ## Acknowledgments
 
