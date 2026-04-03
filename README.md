@@ -9,7 +9,7 @@
 <p align="center">
   <strong>"The world is your oyster; Orchestrate your life through wellness."</strong>
 </p>
-  
+
 <p align="center">
   <img src="https://img.shields.io/badge/Google%20Gemini%202.0-Powered-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini Powered"/>
   <img src="https://img.shields.io/badge/Google%20Veo%203.1-Video-EA4335?style=for-the-badge&logo=google&logoColor=white" alt="Veo 3.1"/>
@@ -20,6 +20,28 @@
 <p align="center">
   <em>A gamified health tracking and life simulation app where your real-world choices directly influence your virtual character's performance.</em>
 </p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/PWA-Installable-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA"/>
+  <img src="https://img.shields.io/badge/iOS-Compatible-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS"/>
+  <img src="https://img.shields.io/badge/Android-Compatible-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android"/>
+</p>
+
+---
+
+## 📱 Try It Now (No Download Required!)
+
+**Live Demo:** [https://oystraz.vercel.app](https://oystraz.vercel.app)
+
+> 🚀 **Now Live!** Fully deployed Progressive Web App - works on any device, no app store needed.
+
+### Install as App (FREE - No App Store):
+**📱 iPhone:** Safari → Share → "Add to Home Screen"  
+**🤖 Android:** Chrome → Tap "Install Oystraz"
+
+**Demo Account:**
+- Email: `demo@oystraz.com`
+- Password: `demo123`
 
 ---
 
@@ -146,10 +168,17 @@ Your style:
 - PostgreSQL on **Supabase**
 - SQLAlchemy 2.0 ORM
 - JWT Authentication
+- **Deployed on Railway** (Production)
 
 **AI & External APIs**
 - **Google Gemini 2.0 Flash** - Pearl AI
 - USDA FoodData Central API (600k+ foods)
+
+**Deployment & Infrastructure**
+- **Frontend Hosting:** Vercel (Auto-deploy from main branch)
+- **Backend API:** Railway (PostgreSQL pooler connection)
+- **PWA Support:** Vite PWA Plugin - Offline-capable with service worker
+- **CDN:** Cloudinary (Static assets & media)
 
 **Creative Assets**
 - **Google Veo 3.1** - Prank video animation
@@ -267,7 +296,11 @@ USDA_API_KEY=your-usda-api-key
 
 **Frontend (.env):**
 ```bash
-VITE_API_URL=http://localhost:8000
+# Local development
+VITE_API_URL=http://localhost:8000/api
+
+# Optional: Background music from CDN (Cloudinary)
+VITE_BGM_URL=https://res.cloudinary.com/your-cloud-name/video/upload/oystraz_neosoul_bgm.mp3
 ```
 
 ### Running Locally
@@ -311,12 +344,28 @@ A unique stress-relief game where you play as a seal employee!
 
 ---
 
+## Deployment & Production
+
+### Live Endpoints
+- **Frontend (PWA):** https://oystraz.vercel.app
+- **Backend API:** https://oystraz-production.up.railway.app
+
+### Infrastructure Highlights
+- ✅ **Auto-deployment:** Push to main branch triggers Vercel rebuild
+- ✅ **Progressive Web App:** Installable on iOS/Android - works offline
+- ✅ **CORS Configuration:** Regex-based to support all Vercel preview deployments
+- ✅ **Database:** Supabase PostgreSQL with connection pooling (6543)
+- ✅ **Static Assets:** Cloudinary CDN for large media files
+
+---
+
 ## Future Roadmap
 
-### Phase 1: Current
-- Mobile responsive optimization
-- Performance improvements
-- Bug fixes
+### Phase 1: ✅ Complete
+- ✅ Production deployment (Railway + Vercel)
+- ✅ PWA support with offline capability
+- ✅ Mobile responsive design
+- ✅ CDN integration for performance
 
 ### Phase 2: Enhanced Features
 - Achievement system
