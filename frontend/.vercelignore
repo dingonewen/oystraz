@@ -1,5 +1,5 @@
 # Exclude large files from deployment
-public/assets/oystraz_neosoul_bgm.mp3
+# public/assets/oystraz_neosoul_bgm.mp3  # Re-enabled after compression
 public/assets/oystraz_graident_logo.png
 public/assets/oystraz_final_logo.png
 

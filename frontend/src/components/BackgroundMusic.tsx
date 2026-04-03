@@ -14,7 +14,14 @@ export default function BackgroundMusic() {
   // Initialize audio element once
   useEffect(() => {
     if (!audioRef.current) {
-      const audio = new Audio('/assets/oystraz_neosoul_bgm.mp3');
+      // Option 1: Local file (requires compression to <2MB)
+      // const audio = new Audio('/assets/oystraz_neosoul_bgm.mp3');
+
+      // Option 2: CDN (recommended for large files)
+      const audio = new Audio(
+        import.meta.env.VITE_BGM_URL ||
+        '/assets/oystraz_neosoul_bgm.mp3' // Fallback to local
+      );
       audio.loop = true;
       audio.volume = volume;
       audioRef.current = audio;
