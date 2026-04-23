@@ -100,7 +100,7 @@ def _apply_oyster_bonus(db: Session, user_id: int) -> bool:
     return True
 
 
-@router.post("/", response_model=DietLogResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=DietLogResponse, status_code=status.HTTP_201_CREATED)
 async def create_diet_log(
     diet_log: DietLogCreate,
     current_user: User = Depends(get_current_user),
@@ -125,7 +125,7 @@ async def create_diet_log(
     return new_log
 
 
-@router.get("/", response_model=list[DietLogResponse])
+@router.get("", response_model=list[DietLogResponse])
 async def get_diet_logs(
     days: int = 7,
     current_user: User = Depends(get_current_user),

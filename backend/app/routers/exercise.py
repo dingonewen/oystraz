@@ -90,7 +90,7 @@ def _recalculate_character_exercise(db: Session, user_id: int, exercise_minutes:
     db.commit()
 
 
-@router.post("/", response_model=ExerciseLogResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ExerciseLogResponse, status_code=status.HTTP_201_CREATED)
 async def create_exercise_log(
     exercise_log: ExerciseLogCreate,
     current_user: User = Depends(get_current_user),
@@ -124,7 +124,7 @@ async def create_exercise_log(
     return new_log
 
 
-@router.get("/", response_model=list[ExerciseLogResponse])
+@router.get("", response_model=list[ExerciseLogResponse])
 async def get_exercise_logs(
     days: int = 7,
     current_user: User = Depends(get_current_user),

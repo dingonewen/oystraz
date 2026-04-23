@@ -106,7 +106,7 @@ def _recalculate_character_sleep(db: Session, user_id: int, sleep_hours: float):
     db.commit()
 
 
-@router.post("/", response_model=SleepLogResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=SleepLogResponse, status_code=status.HTTP_201_CREATED)
 async def create_sleep_log(
     sleep_log: SleepLogCreate,
     current_user: User = Depends(get_current_user),
@@ -139,7 +139,7 @@ async def create_sleep_log(
     return new_log
 
 
-@router.get("/", response_model=list[SleepLogResponse])
+@router.get("", response_model=list[SleepLogResponse])
 async def get_sleep_logs(
     days: int = 7,
     current_user: User = Depends(get_current_user),
