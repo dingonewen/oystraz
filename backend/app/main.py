@@ -3,8 +3,12 @@ FastAPI application entry point
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 from app.config import settings
 from app.database import Base, engine
+from app.limiter import limiter
 from app.routers import auth, user, character, diet, exercise, sleep, assistant
 from app.routers.work import router as work_router
 
@@ -22,6 +26,10 @@ app = FastAPI(
     debug=settings.DEBUG,
     redirect_slashes=False,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 # Configure CORS
 app.add_middleware(
