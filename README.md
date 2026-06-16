@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Google%20Gemini%202.0-Powered-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini Powered"/>
+  <img src="https://img.shields.io/badge/Google%20Gemini%202.5-Powered-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini Powered"/>
   <img src="https://img.shields.io/badge/Google%20Veo%203.1-Video-EA4335?style=for-the-badge&logo=google&logoColor=white" alt="Veo 3.1"/>
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19"/>
   <img src="https://img.shields.io/badge/FastAPI-Python-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"/>
@@ -86,15 +86,16 @@
 
 | Google Product | How We Use It |
 |----------------|---------------|
-| **Gemini 2.0 Flash** | Powers Pearl, our AI health companion with personality-driven responses, food science knowledge, and personalized health coaching |
+| **Gemini 2.5 Flash** | Powers Pearl, our AI health companion with personality-driven responses, food science knowledge, and personalized health coaching — with real-time streaming output and structured JSON responses for dynamic workplace scenarios |
 | **Google Veo 3.1** | Created the "Seal Pranks Octopus" video animation that plays during overtime/stress relief events |
 | **Google AI Studio** | Used for demo design, prompt engineering, and development assistance |
 
-### Why Gemini 2.0 Flash?
+### Why Gemini 2.5 Flash?
 
-1. **Extended Context Memory** - Pearl remembers your health history across conversations
-2. **Advanced Reasoning** - Analyzes USDA nutritional data and generates personalized insights
+1. **Real-Time Streaming** - Pearl's responses stream token by token via Server-Sent Events, giving a natural typewriter feel
+2. **Structured Output** - Workplace scenarios use `response_schema` to guarantee valid JSON, eliminating brittle text parsing
 3. **Personality Engineering** - System instructions create Pearl's unique anti-hustle, food-enthusiast personality
+4. **Advanced Reasoning** - Analyzes USDA nutritional data and generates personalized, context-aware insights
 
 ```python
 # Pearl's System Instruction (excerpt)
@@ -114,7 +115,7 @@ Your style:
 
 | Feature | Description | Powered By |
 |---------|-------------|------------|
-| **Pearl AI Companion** | Personalized, witty health coaching with anti-hustle philosophy | Gemini 2.0 Flash |
+| **Pearl AI Companion** | Personalized, witty health coaching with anti-hustle philosophy — responses stream in real time | Gemini 2.5 Flash |
 | **Ocean Work Simulator** | Play as a seal employee - catch fish, avoid (or prank!) the octopus boss | Custom game engine |
 | **Nutritional Intelligence** | Search 600k+ foods with detailed macro/micronutrient data | USDA FoodData API |
 | **Character Evolution** | Your diet, sleep, and exercise directly affect your character's stats | Health algorithms |
@@ -171,8 +172,9 @@ Your style:
 - **Deployed on Railway** (Production)
 
 **AI & External APIs**
-- **Google Gemini 2.0 Flash** - Pearl AI
+- **Google Gemini 2.5 Flash** - Pearl AI (streaming + structured output)
 - USDA FoodData Central API (600k+ foods)
+- **SlowAPI** - Rate limiting (login: 10/min, register: 5/min per IP)
 
 **Deployment & Infrastructure**
 - **Frontend Hosting:** Vercel (Auto-deploy from main branch)
@@ -351,11 +353,15 @@ A unique stress-relief game where you play as a seal employee!
 - **Backend API:** https://oystraz-production.up.railway.app
 
 ### Infrastructure Highlights
-- ✅ **Auto-deployment:** Push to main branch triggers Vercel rebuild
+- ✅ **Auto-deployment:** Push to main branch triggers Vercel + Railway rebuild
 - ✅ **Progressive Web App:** Installable on iOS/Android - works offline
-- ✅ **CORS Configuration:** Regex-based to support all Vercel preview deployments
+- ✅ **CORS:** Locked to `https://oystraz.vercel.app` (production domain only)
+- ✅ **Rate Limiting:** Brute-force protection on auth endpoints via SlowAPI
+- ✅ **Pearl Streaming:** Real-time SSE streaming for AI chat responses
+- ✅ **Structured AI Output:** Workplace scenarios use Gemini `response_schema` for reliable JSON
 - ✅ **Database:** Supabase PostgreSQL with connection pooling (6543)
 - ✅ **Static Assets:** Cloudinary CDN for large media files
+- ✅ **Keep-Alive:** GitHub Actions daily commit prevents scheduled workflow auto-disable
 
 ---
 
@@ -366,6 +372,10 @@ A unique stress-relief game where you play as a seal employee!
 - ✅ PWA support with offline capability
 - ✅ Mobile responsive design
 - ✅ CDN integration for performance
+- ✅ Pearl real-time streaming (SSE)
+- ✅ Structured AI output for workplace scenarios
+- ✅ API rate limiting & CORS hardening
+- ✅ GitHub Actions keep-alive
 
 ### Phase 2: Enhanced Features
 - Achievement system
@@ -402,7 +412,7 @@ A unique stress-relief game where you play as a seal employee!
 
 | Component | Tool/Service |
 |-----------|--------------|
-| AI Companion | **Google Gemini 2.0 Flash** |
+| AI Companion | **Google Gemini 2.5 Flash** |
 | Prank Video | **Google Veo 3.1** |
 | Development | **Google AI Studio** + **Claude Code** |
 | Database | PostgreSQL on **Supabase** |
@@ -414,7 +424,7 @@ A unique stress-relief game where you play as a seal employee!
 
 ## Acknowledgments
 
-- **Google Gemini 2.0 Flash** - AI capabilities for Pearl
+- **Google Gemini 2.5 Flash** - AI capabilities for Pearl (streaming + structured output)
 - **Google Veo 3.1** - Prank octopus video animation
 - **Google AI Studio** - Development and prompt engineering
 - **USDA FoodData Central** - Nutritional database (600k+ foods)
