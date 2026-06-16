@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
 
   // AI Assistant
   pearlChat: '/assistant/pearl/chat',
+  pearlChatStream: '/assistant/pearl/chat/stream',
   aiAdvice: '/assistant/advice',
   workplaceScenario: '/assistant/workplace-scenario',
   foodSearch: '/assistant/food-search',

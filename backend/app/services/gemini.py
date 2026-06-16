@@ -1,8 +1,16 @@
 """
 Google Gemini AI service integration
 """
+import json
+import typing_extensions as typing
 import google.generativeai as genai
 from app.config import settings
+
+
+class WorkplaceScenario(typing.TypedDict):
+    event_type: str
+    description: str
+    outcome: str
 
 
 class GeminiService:
@@ -218,6 +226,34 @@ Provide personalized, actionable advice based on this data. Focus on:
 
         return "\n".join(formatted) if formatted else "No recent activity logged"
 
+    def _build_pearl_message(
+        self,
+        user_message: str,
+        character_state: dict = None,
+        recent_logs: dict = None,
+    ) -> str:
+        """Build the full message with health context injected"""
+        context = ""
+        if character_state:
+            stamina = character_state.get('stamina', 0)
+            energy = character_state.get('energy', 0)
+            nutrition = character_state.get('nutrition', 0)
+            mood = character_state.get('mood', 0)
+            stress = character_state.get('stress', 0)
+
+            context += "\n=== USER'S CURRENT STATUS (IMPORTANT - reference these when answering!) ===\n"
+            context += f"Stamina: {stamina:.1f}/100 {'(LOW!)' if stamina < 40 else '(good)' if stamina >= 70 else ''}\n"
+            context += f"Energy: {energy:.1f}/100 {'(LOW!)' if energy < 40 else '(good)' if energy >= 70 else ''}\n"
+            context += f"Nutrition: {nutrition:.1f}/100 {'(needs work)' if nutrition < 60 else '(good)' if nutrition >= 80 else ''}\n"
+            context += f"Mood: {mood:.1f}/100 {'(LOW!)' if mood < 40 else '(great!)' if mood >= 80 else ''}\n"
+            context += f"Stress: {stress:.1f}/100 {'(HIGH! needs attention)' if stress >= 60 else '(low, good!)' if stress < 30 else ''}\n"
+            context += "=== When user asks about their stats, mood, stress, etc. - USE THESE VALUES! ===\n"
+
+        if recent_logs:
+            context += f"\n[Recent activity:\n{self._format_recent_logs(recent_logs)}]\n"
+
+        return context + "\nUser: " + user_message if context else user_message
+
     def pearl_chat(
         self,
         user_message: str,
@@ -240,28 +276,7 @@ Provide personalized, actionable advice based on this data. Focus on:
         if not self.pearl_model:
             return "Hey, I'm not configured right now. Ask the dev to add GEMINI_API_KEY!"
 
-        # Build context with health data if available
-        context = ""
-        if character_state:
-            stamina = character_state.get('stamina', 0)
-            energy = character_state.get('energy', 0)
-            nutrition = character_state.get('nutrition', 0)
-            mood = character_state.get('mood', 0)
-            stress = character_state.get('stress', 0)
-
-            context += f"\n=== USER'S CURRENT STATUS (IMPORTANT - reference these when answering!) ===\n"
-            context += f"Stamina: {stamina:.1f}/100 {'(LOW!)' if stamina < 40 else '(good)' if stamina >= 70 else ''}\n"
-            context += f"Energy: {energy:.1f}/100 {'(LOW!)' if energy < 40 else '(good)' if energy >= 70 else ''}\n"
-            context += f"Nutrition: {nutrition:.1f}/100 {'(needs work)' if nutrition < 60 else '(good)' if nutrition >= 80 else ''}\n"
-            context += f"Mood: {mood:.1f}/100 {'(LOW!)' if mood < 40 else '(great!)' if mood >= 80 else ''}\n"
-            context += f"Stress: {stress:.1f}/100 {'(HIGH! needs attention)' if stress >= 60 else '(low, good!)' if stress < 30 else ''}\n"
-            context += "=== When user asks about their stats, mood, stress, etc. - USE THESE VALUES! ===\n"
-
-        if recent_logs:
-            context += f"\n[Recent activity:\n{self._format_recent_logs(recent_logs)}]\n"
-
-        # Build full prompt with context
-        full_message = context + "\nUser: " + user_message if context else user_message
+        full_message = self._build_pearl_message(user_message, character_state, recent_logs)
 
         try:
             # Start chat with history if provided
@@ -274,6 +289,33 @@ Provide personalized, actionable advice based on this data. Focus on:
             return response.text
         except Exception as e:
             return f"Oof, something broke on my end. Error: {str(e)}"
+
+    def pearl_chat_stream(
+        self,
+        user_message: str,
+        character_state: dict = None,
+        recent_logs: dict = None,
+        conversation_history: list = None
+    ):
+        """Synchronous generator that yields Pearl's response chunks for streaming"""
+        if not self.pearl_model:
+            yield "Hey, I'm not configured right now. Ask the dev to add GEMINI_API_KEY!"
+            return
+
+        full_message = self._build_pearl_message(user_message, character_state, recent_logs)
+
+        try:
+            if conversation_history:
+                chat = self.pearl_model.start_chat(history=conversation_history)
+                response = chat.send_message(full_message, stream=True)
+            else:
+                response = self.pearl_model.generate_content(full_message, stream=True)
+
+            for chunk in response:
+                if chunk.text:
+                    yield chunk.text
+        except Exception as e:
+            yield f"Oof, something broke on my end. Error: {str(e)}"
 
     def generate_workplace_scenario(self, character_state: dict) -> dict:
         """
@@ -296,24 +338,28 @@ Energy: {character_state.get('energy', 0)}/100
 Mood: {character_state.get('mood', 0)}/100
 Stress: {character_state.get('stress', 0)}/100
 
-Create a brief workplace scenario (2-3 sentences) that reflects these health stats.
-Low energy = might struggle in meetings
-High stress = might react poorly to challenges
-Good health = handles work situations confidently
-
-Format:
-Event Type: [meeting/presentation/conflict/decision]
-Description: [2-3 sentences describing the scenario]
-Likely Outcome: [success/struggle/mixed based on stats]
+Rules:
+- Low energy = might struggle in meetings
+- High stress = might react poorly to challenges
+- Good health = handles work situations confidently
+- event_type must be one of: meeting, presentation, conflict, decision
+- description: 2-3 sentences describing the scenario
+- outcome must be one of: success, struggle, mixed (based on the stats above)
 """
 
         try:
-            response = self.model.generate_content(prompt)
-            # Parse response (simplified - in production, use structured output)
+            response = self.model.generate_content(
+                prompt,
+                generation_config=genai.GenerationConfig(
+                    response_mime_type="application/json",
+                    response_schema=WorkplaceScenario,
+                )
+            )
+            result = json.loads(response.text)
             return {
-                "event_type": "workplace_event",
-                "description": response.text,
-                "outcome": "mixed"
+                "event_type": result.get("event_type", "meeting"),
+                "description": result.get("description", ""),
+                "outcome": result.get("outcome", "mixed"),
             }
         except Exception as e:
             return {

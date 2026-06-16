@@ -1,7 +1,12 @@
 """
 AI Assistant API routes (Gemini + USDA)
 """
+import asyncio
+import json
+import queue as sync_queue
+import threading
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime, timedelta
@@ -87,6 +92,77 @@ async def chat_with_pearl(
     )
 
     return {"response": response}
+
+
+@router.post("/pearl/chat/stream")
+async def chat_with_pearl_stream(
+    request: PearlChatRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Stream Pearl's response chunk by chunk via Server-Sent Events"""
+    character = db.query(Character).filter(Character.user_id == current_user.id).first()
+    character_state = None
+    recent_logs = None
+
+    if character:
+        character_state = {
+            "stamina": character.stamina,
+            "energy": character.energy,
+            "nutrition": character.nutrition,
+            "mood": character.mood,
+            "stress": character.stress,
+        }
+
+        start_date = datetime.utcnow() - timedelta(days=7)
+        diet_logs = db.query(DietLog).filter(
+            DietLog.user_id == current_user.id,
+            DietLog.logged_at >= start_date
+        ).all()
+        exercise_logs = db.query(ExerciseLog).filter(
+            ExerciseLog.user_id == current_user.id,
+            ExerciseLog.logged_at >= start_date
+        ).all()
+        sleep_logs = db.query(SleepLog).filter(
+            SleepLog.user_id == current_user.id,
+            SleepLog.logged_at >= start_date
+        ).all()
+
+        recent_logs = {
+            "diet": [{"calories": log.calories} for log in diet_logs],
+            "exercise": [{"duration_minutes": log.duration_minutes} for log in exercise_logs],
+            "sleep": [{"duration_hours": log.duration_hours} for log in sleep_logs],
+        }
+
+    q: sync_queue.Queue = sync_queue.Queue()
+
+    def run_gemini():
+        for chunk in gemini_service.pearl_chat_stream(
+            request.message,
+            character_state,
+            recent_logs,
+            request.conversation_history,
+        ):
+            q.put(chunk)
+        q.put(None)
+
+    thread = threading.Thread(target=run_gemini, daemon=True)
+    thread.start()
+
+    async def event_stream():
+        loop = asyncio.get_event_loop()
+        while True:
+            chunk = await loop.run_in_executor(None, q.get)
+            if chunk is None:
+                yield "data: [DONE]\n\n"
+                break
+            yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.post("/advice")

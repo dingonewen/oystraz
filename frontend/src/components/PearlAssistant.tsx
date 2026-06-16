@@ -5,7 +5,7 @@
  */
 
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { chatWithPearl } from '../services/pearlService';
+import { chatWithPearlStream } from '../services/pearlService';
 import { useCharacterStore } from '../store/characterStore';
 import {
   Box,
@@ -116,6 +116,7 @@ export default function PearlAssistant() {
 
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -132,36 +133,44 @@ export default function PearlAssistant() {
   };
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || isStreaming) return;
 
-    const userMessage: Message = {
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
     const userInput = input.trim();
+    setMessages((prev) => [...prev, { role: 'user', content: userInput, timestamp: new Date() }]);
     setInput('');
     setIsLoading(true);
 
+    let streamingStarted = false;
+
     try {
-      const response = await chatWithPearl(userInput);
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: response,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: "Oops, something went wrong. Even I need a break sometimes",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      await chatWithPearlStream(userInput, (chunk) => {
+        if (!streamingStarted) {
+          streamingStarted = true;
+          setIsLoading(false);
+          setIsStreaming(true);
+          setMessages((prev) => [...prev, { role: 'assistant', content: chunk, timestamp: new Date() }]);
+        } else {
+          setMessages((prev) => {
+            const updated = [...prev];
+            const last = updated[updated.length - 1];
+            if (last.role === 'assistant') {
+              updated[updated.length - 1] = { ...last, content: last.content + chunk };
+            }
+            return updated;
+          });
+        }
+      });
+    } catch {
+      if (!streamingStarted) {
+        setMessages((prev) => [...prev, {
+          role: 'assistant',
+          content: "Oops, something went wrong. Even I need a break sometimes",
+          timestamp: new Date(),
+        }]);
+      }
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -425,7 +434,7 @@ export default function PearlAssistant() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  disabled={isLoading}
+                  disabled={isLoading || isStreaming}
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 1.5,
@@ -448,7 +457,7 @@ export default function PearlAssistant() {
                 <IconButton
                   color="primary"
                   onClick={handleSend}
-                  disabled={!input.trim() || isLoading}
+                  disabled={!input.trim() || isLoading || isStreaming}
                   sx={{
                     background: pearlGradient,
                     color: '#3C3C3C',
