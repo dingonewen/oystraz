@@ -7,7 +7,12 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Ping and Verify
         run: |
           RESPONSE=$(curl -f -sS -L -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/characters?select=*" \
@@ -15,4 +20,13 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
 
           echo "Server Response: $RESPONSE"
+
+      - name: Keep repository active
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          date -u > .github/keep_alive_timestamp
+          git add .github/keep_alive_timestamp
+          git diff --staged --quiet || git commit -m "chore: keep repository active [skip ci]"
+          git push
 
